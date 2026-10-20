@@ -34,53 +34,53 @@
 
 ## Detailed Notes
 
-### Why other locks if we have `synchronized`? [00:00]
+### Why other locks if we have `synchronized`? [▶ ~00:00](https://youtu.be/JW6-TCU0iS4?t=0)
 - Java has a `Lock` **interface** in the concurrency package (`java.util.concurrent.locks`). As a contract it says: implementations must provide a way to **lock** and a way to **unlock**, plus some optional methods.
 - Before looking at it, the video lists what `synchronized` can't do.
 
-### Limitations of `synchronized` [01:30]
+### Limitations of `synchronized` [▶ ~01:30](https://youtu.be/JW6-TCU0iS4?t=90)
 - **No control over the lock.** If thread T1 tries to enter a `synchronized` method and the lock is taken, T1 just goes into the blocked state. You can't say "if you get the lock, do the work, else do something else".
 - **No timeout.** You can't say "try for 2 seconds, then give up".
-- **No fairness** [03:09]. Say T2 arrives at second 1, T3 at second 2, T4 at second 3, and T1 at second 4. With `synchronized`, nothing guarantees T2 goes first. T1 might go first, then T3, then T4, and T2 last. If new threads (T5, ...) keep arriving, T2 can wait for a very long time. This is **starvation**.
+- **No fairness** [▶ ~03:09](https://youtu.be/JW6-TCU0iS4?t=189). Say T2 arrives at second 1, T3 at second 2, T4 at second 3, and T1 at second 4. With `synchronized`, nothing guarantees T2 goes first. T1 might go first, then T3, then T4, and T2 last. If new threads (T5, ...) keep arriving, T2 can wait for a very long time. This is **starvation**.
 - You also don't decide where the lock is released; it's released automatically at the end of the block.
 
-### The `Lock` interface: `lock()` and `unlock()` [06:30]
+### The `Lock` interface: `lock()` and `unlock()` [▶ ~06:30](https://youtu.be/JW6-TCU0iS4?t=390)
 - Call `lock()` to get permission to enter the critical section and `unlock()` when you leave. While one thread holds it, the others that call `lock()` wait.
 - The video's rule of thumb for states: a thread that can't get a lock is **blocked**; a thread that called `wait()` is **waiting**. In everyday speech people say "waiting for the lock" for both.
   - *Correction:* that's exactly right for `synchronized` monitors. A thread stuck in `ReentrantLock.lock()`, however, shows up as `WAITING` in `Thread.getState()` (it is parked with `LockSupport.park`), not `BLOCKED`. `BLOCKED` is only used for monitor locks.
-- The four mechanisms covered [08:03]: **ReentrantLock** (the most used after `synchronized`), **ReadWriteLock**, **StampedLock**, and **Semaphore** (not strictly a lock, but used the same way).
+- The four mechanisms covered [▶ ~08:03](https://youtu.be/JW6-TCU0iS4?t=483): **ReentrantLock** (the most used after `synchronized`), **ReadWriteLock**, **StampedLock**, and **Semaphore** (not strictly a lock, but used the same way).
 
-### `ReentrantLock`: syntax and the `try`/`finally` rule [09:00]
+### `ReentrantLock`: syntax and the `try`/`finally` rule [▶ ~09:00](https://youtu.be/JW6-TCU0iS4?t=540)
 - `Lock lock = new ReentrantLock();` then `lock.lock();` ... critical section ... `lock.unlock();`.
-- The danger of manual locking [10:24]: if you **forget** `unlock()`, or the critical section **throws**, the lock is never released and every other thread waits forever.
+- The danger of manual locking [▶ ~10:24](https://youtu.be/JW6-TCU0iS4?t=624): if you **forget** `unlock()`, or the critical section **throws**, the lock is never released and every other thread waits forever.
 - The Java docs' recommended form: call `lock()`, put the critical section in `try`, and call `unlock()` in `finally`. `finally` always runs (except in extreme cases like the JVM dying). A `catch` is optional; `try`/`finally` alone is fine.
 
-### Demo: three threads, one lock [12:17]
+### Demo: three threads, one lock [▶ ~12:17](https://youtu.be/JW6-TCU0iS4?t=737)
 - A `Resource` class has `f1()`, which prints "entered", sleeps 2 seconds, and prints "exited". The `ReentrantLock` (imported from `java.util.concurrent.locks`) guards it with `lock` / `try` / `finally unlock`.
 - Three threads call `r1.f1()`. Output: Thread-0 entered/exited, then Thread-1, then Thread-2. Only one at a time is inside.
-- **What is locked?** [15:30] With `synchronized`, each object (here `r1`) has its own built-in monitor lock, and threads compete for that. With `ReentrantLock`, you lock a **separate lock object**. The `Resource` object itself isn't locked at all.
+- **What is locked?** [▶ ~15:30](https://youtu.be/JW6-TCU0iS4?t=930) With `synchronized`, each object (here `r1`) has its own built-in monitor lock, and threads compete for that. With `ReentrantLock`, you lock a **separate lock object**. The `Resource` object itself isn't locked at all.
 
-### Why bother? `tryLock()` [17:54]
+### Why bother? `tryLock()` [▶ ~17:54](https://youtu.be/JW6-TCU0iS4?t=1074)
 - The headline feature: `if (lock.tryLock()) { try { ... } finally { lock.unlock(); } } else { /* do something else */ }`.
 - `tryLock()` tries once and returns `true` (you now hold the lock) or `false` immediately. The thread never goes into the blocked state.
 - "With great power comes great responsibility": you must call `unlock()` yourself, always in `finally`.
 
-### Why is it called *reentrant*? [19:33]
+### Why is it called *reentrant*? [▶ ~19:33](https://youtu.be/JW6-TCU0iS4?t=1173)
 - The **same thread can acquire the same lock multiple times**. Lock it three times and you must unlock it three times.
 - Why it's useful: `methodA()` takes the lock and, inside `try`, calls `methodB()`, which also takes the lock. The same thread enters again (hold count 2), `methodB` unlocks once, then `methodA`'s `finally` unlocks again. A non-reentrant lock would **deadlock** here (StampedLock, covered later, is like that).
 - **`synchronized` is also reentrant.** Two `synchronized` methods of the same class lock the same object, and one can call the other. So reentrancy isn't what makes `ReentrantLock` special; the extra control methods are.
 
-### Important `ReentrantLock` methods [24:43]
+### Important `ReentrantLock` methods [▶ ~24:43](https://youtu.be/JW6-TCU0iS4?t=1483)
 - `lock()` / `unlock()`. Calling `unlock()` when the current thread doesn't hold the lock throws **`IllegalMonitorStateException`**, just like `wait`/`notify` outside `synchronized`.
 - `tryLock()`: try once, no waiting.
-- `tryLock(2, TimeUnit.SECONDS)` [26:00]: keep trying for up to 2 seconds, then return `false` and go to the `else`. *(`TimeUnit` is an **enum** with `SECONDS`, `MILLISECONDS`, `MINUTES`, ...; the video calls it a static class.)*
+- `tryLock(2, TimeUnit.SECONDS)` [▶ ~26:00](https://youtu.be/JW6-TCU0iS4?t=1560): keep trying for up to 2 seconds, then return `false` and go to the `else`. *(`TimeUnit` is an **enum** with `SECONDS`, `MILLISECONDS`, `MINUTES`, ...; the video calls it a static class.)*
 - `isLocked()`: is any thread holding it? For monitoring and debugging only. By the time you act on the answer it may already be wrong, because check-then-act isn't atomic.
 - `isHeldByCurrentThread()`: e.g. `if (lock.isHeldByCurrentThread()) lock.unlock();`. Rarely needed.
-- `getHoldCount()` [28:10]: how many times the current thread has locked it. A `ReentrantLock` tracks an **owner thread** and a **count**, much like an object's monitor does.
-- `isFair()` [29:00]: `new ReentrantLock()` is **unfair** (any thread can be picked); `new ReentrantLock(true)` is **fair** (longest waiter first, like a queue), so starvation is unlikely. Even a fair lock is only *approximately* FIFO, since the OS still schedules threads.
+- `getHoldCount()` [▶ ~28:10](https://youtu.be/JW6-TCU0iS4?t=1690): how many times the current thread has locked it. A `ReentrantLock` tracks an **owner thread** and a **count**, much like an object's monitor does.
+- `isFair()` [▶ ~29:00](https://youtu.be/JW6-TCU0iS4?t=1740): `new ReentrantLock()` is **unfair** (any thread can be picked); `new ReentrantLock(true)` is **fair** (longest waiter first, like a queue), so starvation is unlikely. Even a fair lock is only *approximately* FIFO, since the OS still schedules threads.
 - *Note:* `isLocked`, `isHeldByCurrentThread`, `getHoldCount` and `isFair` are methods of the **`ReentrantLock` class**, not the `Lock` interface. Declare the variable as `ReentrantLock` if you need them.
 
-### `ReadWriteLock`: shared reads, exclusive writes [31:51]
+### `ReadWriteLock`: shared reads, exclusive writes [▶ ~31:51](https://youtu.be/JW6-TCU0iS4?t=1911)
 - So far only one thread at a time could enter. But for a resource like a file, database or cache, **reading changes nothing** (it's non-destructive), while **writing** can make writers overwrite each other or leave readers with stale data (it's destructive).
 - So split the lock in two:
   - **Read lock = shared lock.** Many readers can hold it together.
@@ -88,27 +88,27 @@
 - `ReadWriteLock rw = new ReentrantReadWriteLock();` then `Lock rl = rw.readLock();` and `Lock wl = rw.writeLock();`. Both are ordinary `Lock` objects.
 - Rules: many readers → allowed together; one writer → alone; writer + reader → not together. If a writer is inside, every reader and writer waits. If a reader is inside, more readers can enter but writers wait.
 
-### The Reader-Writer problem [38:01]
+### The Reader-Writer problem [▶ ~38:01](https://youtu.be/JW6-TCU0iS4?t=2281)
 - A classic: several writers (W1, W2, W3) and readers (R1, R2, R3) share a resource. Think of a Google Doc shared with some people as editors and some as viewers.
 - Writers need to go one at a time; readers can read together. Shared caches and databases solve this same problem internally.
 - It differs from producer-consumer: a consumer *takes* the item away, while a reader only looks at it.
 
-### Demo: `SharedResource` with a read/write lock [39:58]
+### Demo: `SharedResource` with a read/write lock [▶ ~39:58](https://youtu.be/JW6-TCU0iS4?t=2398)
 - `private int value = 0;` `read()` uses `rl.lock(); try { sleep 1s; print; return value; } finally { rl.unlock(); }` (the `finally` runs even after `return`). `write(int)` does the same with `wl`.
 - Three readers and three writers (writing 5, 7, 9). In the run, the three readers entered **together** and all read `0` (they happened to run first), then the writers went **one at a time**. *(Which group goes first is up to the scheduler.)*
-- **Why have a read lock at all** [47:10], if readers can share? So that **no writer gets in while readers are inside**. Without it, a writer could change the value mid-read.
+- **Why have a read lock at all** [▶ ~47:10](https://youtu.be/JW6-TCU0iS4?t=2830), if readers can share? So that **no writer gets in while readers are inside**. Without it, a writer could change the value mid-read.
 - Pass `true` to the constructor (`new ReentrantReadWriteLock(true)`) for a fair version.
 
-### Writer starvation [49:15]
+### Writer starvation [▶ ~49:15](https://youtu.be/JW6-TCU0iS4?t=2955)
 - A shared lock is cheap to get, and an exclusive one needs everyone else out. If readers keep arriving, there's always at least one reader inside, the read lock is never fully released, and a waiting writer can starve. This is called **writer starvation**.
 - The video suggests limiting how many readers can get in at once so the writer gets a turn.
   - *Note:* in practice the JDK already helps. Even in non-fair mode, `ReentrantReadWriteLock` makes a new reader wait if the thread at the head of the queue is a writer. Fair mode (`true`) gives strict arrival order.
 
-### Lock downgrading [49:46]
+### Lock downgrading [▶ ~49:46](https://youtu.be/JW6-TCU0iS4?t=2986)
 - You **can downgrade** a write lock to a read lock, which is useful when you write and then immediately want to read what you wrote. The order matters: lock write → modify → **acquire read lock** → **then** release write lock → read → release read lock. If you released the write lock first, another writer could slip in between.
 - You **cannot upgrade** read → write. Other readers may be inside, so a shared lock can't simply become exclusive. *(In `ReentrantReadWriteLock`, calling `writeLock().lock()` while holding the read lock blocks forever, a self-deadlock; `writeLock().tryLock()` just returns `false`.)*
 
-### `StampedLock` [52:01]
+### `StampedLock` [▶ ~52:01](https://youtu.be/JW6-TCU0iS4?t=3121)
 - A more modern take on the read/write lock. Three main methods: `writeLock()` (exclusive), `readLock()` (shared), and **`tryOptimisticRead()`**.
 - Each returns a **`long` stamp**, an id you store and pass back:
   - `long stamp = lock.readLock(); try { ... } finally { lock.unlockRead(stamp); }`
@@ -116,29 +116,29 @@
 - The parking-lot analogy: you get a token on the way in and show it on the way out. Unlike `ReentrantLock`, there's no owner thread.
   - *Correction:* the video says the stamp lets the lock check that the *same thread* unlocks. It doesn't: a `StampedLock` has no notion of ownership, and **any** thread holding a valid stamp may unlock it. The stamp only identifies the lock mode and version.
 
-### Pessimistic vs optimistic locking [55:36]
+### Pessimistic vs optimistic locking [▶ ~55:36](https://youtu.be/JW6-TCU0iS4?t=3336)
 - **Pessimistic:** "multiple threads might clash, so lock before entering." This covers `synchronized`, `ReentrantLock`, `ReentrantReadWriteLock`, and `StampedLock`'s `readLock`/`writeLock`. Safe but **slower**: every lock/unlock has overhead (recording the owner, queuing, ...).
 - **Optimistic:** don't lock at all. Read, then check whether anyone changed things meanwhile. If nobody did, you're done; if someone did, use a **fallback** (e.g. read again with a real read lock). Faster when writes are rare. CAS and atomic integers (upcoming videos) also work optimistically.
 - The `tryOptimisticRead` steps: (1) get a stamp; (2) read the data **without locking**; (3) check whether it was modified (`validate`); if so, fall back to a pessimistic read.
 
-### Demo: optimistic read [59:24]
+### Demo: optimistic read [▶ ~59:24](https://youtu.be/JW6-TCU0iS4?t=3564)
 - `write()` becomes `long stamp = lock.writeLock(); try { value = v; } finally { lock.unlockWrite(stamp); }`.
 - `read()`: `long stamp = lock.tryOptimisticRead(); int current = value; sleep(1s); if (!lock.validate(stamp)) { stamp = lock.readLock(); try { current = value; } finally { lock.unlockRead(stamp); } } print and return current;`.
 - The sleep goes **before** `validate`. Putting it after would make the check meaningless.
 - In the run, the writers changed the value to 5, 7, then 9 while the readers slept. The readers' stamps were invalidated, so they fell back and all read `9`.
 - `validate(stamp)` returns `true` if no write happened since the stamp was issued, `false` otherwise.
   - *Correction:* the video describes the stamp as something like a hash of the variables you read. It isn't tied to your variables at all. It's a version number of the **lock's** state, and `validate` fails if **any write lock** was taken since the stamp, even one that wrote the same value or touched different fields.
-- **`StampedLock` is not reentrant** [66:47]. If a thread that holds it tries to lock it again, it deadlocks itself.
+- **`StampedLock` is not reentrant** [▶ ~66:47](https://youtu.be/JW6-TCU0iS4?t=4007). If a thread that holds it tries to lock it again, it deadlocks itself.
 
-### `Semaphore` [67:00]
+### `Semaphore` [▶ ~67:00](https://youtu.be/JW6-TCU0iS4?t=4020)
 - Use it when you want **several** threads in the critical section at once, all doing the same kind of work, with a fixed upper limit (3, 4, 5, ...).
 - It keeps a count of **permits**: `Semaphore s = new Semaphore(3);`. `acquire()` takes a permit (3 → 2 → 1 → 0); when the count is 0, the next thread blocks until someone calls `release()`, which gives a permit back.
 - **Binary** semaphore: `new Semaphore(1)`, which behaves like a lock. **Counting** semaphore: `new Semaphore(n)`.
-- **Lock vs Semaphore** [70:11]: locks are **ownership-based**. The thread that acquired the lock is its owner and must release it (with a shared read lock, several threads own it, but they're still owners). A semaphore has **no ownership**: it's only a counter, and any thread can call `release()`.
+- **Lock vs Semaphore** [▶ ~70:11](https://youtu.be/JW6-TCU0iS4?t=4211): locks are **ownership-based**. The thread that acquired the lock is its owner and must release it (with a shared read lock, several threads own it, but they're still owners). A semaphore has **no ownership**: it's only a counter, and any thread can call `release()`.
 - Fairness: `new Semaphore(3, true)`.
-- Use cases [72:45]: an **API rate limiter** (cap concurrent requests; it comes back in the Spring Boot part of the course) and limiting the number of tasks that run in parallel (e.g. at most 5).
+- Use cases [▶ ~72:45](https://youtu.be/JW6-TCU0iS4?t=4365): an **API rate limiter** (cap concurrent requests; it comes back in the Spring Boot part of the course) and limiting the number of tasks that run in parallel (e.g. at most 5).
 
-### `Condition`: `await` / `signal` / `signalAll` [73:38]
+### `Condition`: `await` / `signal` / `signalAll` [▶ ~73:38](https://youtu.be/JW6-TCU0iS4?t=4418)
 - The `Lock` counterparts of `wait()` / `notify()` / `notifyAll()` from the previous video. With a `ReentrantLock` you can't use `wait`/`notify` on it meaningfully; you use a `Condition`.
 - A condition is a **waiting area** tied to a lock: `Condition c1 = lock.newCondition();`.
   - `c1.await()`: release the lock and wait in `c1`'s queue.
@@ -147,7 +147,7 @@
   - Calling them without holding the lock throws `IllegalMonitorStateException`.
 - The big difference: an object's monitor has **one** wait queue, but one lock can have **many** conditions. In producer-consumer with many producers and consumers, `notify()` could wake the wrong kind of thread (a producer when a consumer was needed), which is why we used `notifyAll()`. With separate `notFull` and `notEmpty` conditions, `notEmpty.signal()` only ever wakes a consumer.
 - Homework from the video: re-solve the multi-producer/multi-consumer problem with `ReentrantLock` + `Condition`, and see whether you still need `signalAll()`.
-- **Spurious wakeups** [79:14] can happen with `await()` just as with `wait()`: a thread can wake up without being signalled. So always check the condition in a **`while`** loop, not an `if`.
+- **Spurious wakeups** [▶ ~79:14](https://youtu.be/JW6-TCU0iS4?t=4754) can happen with `await()` just as with `wait()`: a thread can wake up without being signalled. So always check the condition in a **`while`** loop, not an `if`.
 
 ## Code Examples
 

@@ -34,49 +34,49 @@
 
 ## Detailed Notes
 
-### How the heap is divided [00:00]
+### How the heap is divided [▶ ~00:00](https://youtu.be/b2HSqC0RGsM?t=0)
 - Objects such as a `Student`, arrays, and strings all live on the heap. String **literals** go in the **string pool**, a special part of the heap.
-- The main heap has two parts [01:00]: the **Young Generation** and the **Old Generation**.
-- The Young Generation is split into three [01:41]: **Eden** plus two **survivor spaces**, **S0** and **S1**.
+- The main heap has two parts [▶ ~01:00](https://youtu.be/b2HSqC0RGsM?t=60): the **Young Generation** and the **Old Generation**.
+- The Young Generation is split into three [▶ ~01:41](https://youtu.be/b2HSqC0RGsM?t=101): **Eden** plus two **survivor spaces**, **S0** and **S1**.
 - The string pool is drawn separately here because this video is about the main heap, where `new` objects go.
 
-### Why generations? Objects start in Eden [03:23]
+### Why generations? Objects start in Eden [▶ ~03:23](https://youtu.be/b2HSqC0RGsM?t=203)
 - `Student s1 = new Student();` puts the new object in **Eden**. Every object starts its life there.
-- Eden properties [04:00]:
+- Eden properties [▶ ~04:00](https://youtu.be/b2HSqC0RGsM?t=240):
   - allocation is **very fast**,
   - **most objects die there**. Java code creates lots of temporary objects for small jobs. Once nothing references them, the GC removes them.
 - The JVM doesn't know how long a fresh object will live, so it begins in the young generation and has to "earn" its way into the old generation by surviving.
 
-### Survivor spaces and promotion [05:04]
+### Survivor spaces and promotion [▶ ~05:04](https://youtu.be/b2HSqC0RGsM?t=304)
 - "Getting older" means **surviving a GC**: a GC ran and the object was still referenced.
 - First survival: Eden → **S0**. Next GC: S0 → **S1**. Next: S1 → S0, and so on. The two survivor spaces swap roles each time.
-- After surviving a maximum number of GCs [06:46] (the video uses **15**, which is HotSpot's default `MaxTenuringThreshold`), the object is **promoted to the Old Generation**.
+- After surviving a maximum number of GCs [▶ ~06:46](https://youtu.be/b2HSqC0RGsM?t=406) (the video uses **15**, which is HotSpot's default `MaxTenuringThreshold`), the object is **promoted to the Old Generation**.
 - The JVM's reasoning: an object that survived 15 collections is probably long-lived, likely referenced from several places, and won't go away soon.
-- So GC runs **frequently in the young generation** and **less frequently in the old generation** [08:27]. Every GC slows the program, so the JVM avoids repeatedly scanning objects that are unlikely to die.
+- So GC runs **frequently in the young generation** and **less frequently in the old generation** [▶ ~08:27](https://youtu.be/b2HSqC0RGsM?t=507). Every GC slows the program, so the JVM avoids repeatedly scanning objects that are unlikely to die.
 
-### Walk-through: OB1–OB4 [09:00]
+### Walk-through: OB1–OB4 [▶ ~09:00](https://youtu.be/b2HSqC0RGsM?t=540)
 - `OB1`–`OB4` are created, all in **Eden**.
-- A GC in the young generation is called a **minor GC** [10:09].
+- A GC in the young generation is called a **minor GC** [▶ ~10:09](https://youtu.be/b2HSqC0RGsM?t=609).
 - **After the 1st GC**: `OB1` and `OB3` were unreachable and are removed. `OB2` and `OB4` survive and move to **S0** with **age 1**.
-- **After the 2nd GC** [11:51]: both survive and move to **S1**, age 2.
+- **After the 2nd GC** [▶ ~11:51](https://youtu.be/b2HSqC0RGsM?t=711): both survive and move to **S1**, age 2.
 - **After the 3rd GC**: back to **S0**, age 3. The S0 ↔ S1 bouncing continues.
-- **After the 15th GC** [13:00]: `OB4` died somewhere along the way (say around age 13). `OB2` reached age 15 and is promoted to the **Old Generation**.
+- **After the 15th GC** [▶ ~13:00](https://youtu.be/b2HSqC0RGsM?t=780): `OB4` died somewhere along the way (say around age 13). `OB2` reached age 15 and is promoted to the **Old Generation**.
 
-### Old Generation and major GC [13:32]
+### Old Generation and major GC [▶ ~13:32](https://youtu.be/b2HSqC0RGsM?t=812)
 - GC in the old generation is a **major GC**.
-- Old objects may be referenced by many variables and by other heap objects. Remember that the heap is a **graph**. So deciding whether one is dead needs a **deep scan**, and that's **expensive** [14:30].
+- Old objects may be referenced by many variables and by other heap objects. Remember that the heap is a **graph**. So deciding whether one is dead needs a **deep scan**, and that's **expensive** [▶ ~14:30](https://youtu.be/b2HSqC0RGsM?t=870).
 - That's why the JVM runs it less often.
-- Once in the old generation, there's **no age counter** any more [15:50]. The object stays until some major GC finds it unreachable. New objects keep starting in Eden.
+- Once in the old generation, there's **no age counter** any more [▶ ~15:50](https://youtu.be/b2HSqC0RGsM?t=950). The object stays until some major GC finds it unreachable. New objects keep starting in Eden.
 
-### The threshold isn't fixed [17:00]
+### The threshold isn't fixed [▶ ~17:00](https://youtu.be/b2HSqC0RGsM?t=1020)
 - Many JVMs use 15, but the JVM adapts:
   1. **Survivor space overflow**: if the survivors don't fit in the survivor space, some are promoted early, even at age 5 or 6.
-  2. **Dynamic age determination** [18:00]: if many objects of the same age are piling up in the survivor space, the JVM lowers the effective threshold and promotes them together.
+  2. **Dynamic age determination** [▶ ~18:00](https://youtu.be/b2HSqC0RGsM?t=1080): if many objects of the same age are piling up in the survivor space, the JVM lowers the effective threshold and promotes them together.
      - *Correction:* the video explains this as "you created many together, so you must need them". The real rule is about **space**. HotSpot lowers the threshold to the smallest age N at which objects of age ≤ N fill more than `TargetSurvivorRatio` (50% by default) of a survivor space.
-  3. **Very large objects** [18:50] (e.g. `new int[10_000_000]`) can be allocated **directly in the old generation** instead of being copied through Eden and the survivor spaces.
+  3. **Very large objects** [▶ ~18:50](https://youtu.be/b2HSqC0RGsM?t=1130) (e.g. `new int[10_000_000]`) can be allocated **directly in the old generation** instead of being copied through Eden and the survivor spaces.
      - *Note:* the exact rule depends on the collector. G1 puts objects bigger than half a region into special "humongous" regions. Serial and Parallel use the size/`PretenureSizeThreshold` and whether the object fits in the young generation.
 
-### Full example: every memory area together [19:30]
+### Full example: every memory area together [▶ ~19:30](https://youtu.be/b2HSqC0RGsM?t=1170)
 ```
 class Student {
     String name; int age;                  // instance fields
@@ -87,55 +87,55 @@ class Student {
 }
 // main: Student s1 = new Student("Aditya", 28); s1.markAttendance(); Student.changeCollege("IIT Bombay");
 ```
-1. `javac Main.java`, then `java Main`. **The JVM starts** [21:00].
+1. `javac Main.java`, then `java Main`. **The JVM starts** [▶ ~21:00](https://youtu.be/b2HSqC0RGsM?t=1260).
 2. **Load `Main`** into the Method Area: name, parent `Object`, method `main(String[])`, access modifiers, bytecode. The PC is still empty.
-3. **Create the main thread** and push the `main` frame [22:50] with slots for `args` and `s1`. How does the JVM know about `s1` before running that line? From the **method metadata** in the Method Area.
-4. **Execute `main`, line 1** [25:30]: the JVM hasn't seen `Student` yet, so the class loader **loads `Student`** into the Method Area. That includes the instance field descriptions (`name`, `age`, which are only signatures here; the values will live in objects), the static `college`, and the methods `markAttendance` and `changeCollege` with their bytecode.
-5. **Static initialization** [27:05]: `college` is assigned **before any object exists**. `"IIT G"` is a literal, so the string lives in the **string pool** and `college` refers to it.
+3. **Create the main thread** and push the `main` frame [▶ ~22:50](https://youtu.be/b2HSqC0RGsM?t=1370) with slots for `args` and `s1`. How does the JVM know about `s1` before running that line? From the **method metadata** in the Method Area.
+4. **Execute `main`, line 1** [▶ ~25:30](https://youtu.be/b2HSqC0RGsM?t=1530): the JVM hasn't seen `Student` yet, so the class loader **loads `Student`** into the Method Area. That includes the instance field descriptions (`name`, `age`, which are only signatures here; the values will live in objects), the static `college`, and the methods `markAttendance` and `changeCollege` with their bytecode.
+5. **Static initialization** [▶ ~27:05](https://youtu.be/b2HSqC0RGsM?t=1625): `college` is assigned **before any object exists**. `"IIT G"` is a literal, so the string lives in the **string pool** and `college` refers to it.
    - *HotSpot note:* in modern HotSpot the static field's *slot* actually sits in the class's `java.lang.Class` object on the heap. Treating it as class-level data in the Method Area is the conceptual model.
-6. **`new Student(...)`** [29:00]: the object is allocated on the heap with defaults `name = null` and `age = 0`. The literal `"Aditya"` also lands in the string pool.
-7. **The constructor runs** [30:28]: a **constructor frame** is pushed holding `this` (a reference to the new object), plus the parameters `name` (referring to `"Aditya"` in the pool) and `age = 28`. Every constructor and instance method gets an implicit `this`. Static methods don't.
-   - `this.name = name; this.age = age;` [32:09]: follow `this` to the object and set its **instance** fields from the **local** parameters. The object's `name` now refers to the pooled `"Aditya"`. **Objects are never stored on the stack**, only references.
-8. **The constructor frame is popped** [35:00], taking its `this` with it. `s1` now refers to the object.
-9. **`s1.markAttendance()`** [35:50]: the method's code is in the Method Area. A frame is pushed with `this`, and the return address is saved for the PC. It prints `Aditya is present`, then the frame is popped and the PC resumes at the next line of `main`.
-10. **`Student.changeCollege("IIT Bombay")`** [38:56]: a static method, so the frame has **no `this`**, only the parameter `newCollege`, which refers to `"IIT Bombay"` in the pool. `college = newCollege` re-points the static reference [40:37]. The frame is popped.
-11. Nothing references `"IIT G"` any more, and the video says the GC will remove it [42:19].
+6. **`new Student(...)`** [▶ ~29:00](https://youtu.be/b2HSqC0RGsM?t=1740): the object is allocated on the heap with defaults `name = null` and `age = 0`. The literal `"Aditya"` also lands in the string pool.
+7. **The constructor runs** [▶ ~30:28](https://youtu.be/b2HSqC0RGsM?t=1828): a **constructor frame** is pushed holding `this` (a reference to the new object), plus the parameters `name` (referring to `"Aditya"` in the pool) and `age = 28`. Every constructor and instance method gets an implicit `this`. Static methods don't.
+   - `this.name = name; this.age = age;` [▶ ~32:09](https://youtu.be/b2HSqC0RGsM?t=1929): follow `this` to the object and set its **instance** fields from the **local** parameters. The object's `name` now refers to the pooled `"Aditya"`. **Objects are never stored on the stack**, only references.
+8. **The constructor frame is popped** [▶ ~35:00](https://youtu.be/b2HSqC0RGsM?t=2100), taking its `this` with it. `s1` now refers to the object.
+9. **`s1.markAttendance()`** [▶ ~35:50](https://youtu.be/b2HSqC0RGsM?t=2150): the method's code is in the Method Area. A frame is pushed with `this`, and the return address is saved for the PC. It prints `Aditya is present`, then the frame is popped and the PC resumes at the next line of `main`.
+10. **`Student.changeCollege("IIT Bombay")`** [▶ ~38:56](https://youtu.be/b2HSqC0RGsM?t=2336): a static method, so the frame has **no `this`**, only the parameter `newCollege`, which refers to `"IIT Bombay"` in the pool. `college = newCollege` re-points the static reference [▶ ~40:37](https://youtu.be/b2HSqC0RGsM?t=2437). The frame is popped.
+11. Nothing references `"IIT G"` any more, and the video says the GC will remove it [▶ ~42:19](https://youtu.be/b2HSqC0RGsM?t=2539).
     - *Correction:* string **literals** are interned and referenced from the class's constant pool, so in practice they live as long as the class stays loaded. Strings created at run time and then interned can be collected once unreachable.
 12. `main` ends: its frame is popped and `s1` disappears. The `Student` object becomes unreachable and is collected eventually. When the program exits, the Method Area is released too.
 
-### Types of references [44:00]
+### Types of references [▶ ~44:00](https://youtu.be/b2HSqC0RGsM?t=2640)
 - Ordered from strongest to weakest, i.e. by how strictly they keep an object alive: **Strong → Soft → Weak → Phantom** ("almost gone"). About 99% of the time you use strong references.
-- **Strong** [45:42]: `Student s1 = new Student();`. While any strong reference reaches the object, the GC can't collect it.
-- **Soft** [46:30]: `SoftReference<Student> s2 = new SoftReference<>(new Student());`. The GC may clear it **when memory is needed**. `s2.get()` returns the object, or `null` once cleared.
-  - Use case [47:30]: **caches**. Keep frequently used data until memory gets tight. A cleared entry is a **cache miss**, and you reload from the database.
-- **Weak** [48:20]: `WeakReference<Student> s3 = new WeakReference<>(new Student());`. It doesn't survive the **next GC cycle**.
-  - Use case [49:20]: **`WeakHashMap`** (entries disappear when their key is no longer strongly referenced). It can also be used for caches, with more misses.
+- **Strong** [▶ ~45:42](https://youtu.be/b2HSqC0RGsM?t=2742): `Student s1 = new Student();`. While any strong reference reaches the object, the GC can't collect it.
+- **Soft** [▶ ~46:30](https://youtu.be/b2HSqC0RGsM?t=2790): `SoftReference<Student> s2 = new SoftReference<>(new Student());`. The GC may clear it **when memory is needed**. `s2.get()` returns the object, or `null` once cleared.
+  - Use case [▶ ~47:30](https://youtu.be/b2HSqC0RGsM?t=2850): **caches**. Keep frequently used data until memory gets tight. A cleared entry is a **cache miss**, and you reload from the database.
+- **Weak** [▶ ~48:20](https://youtu.be/b2HSqC0RGsM?t=2900): `WeakReference<Student> s3 = new WeakReference<>(new Student());`. It doesn't survive the **next GC cycle**.
+  - Use case [▶ ~49:20](https://youtu.be/b2HSqC0RGsM?t=2960): **`WeakHashMap`** (entries disappear when their key is no longer strongly referenced). It can also be used for caches, with more misses.
 - *Correction:* the video says this "doesn't depend on whether I point to it". Soft and weak references are cleared only when the object is **only** softly or weakly reachable. If you also hold a strong reference, the object stays.
-- **Phantom** [49:40]: `get()` **always returns `null`**. You never use the object through it.
+- **Phantom** [▶ ~49:40](https://youtu.be/b2HSqC0RGsM?t=2980): `get()` **always returns `null`**. You never use the object through it.
   - The video says the GC uses it internally to "work out when to remove". *More precisely:* a `PhantomReference` is registered with a `ReferenceQueue`. The JVM enqueues it after the object has been found unreachable, which lets *your* code run post-mortem cleanup. `java.lang.ref.Cleaner` is built on this.
 
-### GC algorithms [51:30]
-- **Mark-and-sweep** [51:50]: objects A–E.
+### GC algorithms [▶ ~51:30](https://youtu.be/b2HSqC0RGsM?t=3090)
+- **Mark-and-sweep** [▶ ~51:50](https://youtu.be/b2HSqC0RGsM?t=3110): objects A–E.
   - **Mark**: trace from the roots and mark what's reachable (A, C, E).
   - **Sweep**: free the unmarked (B, D).
   - The video uses it for the **old generation / major GC**.
-  - Downside [53:10]: **fragmentation**. The holes left where B and D were, like gaps in an array, may be too small to use.
-- **Mark-compact** [53:50]: mark the same way, then **compact**, sliding A, C, E to one end so the free space is contiguous.
+  - Downside [▶ ~53:10](https://youtu.be/b2HSqC0RGsM?t=3190): **fragmentation**. The holes left where B and D were, like gaps in an array, may be too small to use.
+- **Mark-compact** [▶ ~53:50](https://youtu.be/b2HSqC0RGsM?t=3230): mark the same way, then **compact**, sliding A, C, E to one end so the free space is contiguous.
   - Upside: no fragmentation.
   - Downside: **moving objects is costly**, like shifting array elements. Also an old-generation algorithm.
-- **Copying** [54:50]: used for the **young generation / minor GC**. Of the objects in Eden (A, B, C, D), copy the live ones (B, D) to S0 and wipe Eden in one go. Next time, copy from S0 to S1, and so on.
+- **Copying** [▶ ~54:50](https://youtu.be/b2HSqC0RGsM?t=3290): used for the **young generation / minor GC**. Of the objects in Eden (A, B, C, D), copy the live ones (B, D) to S0 and wipe Eden in one go. Next time, copy from S0 to S1, and so on.
   - No separate sweep phase, and young objects have shallow reference graphs, so it's **fast**.
 
-### Stop-the-world [56:00]
+### Stop-the-world [▶ ~56:00](https://youtu.be/b2HSqC0RGsM?t=3360)
 - The joke in the Java community: "When GC runs, it stops the world." **STW** means application threads pause while the GC runs. That's why frequent GC makes a program slow.
-- Why it pauses [56:50]: the GC is tracing a big graph of objects and references. If the application kept running, it could create objects or change references in the middle of the trace. So the JVM freezes the application, lets the GC finish, then resumes.
+- Why it pauses [▶ ~56:50](https://youtu.be/b2HSqC0RGsM?t=3410): the GC is tracing a big graph of objects and references. If the application kept running, it could create objects or change references in the middle of the trace. So the JVM freezes the application, lets the GC finish, then resumes.
 - Frequent GCs usually come from **leaks**: references that never go away, e.g. objects held by **static** fields, which live as long as the class.
-- **Parallel GC** [59:15]: older Java used a **serial** collector (one GC thread). Parallel GC uses **multiple threads**, so the pause is shorter. It's still a pause. Parallel GC doesn't mean the GC runs alongside your code.
+- **Parallel GC** [▶ ~59:15](https://youtu.be/b2HSqC0RGsM?t=3555): older Java used a **serial** collector (one GC thread). Parallel GC uses **multiple threads**, so the pause is shorter. It's still a pause. Parallel GC doesn't mean the GC runs alongside your code.
 - *Correction / update:* modern collectors such as **G1** (the default since Java 9), **ZGC** and **Shenandoah** do most of their work **concurrently** with the application and stop the world only briefly. Some pauses still exist, but "the program can never run while GC runs" is only true for the stop-the-world collectors (Serial, Parallel).
 
-### `System.gc()` and heap dumps [60:20]
+### `System.gc()` and heap dumps [▶ ~60:20](https://youtu.be/b2HSqC0RGsM?t=3620)
 - `System.gc()` **asks** the JVM to run GC. There's **no guarantee**: the JVM decides (and it can be disabled with `-XX:+DisableExplicitGC`). Don't rely on it in production code.
-- When the heap fills up because everything is still referenced, you get `OutOfMemoryError`. To investigate [61:20], take a **heap dump**, a snapshot of every object and its references, and open it in **VisualVM** (or Eclipse MAT) to see which objects take the most space and what holds on to them. Then fix the code.
+- When the heap fills up because everything is still referenced, you get `OutOfMemoryError`. To investigate [▶ ~61:20](https://youtu.be/b2HSqC0RGsM?t=3680), take a **heap dump**, a snapshot of every object and its references, and open it in **VisualVM** (or Eclipse MAT) to see which objects take the most space and what holds on to them. Then fix the code.
 - *Tip not in the video:* `jcmd <pid> GC.heap_dump file.hprof`, or start the JVM with `-XX:+HeapDumpOnOutOfMemoryError`.
 
 ## Code Examples

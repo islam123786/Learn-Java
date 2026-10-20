@@ -26,93 +26,93 @@
 
 ## Detailed Notes
 
-### Java is object-centric [00:00]
+### Java is object-centric [▶ ~00:00](https://youtu.be/0V-w2BywAM0?t=0)
 - "Everything in Java revolves around objects." Methods are behavior, fields are characteristics.
 - To perform any behavior: create class `X`, put method `m1` in it, create `new X()`, call `x.m1()`. Behavior always rides inside an object.
-- So objects are first-class and behaviors are effectively **second-class citizens** [02:17]. That's fine most of the time.
+- So objects are first-class and behaviors are effectively **second-class citizens** [▶ ~02:17](https://youtu.be/0V-w2BywAM0?t=137). That's fine most of the time.
 
-### When you only need behavior [03:34]
+### When you only need behavior [▶ ~03:34](https://youtu.be/0V-w2BywAM0?t=214)
 - Sometimes you want to treat a behavior independently, e.g. pass a function `doSomething` straight into `m1(doSomething)`.
 - Classic Java can't do this. A method argument can only be a variable: a primitive (`int`, `float`, `char`, …) or a reference (e.g. a `Student s1`).
 - Other languages popularised passing functions. Java responded with **functional interfaces** and **lambdas**: a shift toward **functional programming**. OOP is still right about 90% of the time; in the other cases forcing everything into objects makes code verbose.
 
-### Real-life analogy: the chef [05:21]
+### Real-life analogy: the chef [▶ ~05:21](https://youtu.be/0V-w2BywAM0?t=321)
 - You (the customer) have a perfect pasta recipe, which is a set of instructions, i.e. a behavior.
 - The chef has a `cook(...)` method. In Java terms you can't hand over the recipe itself. You must create a `Person p1 = new Person()`, put the recipe inside the `Person` class as a method, pass `p1`, and the chef calls `p1.recipe()`.
 - In real life you'd just hand over the recipe. OOP is supposed to model real life, and here it makes things complicated.
 
-### Why behavior passing matters: sorting students [08:24]
+### Why behavior passing matters: sorting students [▶ ~08:24](https://youtu.be/0V-w2BywAM0?t=504)
 - `Student { String name; int rollNumber; int marks; }` in a list that needs sorting. Java doesn't know the criterion: name, roll number or marks?
-- **Option 1: `Comparable`** [10:11]: `implements Comparable<Student>` with `compareTo` returning `this.marks - other.marks`. This works only when one natural ordering is enough.
-- **The catch** [11:27]: in a college application, a teacher sorts by marks, the admin office by name, someone else by roll number. One `compareTo` can't serve them all, and baking the logic into `Student` couples the class to one sort order.
+- **Option 1: `Comparable`** [▶ ~10:11](https://youtu.be/0V-w2BywAM0?t=611): `implements Comparable<Student>` with `compareTo` returning `this.marks - other.marks`. This works only when one natural ordering is enough.
+- **The catch** [▶ ~11:27](https://youtu.be/0V-w2BywAM0?t=687): in a college application, a teacher sorts by marks, the admin office by name, someone else by roll number. One `compareTo` can't serve them all, and baking the logic into `Student` couples the class to one sort order.
 
-### The `Comparator` interface [12:29]
+### The `Comparator` interface [▶ ~12:29](https://youtu.be/0V-w2BywAM0?t=749)
 - Keep comparison logic **outside** the class. `Student` stays lightweight with its own fields and methods; an external object knows how to compare students.
 - Shape: `interface Comparator<T> { int compare(T o1, T o2); }`. It takes two objects of the same type.
-- Implementations [14:00]:
+- Implementations [▶ ~14:00](https://youtu.be/0V-w2BywAM0?t=840):
   - `SortByName`: `return s1.name.compareTo(s2.name);` (reusing `String.compareTo`).
   - `SortByMarks`: `return s1.marks - s2.marks;`.
   - `SortByRollNumber`: `return s1.rollNumber - s2.rollNumber;`.
 - *Note:* `Comparator` also has many `default` and `static` helper methods (`reversed`, `thenComparing`, `comparing`, `naturalOrder`, …). They don't stop it from being a functional interface.
 
-### Demo: comparator classes [15:32]
+### Demo: comparator classes [▶ ~15:32](https://youtu.be/0V-w2BywAM0?t=932)
 - `List<Student> list` with Aditya, Rohit, Rohan, Sonu (different roll numbers and marks).
-- `Collections.sort(list)` → compile error (no natural ordering) [18:05]. Adding `implements Comparable<Student>` fixes it but fixes the order to marks. Remove it.
-- **`Collections.sort` is overloaded** [20:07]: `sort(list)` and `sort(list, comparator)`.
-- Create `class SortByName implements Comparator<Student>`, `SortByRollNumber`, `SortByMarks` [21:08], each overriding `public int compare(Student s1, Student s2)`.
-- You can't instantiate the interface, but you can instantiate the classes [22:40]: `Comparator<Student> c1 = new SortByName();` etc. `Collections.sort(list, c1)` sorts by name, `c2` by marks, `c3` by roll number.
+- `Collections.sort(list)` → compile error (no natural ordering) [▶ ~18:05](https://youtu.be/0V-w2BywAM0?t=1085). Adding `implements Comparable<Student>` fixes it but fixes the order to marks. Remove it.
+- **`Collections.sort` is overloaded** [▶ ~20:07](https://youtu.be/0V-w2BywAM0?t=1207): `sort(list)` and `sort(list, comparator)`.
+- Create `class SortByName implements Comparator<Student>`, `SortByRollNumber`, `SortByMarks` [▶ ~21:08](https://youtu.be/0V-w2BywAM0?t=1268), each overriding `public int compare(Student s1, Student s2)`.
+- You can't instantiate the interface, but you can instantiate the classes [▶ ~22:40](https://youtu.be/0V-w2BywAM0?t=1360): `Comparator<Student> c1 = new SortByName();` etc. `Collections.sort(list, c1)` sorts by name, `c2` by marks, `c3` by roll number.
 
-### How `sort` uses the comparator [24:42]
+### How `sort` uses the comparator [▶ ~24:42](https://youtu.be/0V-w2BywAM0?t=1482)
 - Internally `sort` runs some sorting algorithm (merge sort, quick sort, …; the exact one doesn't matter). Whenever it must decide whether `s1` or `s2` comes first, it calls **`comparator.compare(s1, s2)`** on whatever comparator you passed.
 - *Note:* `List.sort`/`Collections.sort` use TimSort (a merge-sort hybrid), which is stable.
 
-### The verbosity problem [25:58]
+### The verbosity problem [▶ ~25:58](https://youtu.be/0V-w2BywAM0?t=1558)
 - The only logic that matters is one `return` line per comparator. To pass it you wrote a class, a method signature, an object, and a variable.
 - You can't pass the `return` statement, or even the method, directly. The only way is to wrap it in a class and pass an object of it.
 
-### Step 1: anonymous classes [28:16]
+### Step 1: anonymous classes [▶ ~28:16](https://youtu.be/0V-w2BywAM0?t=1696)
 - Skip the named classes: `Collections.sort(list, new Comparator<Student>() { @Override public int compare(Student s1, Student s2) { return s1.marks - s2.marks; } });`
 - The `SortBy…` classes can be deleted. It's "anonymous" because the class has no name.
-- **Still verbose** [30:33]: it's still a class, and the logic is still boxed inside a method inside a class. You wanted to pass the "how"; Java made you wrap the "how" in a box (an object).
+- **Still verbose** [▶ ~30:33](https://youtu.be/0V-w2BywAM0?t=1833): it's still a class, and the logic is still boxed inside a method inside a class. You wanted to pass the "how"; Java made you wrap the "how" in a box (an object).
 
-### Step 2: functional interfaces [31:50]
+### Step 2: functional interfaces [▶ ~31:50](https://youtu.be/0V-w2BywAM0?t=1910)
 - **Definition:** an interface with **only one abstract method** (declared, not defined). It may have any number of `static` and `default` methods, since those already have bodies.
-- `Comparable<T>` (`compareTo(T)`) and `Comparator<T>` (`compare(T, T)`) both qualify [32:51].
-- On top of these special interfaces, Java built lambdas, and with them **functional programming** in Java [33:36]: most of the time objects are right, but sometimes the function is what matters and boxing it is pointless.
+- `Comparable<T>` (`compareTo(T)`) and `Comparator<T>` (`compare(T, T)`) both qualify [▶ ~32:51](https://youtu.be/0V-w2BywAM0?t=1971).
+- On top of these special interfaces, Java built lambdas, and with them **functional programming** in Java [▶ ~33:36](https://youtu.be/0V-w2BywAM0?t=2016): most of the time objects are right, but sometimes the function is what matters and boxing it is pointless.
 
-### The idea of a lambda [34:22]
+### The idea of a lambda [▶ ~34:22](https://youtu.be/0V-w2BywAM0?t=2062)
 - In `SortByMarks` only `return s1.marks - s2.marks;` matters; everything else is noise. Java says: pass me just that logic and I'll handle the rest.
 - You can't write a bare `return` as an argument, so Java introduced a syntax for it.
 
-### Lambda syntax [35:54]
+### Lambda syntax [▶ ~35:54](https://youtu.be/0V-w2BywAM0?t=2154)
 - General form: **`(parameters) -> expression`**. The arrow is read "maps to" (or "gives").
 - The `compare` method becomes `(s1, s2) -> s1.marks - s2.marks`: the parameters of `compare`, an arrow, and the returned expression. No `return` keyword is needed for a single expression.
 
-### How Java understands it [37:41]
+### How Java understands it [▶ ~37:41](https://youtu.be/0V-w2BywAM0?t=2261)
 - `sort(list, ___)` expects a `Comparator`. `Comparator` is a functional interface with one method, `compare`. So the lambda must be the body of `compare`. There's no ambiguity, which is exactly why a single abstract method is required.
 - Whatever follows the arrow is the return value; whatever precedes it are the method's parameters.
 
-### Demo: the lambda version [38:57]
+### Demo: the lambda version [▶ ~38:57](https://youtu.be/0V-w2BywAM0?t=2337)
 - `Collections.sort(list, (s1, s2) -> s1.marks - s2.marks);` compiles and sorts by marks.
-- **Types are inferred** [40:14]: the list is a `List<Student>`, so the comparator must be a `Comparator<Student>`, so `s1` and `s2` are `Student`s. The result (negative/zero/positive) drives the sort exactly as before.
+- **Types are inferred** [▶ ~40:14](https://youtu.be/0V-w2BywAM0?t=2414): the list is a `List<Student>`, so the comparator must be a `Comparator<Student>`, so `s1` and `s2` are `Student`s. The result (negative/zero/positive) drives the sort exactly as before.
 - *Tip:* modern Java offers ready-made comparators: `Comparator.comparingInt(s -> s.marks)`, `Comparator.comparing(s -> s.name)`, `.reversed()`, `.thenComparing(...)`. Also `list.sort(cmp)` does the same as `Collections.sort(list, cmp)`.
 
-### The forms of a lambda [41:30]
+### The forms of a lambda [▶ ~41:30](https://youtu.be/0V-w2BywAM0?t=2490)
 - **Multiple parameters:** `(a, b) -> a + b`, equivalent to `int sum(int a, int b) { return a + b; }`. Types come from the expected interface.
-- **Single parameter** [42:31]: `(x) -> x * x`. The parentheses are optional: `x -> x * x`.
-- **No parameters** [43:02]: `() -> System.out.println("hello")`. It takes nothing and returns nothing (the method is `void`); the println is just a statement, not a return.
-- **Multi-line (block) body** [43:32]: `(a, b) -> { int sum = a + b; return sum; }`. Curly braces are **mandatory**, and so is `return` if the method returns a value.
-- **Keep lambdas short** [44:49]. If the logic grows into many lines and gets complex, a proper class (OOP) is clearer. Functional style shines when the logic is small.
+- **Single parameter** [▶ ~42:31](https://youtu.be/0V-w2BywAM0?t=2551): `(x) -> x * x`. The parentheses are optional: `x -> x * x`.
+- **No parameters** [▶ ~43:02](https://youtu.be/0V-w2BywAM0?t=2582): `() -> System.out.println("hello")`. It takes nothing and returns nothing (the method is `void`); the println is just a statement, not a return.
+- **Multi-line (block) body** [▶ ~43:32](https://youtu.be/0V-w2BywAM0?t=2612): `(a, b) -> { int sum = a + b; return sum; }`. Curly braces are **mandatory**, and so is `return` if the method returns a value.
+- **Keep lambdas short** [▶ ~44:49](https://youtu.be/0V-w2BywAM0?t=2689). If the logic grows into many lines and gets complex, a proper class (OOP) is clearer. Functional style shines when the logic is small.
 - *Additions:* parameter types may be written explicitly, `(Student s1, Student s2) -> ...` (all or none). A lambda can use local variables from the enclosing method only if they are **effectively final**.
 
-### Target typing [46:05]
+### Target typing [▶ ~46:05](https://youtu.be/0V-w2BywAM0?t=2765)
 - Java figures out from the **context** where the lambda is used: which functional interface it is (here `Comparator`), which method it implements (`compare`), and the parameter types (`Student`, from the list). This is called **target typing**, and it's why you don't have to write all that code.
 - *Consequence:* the same lambda text can be different things in different contexts, e.g. `() -> {}` can be a `Runnable` or your own no-arg interface. A lambda on its own (`var f = x -> x;`) doesn't compile because there's no target type.
 
-### Why a functional interface is required [47:21]
+### Why a functional interface is required [▶ ~47:21](https://youtu.be/0V-w2BywAM0?t=2841)
 - If an interface had two abstract methods `f1` and `f2`, Java couldn't tell which one a lambda implements. So lambdas require exactly one abstract method.
 
-### Your own functional interface [48:38]
+### Your own functional interface [▶ ~48:38](https://youtu.be/0V-w2BywAM0?t=2918)
 - Any interface with one abstract method works: `interface Demo { void m1(); }`.
 - Optional **`@FunctionalInterface`** annotation: the compiler then **errors** if anyone adds a second abstract method later. Recommended for compile-time safety.
 - Next video: Java's built-in functional interfaces (`Predicate`, `Function`, `Consumer`, `Supplier`, …) and method references.

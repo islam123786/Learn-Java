@@ -32,12 +32,12 @@
 
 ## Detailed Notes
 
-### What type safety means [00:20]
+### What type safety means [▶ ~00:20](https://youtu.be/Y7X_ReDF3x8?t=20)
 - Values have types: `10` is an `int`, `"hello"` is a `String`, `true` is a `boolean`.
 - A type is a **set of rules** for what you can do with the value: arithmetic on numbers, `String` methods on strings, your own class's methods on your objects.
 - Java enforces these rules. `int x = 10.2;` and `int y = s;` (where `s` is a `String`) are compile errors. Java is a **typed** language and won't run "unknown" operations.
 
-### Casting for primitives, then upcasting [03:29]
+### Casting for primitives, then upcasting [▶ ~03:29](https://youtu.be/Y7X_ReDF3x8?t=209)
 - Recap of primitives: `long l = x;` (int to long) is a **widening** conversion and happens automatically. `int i = l;` (long to int) is **narrowing** and needs `(int) l`. The cast tells the compiler "I know what I'm doing."
 - For objects the same idea is called up- and downcasting. Example hierarchy: `class Animal` with `walk()`, `run()`, `eat()`, and `class Dog extends Animal` that adds `bark()`.
 - `Animal a = new Dog();` is legal because a parent reference can point to a child object. The `Dog` lives on the heap and the reference `a` on the stack.
@@ -46,77 +46,77 @@
 - `String s = "hello"; Object obj = s;` is also upcasting, because `Object` is the parent of every class. Through `obj` you only get `Object` methods (`toString`, `equals`, `hashCode`, …).
 - Upcasting needs **no manual cast**, just like int to long.
 
-### Downcasting and `ClassCastException` [10:29]
+### Downcasting and `ClassCastException` [▶ ~10:29](https://youtu.be/Y7X_ReDF3x8?t=629)
 - `Object obj = "hello"; String s = obj;` is a **compile error**. `obj` could hold anything (`Integer`, `Boolean`, `Student`, …), so the compiler won't trust it.
 - `String s = (String) obj;` compiles. You've told the compiler the conversion is intentional.
 - This is the dangerous part: `Object obj = 10;` (autoboxed to `Integer`) followed by `String s = (String) obj;` **compiles fine** but throws **`ClassCastException`** at runtime.
 - Why doesn't the compiler catch it when it can "see" `10`? In real code the value usually comes from user input, a file or an API call, so it isn't known until the program runs. The compiler's rules are written for the general case. The JVM checks the actual class at runtime.
 
-### Demo of up- and downcasting [15:16]
+### Demo of up- and downcasting [▶ ~15:16](https://youtu.be/Y7X_ReDF3x8?t=916)
 - Upcast: `Object obj = s; System.out.println(obj);` prints `hello`. `println` calls `toString()` for you.
 - Downcast without a cast gives the compile error "Type mismatch: cannot convert from Object to String". With `(String)` it works and prints `Aditya`.
 - Downcasting an `Object` that holds `10` to `String` compiles, then throws `ClassCastException` when run.
 
-### Compile-time errors beat runtime errors [19:36]
+### Compile-time errors beat runtime errors [▶ ~19:36](https://youtu.be/Y7X_ReDF3x8?t=1176)
 - Two kinds of errors: compile-time (`int x = "hello";`) and runtime (`ClassCastException`).
 - Compile-time is **always preferred**: you catch it early, there's no production bug, it gives safer code, the IDE shows it with a red underline, and you skip the debugging.
 
-### The problem generics solve: a `Box` for any type [21:10]
+### The problem generics solve: a `Box` for any type [▶ ~21:10](https://youtu.be/Y7X_ReDF3x8?t=1270)
 - A `Box` class holds one value. It has a private field, a constructor, a getter and a setter.
 - Version 1: `private int value;`. That works for integers only. `new Box("hello")` won't compile.
 - One class per type (`Box2` for `String`, `Box3` for `double`, …) is clearly not a real solution.
-- Version 2 [24:19]: `private Object value;`. Everything fits (`new Box(10)`, `new Box("hello")`, `new Box(true)`), but:
+- Version 2 [▶ ~24:19](https://youtu.be/Y7X_ReDF3x8?t=1459): `private Object value;`. Everything fits (`new Box(10)`, `new Box("hello")`, `new Box(true)`), but:
   - `b1.getValue() + 5` doesn't compile ("operator + is undefined for the argument type Object"). The compiler can't tell whether `+` means addition, concatenation or nonsense.
   - You have to downcast every time: `Integer x = (Integer) b1.getValue();`.
   - **Type information is lost.** Nothing stops you from putting the wrong type in or casting to the wrong type. The errors move to runtime as `ClassCastException`s.
 - Conclusion: `Object` as a universal type is a poor way to build general-purpose classes.
 
-### Generic `Box<T>` [31:11]
+### Generic `Box<T>` [▶ ~31:11](https://youtu.be/Y7X_ReDF3x8?t=1871)
 - Replace `Object` with a placeholder `T` everywhere (field, constructor parameter, getter return type, setter parameter), then declare it on the class: `class Box<T>`.
   - `T` is just a name, and `X`, `Z` or `Q` would work too. By convention it's `T` for "type", `E` for element, `K`/`V` for key/value.
   - Without `<T>` on the class you get the error "T cannot be resolved to a type".
 - `<T>` on the class is the **type parameter**. You supply it when creating an object.
-- **Raw type** [34:08]: `Box b1 = new Box(10);` gives only a warning ("Box is a raw type…"). Java then treats it as if `T` were `Object`.
-- **Type argument** [35:15]: `Box<Integer> b1 = new Box<>(10);`. The `Integer` is the argument. You can leave the right side empty (`<>`, the diamond operator) because it's inferred from the left.
+- **Raw type** [▶ ~34:08](https://youtu.be/Y7X_ReDF3x8?t=2048): `Box b1 = new Box(10);` gives only a warning ("Box is a raw type…"). Java then treats it as if `T` were `Object`.
+- **Type argument** [▶ ~35:15](https://youtu.be/Y7X_ReDF3x8?t=2115): `Box<Integer> b1 = new Box<>(10);`. The `Integer` is the argument. You can leave the right side empty (`<>`, the diamond operator) because it's inferred from the left.
 - Now `b1.getValue() + 5` compiles and prints `15`. `Box<String>` gives `hello5` and `Box<Boolean>` gives `false`. There are no casts.
 - Wrong casts are now **compile errors**:
   - `String s = (String) b1.getValue();` on a `Box<Integer>` gives "Cannot cast from Integer to String". `Integer` and `String` are **siblings** (both children of `Object`). Casting only works along a parent-child line.
   - `b1.getValue().substring(1)` doesn't compile, because `Integer` has no `substring`.
 - Type information is **not lost**: `b1` knows it holds an `Integer`, `b2` a `String`, `b3` a `Boolean`.
 
-### Generic class with two type parameters: `Pair<T, U>` [41:25]
+### Generic class with two type parameters: `Pair<T, U>` [▶ ~41:25](https://youtu.be/Y7X_ReDF3x8?t=2485)
 - Start with a `Pair` class holding two `int`s (`first`, `second`) and a constructor.
 - Make it generic as `Pair<T>`: both fields are `T`, so `Pair<String>` can hold `("name", "Aditya")`.
-- Make it more general with two independent types [44:30]: `class Pair<T, U> { T first; U second; }`, used as `Pair<Integer, String> p = new Pair<>(23, "Aditya");`.
+- Make it more general with two independent types [▶ ~44:30](https://youtu.be/Y7X_ReDF3x8?t=2670): `class Pair<T, U> { T first; U second; }`, used as `Pair<Integer, String> p = new Pair<>(23, "Aditya");`.
 
-### Generic methods and type inference [45:18]
+### Generic methods and type inference [▶ ~45:18](https://youtu.be/Y7X_ReDF3x8?t=2718)
 - Start with `static int getResult(int x)`. It only works for `int`.
 - An `Object` version (`static Object getResult(Object x)`) needs casts at the call site and can fail at runtime, the same problem as before.
 - Generic version: `static <T> T getResult(T x) { return x; }`. The general form is:
   `<T> ReturnType methodName(T param)`, with the type-parameter list **before the return type**.
 - `String y = getResult("hello");` needs no cast. `String y = getResult(23);` is a compile error.
 - Two type parameters: `static <T, U> void printPair(T first, U second)`.
-- **Type inference** [52:08]: you never write the types when calling. `printPair(11, "hello")` gives `T = Integer, U = String`, and `printPair(11, 23)` makes both `Integer`. The compiler infers them from the arguments.
+- **Type inference** [▶ ~52:08](https://youtu.be/Y7X_ReDF3x8?t=3128): you never write the types when calling. `printPair(11, "hello")` gives `T = Integer, U = String`, and `printPair(11, 23)` makes both `Integer`. The compiler infers them from the arguments.
 
-### Why restrict a generic? Bounds [53:09]
+### Why restrict a generic? Bounds [▶ ~53:09](https://youtu.be/Y7X_ReDF3x8?t=3189)
 - Unbounded `T` accepts everything. Sometimes you want "numbers only", for example to do real arithmetic (`5 + 2` should be `7`, not `"52"`) or to call number-only methods.
 - All numeric wrappers (`Integer`, `Double`, `Float`, `Long`, `Short`, `Byte`, …) extend **`java.lang.Number`**. `String` and `Boolean` don't.
 - `Number` declares `doubleValue()`, `intValue()`, and so on. For example `Integer x = 4; double d = x.doubleValue();` gives `4.0`.
 
-### Upper bound with `extends` [55:39]
+### Upper bound with `extends` [▶ ~55:39](https://youtu.be/Y7X_ReDF3x8?t=3339)
 - In `class Box<T> { T value; void printDouble() { value.doubleValue(); } }`, the call doesn't compile ("method is undefined for the type T"). The compiler only knows that `T` is *some* `Object`, so only `Object` methods (`toString`, `hashCode`, …) are allowed.
-- **Upper bound** [58:39]: `class Box<T extends Number>`. This says `T` is `Number` or one of its subtypes, and nothing else.
+- **Upper bound** [▶ ~58:39](https://youtu.be/Y7X_ReDF3x8?t=3519): `class Box<T extends Number>`. This says `T` is `Number` or one of its subtypes, and nothing else.
   - Now `value.doubleValue()` compiles.
   - `Box<Integer>`, `Box<Double>`, `Box<Float>` and `Box<Number>` are all OK.
   - `Box<String>` is a compile error: "Bound mismatch: The type String is not a valid substitute for the bounded parameter `<T extends Number>`".
 - Before the bound, "T can be anything". With the bound, "T is at least a `Number` (or a subtype)". `b1.value = 5; b1.printDouble();` prints `5.0`.
 - *(The video calls the method "getDouble" at one point. The real `Number` method is `doubleValue()`.)*
 
-### Multiple bounds: class plus interfaces [63:31]
+### Multiple bounds: class plus interfaces [▶ ~63:31](https://youtu.be/Y7X_ReDF3x8?t=3811)
 - Hierarchy: `Animal` (with `display()`), `Dog extends Animal`, and `Fish extends Animal implements Swimmable`, where `interface Swimmable { void swim(); }`.
 - `class Box<T extends Animal>` accepts `Animal`, `Dog` and `Fish`.
 - `class Box<T extends Animal & Swimmable>` accepts only `Fish`. `Box<Dog>` and `Box<Animal>` give "Bound mismatch", because neither implements `Swimmable`.
-- Standard form [64:17]: `<T extends SomeClass & Interface1 & Interface2>`. You use `extends` for the interfaces too (there's no `implements` here), and **the class must come first**.
+- Standard form [▶ ~64:17](https://youtu.be/Y7X_ReDF3x8?t=3857): `<T extends SomeClass & Interface1 & Interface2>`. You use `extends` for the interfaces too (there's no `implements` here), and **the class must come first**.
 - *(Correction: the video writes the interface list with a comma, `Interface1, Interface2`. In real Java every extra bound is joined with `&`. A comma would start a second type parameter instead.)*
 - Next video: **wildcards** (`?`, `? extends`, `? super`).
 

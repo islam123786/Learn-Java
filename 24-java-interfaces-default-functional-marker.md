@@ -33,110 +33,110 @@
 
 ## Detailed Notes
 
-### Interfaces recap: what, not how [00:29]
+### Interfaces recap: what, not how [▶ ~00:29](https://youtu.be/YLLFHuStkW8?t=29)
 - Java has two tools for abstraction: **abstract classes** and **interfaces**.
 - `interface Car { void drive(); }` only declares the method. Definition: *"Define what an object can do without telling how it does that."*
-- A class is a blueprint of an **object**. An interface has nothing to do with objects (you can't instantiate one). It's a **blueprint of behavior** [03:27], also called a **contract**: whoever implements it must define every method, or else be `abstract`.
+- A class is a blueprint of an **object**. An interface has nothing to do with objects (you can't instantiate one). It's a **blueprint of behavior** [▶ ~03:27](https://youtu.be/YLLFHuStkW8?t=207), also called a **contract**: whoever implements it must define every method, or else be `abstract`.
 
-### Implementing an interface [05:24]
+### Implementing an interface [▶ ~05:24](https://youtu.be/YLLFHuStkW8?t=324)
 - `class Thar implements Car { void drive() {...} }` gives the error **"Cannot reduce the visibility of the inherited method"**.
 - Interface methods are implicitly `public`. Leaving out `public` in the class gives package-private (default) access, which is *more restrictive*. Java forbids narrowing access in an override, so you write `public void drive()`.
 - Usage: `Car c = new Thar(); c.drive();`. You can't write `new Car()`.
-- Not ready to implement [08:05]? Mark the method and class `abstract` (`abstract class Thar implements Car`). Then a concrete `class BlackThar extends Thar` overrides `drive()`.
+- Not ready to implement [▶ ~08:05](https://youtu.be/YLLFHuStkW8?t=485)? Mark the method and class `abstract` (`abstract class Thar implements Car`). Then a concrete `class BlackThar extends Thar` overrides `drive()`.
 
-### Dynamic dispatch with interfaces [09:06]
+### Dynamic dispatch with interfaces [▶ ~09:06](https://youtu.be/YLLFHuStkW8?t=546)
 - `interface Payment { void pay(); }` with `CreditCard` and `DebitCard` implementations.
 - `Payment p = new CreditCard(); p.pay();` prints "Paying via credit card". Change it to `new DebitCard()` and you get "Paying via debit card", with no other code changes. The choice could come from configuration or a condition at runtime.
 - This *dynamic polymorphism* is the foundation of **dependency injection** in Spring Boot and of clean-architecture designs.
 
-### Variables in interfaces [11:47]
+### Variables in interfaces [▶ ~11:47](https://youtu.be/YLLFHuStkW8?t=707)
 - `interface MathConstants { double PI_VALUE = 3.14; int VALUE = 10; }`
 - Every interface field is implicitly **`public static final`**:
   - `static`, because there's no interface object to hold instance state.
   - `final`, because an interface can only hold constants, not changeable state.
 - Implementing classes can read `PI_VALUE` but can't assign it.
 - With `MathConstants r1 = new Random();`, `r1.fun()` fails to compile unless `fun()` is declared in `MathConstants`. A reference can only call methods its own type knows about.
-- Access without any object: `MathConstants.PI_VALUE` [15:53]. Teams sometimes put app-wide constants in an interface for exactly this reason, since there's no need to type `public static final` for each one.
+- Access without any object: `MathConstants.PI_VALUE` [▶ ~15:53](https://youtu.be/YLLFHuStkW8?t=953). Teams sometimes put app-wide constants in an interface for exactly this reason, since there's no need to type `public static final` for each one.
 
-### Multiple inheritance through interfaces [17:15]
+### Multiple inheritance through interfaces [▶ ~17:15](https://youtu.be/YLLFHuStkW8?t=1035)
 - `class C extends A, B` is a syntax error. Java avoids the **diamond problem** of classes.
 - `class C implements A, B` is fine, and you can implement as many interfaces as you like. `C` must override both `fun()` (from A) and `fun2()` (from B).
 
-### Interface inheritance [19:14]
+### Interface inheritance [▶ ~19:14](https://youtu.be/YLLFHuStkW8?t=1154)
 - An interface can **extend** another interface (it can't *implement* one, because it doesn't provide bodies): `interface Dog extends Animal { void bark(); }`.
 - `class StreetDog implements Dog` must override **both** `eat()` (from Animal) and `bark()`. The compiler error names exactly which one is missing.
 
-### Java 8: default methods [21:22]
+### Java 8: default methods [▶ ~21:22](https://youtu.be/YLLFHuStkW8?t=1282)
 - Before Java 8, interface methods were implicitly `public abstract`, and writing a body gave "Abstract methods do not specify a body".
-- `default void drive() { System.out.println("Vehicle is driving"); }` [22:55] gives the interface a body. `class Car implements Vehicle` no longer has to override it, and `new Car().drive()` uses the default.
+- `default void drive() { System.out.println("Vehicle is driving"); }` [▶ ~22:55](https://youtu.be/YLLFHuStkW8?t=1375) gives the interface a body. `class Car implements Vehicle` no longer has to override it, and `new Car().drive()` uses the default.
 - If `Car` overrides `drive()`, the override wins ("Car is driving"), just as with an abstract class's concrete method.
 
-### Why default methods were added [25:24]
+### Why default methods were added [▶ ~25:24](https://youtu.be/YLLFHuStkW8?t=1524)
 - Story: Java wanted to add methods to the **`List`** interface (and others). Adding a plain abstract method (the video's made-up example is `pushBack`) would force **every class in the world** that implements `List` to change. That would break production code everywhere.
 - Making the new method `default` with a body means old implementations keep compiling. They inherit the default and can override it if they want.
 - In the real JDK, Java 8 added methods like `List.sort`, `Iterable.forEach` and `Collection.stream` this way.
 
-### Static and private methods [27:35]
+### Static and private methods [▶ ~27:35](https://youtu.be/YLLFHuStkW8?t=1655)
 - **Static (Java 8)**: `static void brake() {...}`, called as `Vehicle.brake()` (interface name + method), with no object needed. It's **not** inherited by implementing classes, so `Car.brake()` doesn't work.
-- **Private (Java 9)** [29:05]: `private void accelerate() {...}` can only be called from other methods inside the interface. Example: the default `drive()` prints "Vehicle is driving" and then calls `accelerate()`, which prints "Vehicle is accelerating".
+- **Private (Java 9)** [▶ ~29:05](https://youtu.be/YLLFHuStkW8?t=1745): `private void accelerate() {...}` can only be called from other methods inside the interface. Example: the default `drive()` prints "Vehicle is driving" and then calls `accelerate()`, which prints "Vehicle is accelerating".
 
 > **Correction:** the video names the static method `break`. That's a reserved keyword in Java and won't compile. The intended word is **`brake`**.
 
-### The diamond problem with classes [30:51]
+### The diamond problem with classes [▶ ~30:51](https://youtu.be/YLLFHuStkW8?t=1851)
 - Class `A` defines `fun()`. `B` and `C` both extend `A` and override `fun()` differently. If `D` could extend both `B` and `C`, then `new D().fun()` would be ambiguous.
 - C++ resolves this with extra rules. James Gosling's team decided it wasn't worth the complexity and **banned multiple class inheritance**.
 
-### Why interfaces avoid it (before Java 8) [33:52]
+### Why interfaces avoid it (before Java 8) [▶ ~33:52](https://youtu.be/YLLFHuStkW8?t=2032)
 - If `A`, `B` and `C` are interfaces, they only **declare** `fun()`. None of them supplies a body.
 - The concrete class `D implements B, C` **must** provide the only body, so there's nothing ambiguous: `new D().fun()` calls D's version.
-- Code [35:44]: `interface A { void fun(); }`, `interface B extends A`, `interface C extends A`, and `class D implements B, C` with one `fun()`, which prints "default implementation".
+- Code [▶ ~35:44](https://youtu.be/YLLFHuStkW8?t=2144): `interface A { void fun(); }`, `interface B extends A`, `interface C extends A`, and `class D implements B, C` with one `fun()`, which prints "default implementation".
 
-### The diamond after Java 8: conflicting defaults [37:18]
+### The diamond after Java 8: conflicting defaults [▶ ~37:18](https://youtu.be/YLLFHuStkW8?t=2238)
 - Give **both** `B` and `C` a `default void fun()` (printing "B" and "C"). Now `D implements B, C` inherits two bodies.
-- Rule: **D must override `fun()`**, or it won't compile. The error is "Duplicate default methods named fun with the parameters () … are inherited from the types C and B" [42:00].
+- Rule: **D must override `fun()`**, or it won't compile. The error is "Duplicate default methods named fun with the parameters () … are inherited from the types C and B" [▶ ~42:00](https://youtu.be/YLLFHuStkW8?t=2520).
 - Inside the override you can:
   - write your own logic (prints "D"),
-  - delegate to one parent with `B.super.fun();` [39:47] (prints "B"),
+  - delegate to one parent with `B.super.fun();` [▶ ~39:47](https://youtu.be/YLLFHuStkW8?t=2387) (prints "B"),
   - or call both: `B.super.fun(); C.super.fun();` (prints B then C).
 - If `D` implemented only `B`, there'd be no conflict and no need to override.
 
-### Resolution priority: class wins [42:22]
+### Resolution priority: class wins [▶ ~42:22](https://youtu.be/YLLFHuStkW8?t=2542)
 - `class C extends B implements A`, where class `B` has `public void fun()` and interface `A` has `default void fun()`.
-- No compile error, and `new C().fun()` prints **"Inside B class"** [44:00]. **A method from a superclass always beats an interface default.**
+- No compile error, and `new C().fun()` prints **"Inside B class"** [▶ ~44:00](https://youtu.be/YLLFHuStkW8?t=2640). **A method from a superclass always beats an interface default.**
 - To change that, `C` overrides `fun()` itself (prints "Inside C class").
 
 > **Note:** the full rule set is: (1) a method declared in a class or superclass wins over any interface default. (2) Otherwise, the most specific interface wins (a sub-interface's default beats its parent's). (3) If it's still ambiguous, the class must override.
 
-### Interface vs abstract class: what's still different? [46:42]
+### Interface vs abstract class: what's still different? [▶ ~46:42](https://youtu.be/YLLFHuStkW8?t=2802)
 - After Java 8/9, interfaces can have default (concrete), static and private methods plus constants, which sounds a lot like an abstract class. The differences that remain:
 - **Intent** (the biggest difference):
-  - An interface represents a **role or capability**. It's often named like an adjective or verb: `Runnable`, `Walkable`, `Payable` (better than `Payment`). This is a **can-do** relationship [50:01]: "A implements Runnable" means A *can run*.
+  - An interface represents a **role or capability**. It's often named like an adjective or verb: `Runnable`, `Walkable`, `Payable` (better than `Payment`). This is a **can-do** relationship [▶ ~50:01](https://youtu.be/YLLFHuStkW8?t=3001): "A implements Runnable" means A *can run*.
   - An abstract class represents a **family of similar classes** with shared code, e.g. `Animal` above `Dog`, `Duck` and `Elephant`, which share `eat()`. This is an **is-a** relationship: a dog *is an* animal.
 - **Practical differences**:
 
 | | Interface | Abstract class |
 |---|---|---|
 | Instance fields | No. Fields are `public static final` | Yes, normal fields |
-| Constructors | No [51:44] | Yes |
+| Constructors | No [▶ ~51:44](https://youtu.be/YLLFHuStkW8?t=3104) | Yes |
 | Multiple inheritance | Yes (`implements A, B`) | No (single `extends`) |
 | Member access | `public` by default (`private` helper methods since Java 9) | Any modifier: `private`, `protected`, default, `public` |
 
 > **Correction:** at one point the video says "what do we normally call an interface? Is-a relationship" and then immediately explains **can-do**. The intended mapping is: interface = **can-do**, abstract class or inheritance = **is-a**.
 
-### Functional interfaces [52:59]
+### Functional interfaces [▶ ~52:59](https://youtu.be/YLLFHuStkW8?t=3179)
 - An interface with **exactly one abstract method**, e.g. `interface A { void fun(); }`.
 - It matters because it unlocks **functional programming** with **lambda expressions** (Java 8). That gets its own lecture.
 - JDK examples mentioned: `Comparable`, `Predicate`. Others include `Runnable`, `Comparator`, `Function`, `Supplier` and `Consumer`.
 
 > **Note:** "one method" really means **one abstract method**. A functional interface can still have any number of `default` and `static` methods (e.g. `Comparator` has many), and redeclared `Object` methods such as `equals` don't count. Mark yours with `@FunctionalInterface` so the compiler enforces the rule.
 
-### Marker interfaces [54:58]
+### Marker interfaces [▶ ~54:58](https://youtu.be/YLLFHuStkW8?t=3298)
 - An interface with **no methods at all**, used to *mark* a class. The video lists **`Cloneable`, `Serializable` and `RandomAccess`**.
 - `Cloneable` and `Object.clone()`: a class can only use `super.clone()` successfully if it `implements Cloneable`. Without it you get `CloneNotSupportedException` at **runtime**. There's nothing to override from `Cloneable`: you're simply telling Java "I opt in to cloning". Critical resources (DB connections, threads) shouldn't be cloned, which is why it's opt-in.
 
 > **Note:** those three aren't the *only* marker interfaces (`java.rmi.Remote` and `java.util.EventListener` are others). Since Java 5, annotations are often used instead of new marker interfaces.
 
-### Interfaces in bytecode [59:01]
+### Interfaces in bytecode [▶ ~59:01](https://youtu.be/YLLFHuStkW8?t=3541)
 - `javac Animal.java` produces `Animal.class`. Inside, an interface is stored much like a class, but with the **`ACC_INTERFACE`** flag set (plus `ACC_ABSTRACT`). That's how the JVM tells them apart.
 - Same idea as enums (previous video): a special keyword in source, a class-like structure after compilation.
 

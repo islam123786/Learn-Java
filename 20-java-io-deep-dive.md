@@ -30,28 +30,28 @@
 
 ## Detailed Notes
 
-### Kinds of input/output [01:16]
+### Kinds of input/output [▶ ~01:16](https://youtu.be/yfMWLZGEPwo?t=76)
 - **Console**: keyboard in, screen out (`System.out.println`).
 - **File**: read from or write to files (a separate video).
 - **Network**: over the internet, e.g. a front end calling a back end's API (covered with Spring Boot).
 - **Memory**: reading from in-memory buffers.
 
-### What `System.out.println` really is [02:32]
+### What `System.out.println` really is [▶ ~02:32](https://youtu.be/yfMWLZGEPwo?t=152)
 - Work it out from the syntax:
   - `println(...)` has parentheses and takes an argument, so it's a **method**.
   - A method is called through an object, so `out` must be a **reference variable**. Its lowercase name fits that.
   - `System` starts with a capital letter, so it's a **class**. `System.out` is accessed through the class name, so `out` must be a **static** field.
-- Looking inside the JDK in the IDE [08:14] (Cmd/Ctrl-click on `System`) shows `public static final PrintStream out = null;`. So the unknown type is **`PrintStream`**, and its `println(String)` is what gets called.
+- Looking inside the JDK in the IDE [▶ ~08:14](https://youtu.be/yfMWLZGEPwo?t=494) (Cmd/Ctrl-click on `System`) shows `public static final PrintStream out = null;`. So the unknown type is **`PrintStream`**, and its `println(String)` is what gets called.
   - `public` makes it accessible everywhere, `static` lets you use the class name, and `final` stops you from reassigning it.
   - *Note:* the JVM fills in the real stream during startup, and you can still swap it out with `System.setOut(...)`.
-- **No import needed** [10:46]: `System` lives in **`java.lang`**, which the compiler imports into every file automatically.
-- **`PrintStream` methods** [12:40]:
+- **No import needed** [▶ ~10:46](https://youtu.be/yfMWLZGEPwo?t=646): `System` lives in **`java.lang`**, which the compiler imports into every file automatically.
+- **`PrintStream` methods** [▶ ~12:40](https://youtu.be/yfMWLZGEPwo?t=760):
   - `println`: print, then a newline.
   - `print`: no newline, so the next output continues on the same line.
   - `printf`: formatted output (the series used it earlier to print many decimal places).
-- **Why make `out` static?** [13:56] Otherwise you'd have to write `System s = new System(); s.out.println(...)` every time. *(In practice you can't create a `System` at all, because its constructor is private.)*
+- **Why make `out` static?** [▶ ~13:56](https://youtu.be/yfMWLZGEPwo?t=836) Otherwise you'd have to write `System s = new System(); s.out.println(...)` every time. *(In practice you can't create a `System` at all, because its constructor is private.)*
 
-### `System.err` [15:51]
+### `System.err` [▶ ~15:51](https://youtu.be/yfMWLZGEPwo?t=951)
 - `System.err` is another `public static final PrintStream`, so `System.err.println("Bye")` also prints.
 - Use `out` for normal output and `err` for errors. Example: `if (age < 0) System.err.println("Invalid age");`.
 - Benefits:
@@ -59,21 +59,21 @@
   - The OS treats it as a **separate stream** (stderr), so tools can colour it red, log it separately, or redirect it with `2>`.
 - In real applications you'd use a logging library, but in plain Java this is useful.
 
-### Why console input in Java looks complicated [19:01]
+### Why console input in Java looks complicated [▶ ~19:01](https://youtu.be/yfMWLZGEPwo?t=1141)
 - Java was designed for **servers** (input arrives over the network as JSON or XML) and **GUIs** (forms), not for console programs. Early Java offered only low-level primitives.
 - Modern Java has the friendlier `Scanner`, but it is built on those primitives. Understanding the primitives is how you understand `Scanner`.
 
-### `System.in` and streams [20:55]
+### `System.in` and streams [▶ ~20:55](https://youtu.be/yfMWLZGEPwo?t=1255)
 - Searching `System` for `in` turns up `public static final InputStream in`. Its type is **`InputStream`**, not `PrintStream`. It has a **`read()`** method.
-- **Stream = flow of data** [22:49], like water in a pipe.
+- **Stream = flow of data** [▶ ~22:49](https://youtu.be/yfMWLZGEPwo?t=1369), like water in a pipe.
   - An **input stream** carries data **into** the program (taking input).
   - An **output stream** carries data **out of** the program (showing output).
-- **`InputStream` and `OutputStream` are abstract classes** [24:43].
+- **`InputStream` and `OutputStream` are abstract classes** [▶ ~24:43](https://youtu.be/yfMWLZGEPwo?t=1483).
   - They only *declare* `read` and `write`, because they don't care whether the source is a file, the console, the network or memory.
   - Concrete subclasses implement them for each source. `PrintStream` is a subclass of `OutputStream` that knows how to write to the console.
   - Internally, `println` eventually calls `write`.
-- **Java I/O is stream-based** [27:53]. Whatever the source, the data arrives as a **stream of bytes**.
-- **Hierarchy** [29:48], simplified:
+- **Java I/O is stream-based** [▶ ~27:53](https://youtu.be/yfMWLZGEPwo?t=1673). Whatever the source, the data arrives as a **stream of bytes**.
+- **Hierarchy** [▶ ~29:48](https://youtu.be/yfMWLZGEPwo?t=1788), simplified:
 
 ```
 InputStream (abstract, read)          OutputStream (abstract, write)
@@ -84,61 +84,61 @@ InputStream (abstract, read)          OutputStream (abstract, write)
 ```
 *In the JDK these marked classes actually extend `FilterInputStream`/`FilterOutputStream`, which sit in between.*
 
-- `System.in` is declared as `InputStream`, but its actual object is a concrete subclass (in practice a `BufferedInputStream`). **By default it's attached to the keyboard** [33:36], and you can redirect it.
+- `System.in` is declared as `InputStream`, but its actual object is a concrete subclass (in practice a `BufferedInputStream`). **By default it's attached to the keyboard** [▶ ~33:36](https://youtu.be/yfMWLZGEPwo?t=2016), and you can redirect it.
 
-### Reading with `System.in.read()` [35:30]
+### Reading with `System.in.read()` [▶ ~35:30](https://youtu.be/yfMWLZGEPwo?t=2130)
 - Typing `A` makes the keyboard deliver its **ASCII** code **65** (as binary) into the input stream, and `read()` reads it.
 - `System.in.read()` declares `throws IOException`. Until exception handling is covered, add `throws IOException` to `main` (and `import java.io.IOException;`).
-- `read()` returns an **`int`** [36:46], so `char c = System.in.read();` gives "Type mismatch: cannot convert from int to char". Typing `A` prints 65. Cast it to get the letter: `(char) System.in.read()`.
-- **One byte per call** [38:40]. Typing `Aditya` prints only `A`. The rest (`d i t y a \n`) stays in the **input buffer**. Pressing Enter adds `\n`.
-  - Escape sequences [39:56]: `\n` is a newline and `\t` is a tab.
-- To read a whole line [41:12], loop on `read()` until `\n`, casting each value to `char` and appending it to a string.
+- `read()` returns an **`int`** [▶ ~36:46](https://youtu.be/yfMWLZGEPwo?t=2206), so `char c = System.in.read();` gives "Type mismatch: cannot convert from int to char". Typing `A` prints 65. Cast it to get the letter: `(char) System.in.read()`.
+- **One byte per call** [▶ ~38:40](https://youtu.be/yfMWLZGEPwo?t=2320). Typing `Aditya` prints only `A`. The rest (`d i t y a \n`) stays in the **input buffer**. Pressing Enter adds `\n`.
+  - Escape sequences [▶ ~39:56](https://youtu.be/yfMWLZGEPwo?t=2396): `\n` is a newline and `\t` is a tab.
+- To read a whole line [▶ ~41:12](https://youtu.be/yfMWLZGEPwo?t=2472), loop on `read()` until `\n`, casting each value to `char` and appending it to a string.
   - That's clumsy compared with C++'s `cin` or C's `scanf`.
-- Why one byte when a Java `char` is 2 bytes? [42:29] A Java `char` is 2 bytes because it holds **Unicode** (UTF-16). Plain ASCII characters typed on a keyboard fit in **one byte**.
+- Why one byte when a Java `char` is 2 bytes? [▶ ~42:29](https://youtu.be/yfMWLZGEPwo?t=2549) A Java `char` is 2 bytes because it holds **Unicode** (UTF-16). Plain ASCII characters typed on a keyboard fit in **one byte**.
   - *Caveat:* non-ASCII characters such as `é` are several bytes in UTF-8, so a byte-at-a-time cast breaks them. That's one more reason for `Reader`.
 
-### `Reader`, `BufferedReader`, `InputStreamReader` [43:45]
+### `Reader`, `BufferedReader`, `InputStreamReader` [▶ ~43:45](https://youtu.be/yfMWLZGEPwo?t=2625)
 - Java added the abstract **`Reader`** class (in `java.io`), which reads a **stream of characters** directly, so no casting is needed.
 - Its subclasses relevant here are **`BufferedReader`** and **`InputStreamReader`** (console), plus **`FileReader`** (files, later).
-- **Why buffering** [45:01]:
+- **Why buffering** [▶ ~45:01](https://youtu.be/yfMWLZGEPwo?t=2701):
   - Without it, every character means a trip: keyboard → **OS buffer** → program. With thousands of characters, that's thousands of OS calls, which is slow.
   - `BufferedReader` keeps its **own buffer in program memory**. It pulls a whole chunk from the OS buffer in one go and then hands characters to the program from its own memory, the same way reading a variable doesn't need the OS. Performance improves a lot.
-- **The compatibility problem** [48:49]:
+- **The compatibility problem** [▶ ~48:49](https://youtu.be/yfMWLZGEPwo?t=2929):
   - `System.in` (an `InputStream`) is still the only thing actually connected to the keyboard, and it produces **bytes**.
   - `BufferedReader` works on **characters**, so the two don't fit together directly.
 - **`InputStreamReader` is the bridge**. It converts a byte stream into a character stream, decoding bytes into chars using a charset.
   - *Correction:* at one point the video says it converts characters into bytes. It's the other way round: bytes → chars.
-- **Code** [52:37]:
+- **Code** [▶ ~52:37](https://youtu.be/yfMWLZGEPwo?t=3157):
   - `import java.io.*;` (the `*` imports every class in the package) and `throws IOException`.
   - `InputStreamReader isr = new InputStreamReader(System.in);`. Its constructor takes an `InputStream`.
   - `BufferedReader br = new BufferedReader(isr);`. Its constructor takes any **`Reader`**.
   - `String name = br.readLine();` then prints "Aditya Tandon": the whole line, spaces included.
   - *Correction:* the video says `InputStreamReader` is a subtype of `BufferedReader`. Both are separate subclasses of `Reader`, which is why an `InputStreamReader` can be passed where a `Reader` is expected.
-- **Full flow** [55:09]: keyboard "Aditya" → OS buffer as bytes (65 100 105 116 121 97 …) → `System.in` receives the bytes → `InputStreamReader` turns them into characters → `BufferedReader` buffers them in Java memory → `readLine()` builds the `String` → `println`.
-- **Usual one-liner** [57:04]: `BufferedReader br = new BufferedReader(new InputStreamReader(System.in));`.
+- **Full flow** [▶ ~55:09](https://youtu.be/yfMWLZGEPwo?t=3309): keyboard "Aditya" → OS buffer as bytes (65 100 105 116 121 97 …) → `System.in` receives the bytes → `InputStreamReader` turns them into characters → `BufferedReader` buffers them in Java memory → `readLine()` builds the `String` → `println`.
+- **Usual one-liner** [▶ ~57:04](https://youtu.be/yfMWLZGEPwo?t=3424): `BufferedReader br = new BufferedReader(new InputStreamReader(System.in));`.
 
-### Limitations of `BufferedReader` [58:20]
+### Limitations of `BufferedReader` [▶ ~58:20](https://youtu.be/yfMWLZGEPwo?t=3500)
 1. **It reads only strings.** For an integer you need two steps: `String s = br.readLine(); int i = Integer.parseInt(s);`.
 2. **It's verbose.** You need an `InputStreamReader` around `System.in`, a `BufferedReader` around that, `readLine`, and then parsing.
 
-### `Scanner` [60:14]
+### `Scanner` [▶ ~60:14](https://youtu.be/yfMWLZGEPwo?t=3614)
 - Introduced in **Java 1.5**. It simplifies the code and provides typed methods, so no manual parsing is needed.
-- It lives in **`java.util`** [60:52], not `java.io`, and it sits outside both the `InputStream` and `Reader` hierarchies. It **wraps** them. Internally it reads through a `Readable` source, such as an `InputStreamReader` around `System.in`.
-- **Code** [61:30]:
+- It lives in **`java.util`** [▶ ~60:52](https://youtu.be/yfMWLZGEPwo?t=3652), not `java.io`, and it sits outside both the `InputStream` and `Reader` hierarchies. It **wraps** them. Internally it reads through a `Readable` source, such as an `InputStreamReader` around `System.in`.
+- **Code** [▶ ~61:30](https://youtu.be/yfMWLZGEPwo?t=3690):
   - `import java.util.Scanner;`. No `throws IOException` is needed, because `Scanner` doesn't throw it.
   - `Scanner sc = new Scanner(System.in);`. The constructor still takes an `InputStream`: everything ultimately goes through `System.in`.
   - `String name = sc.nextLine();`.
-- **Other sources** [64:40]:
+- **Other sources** [▶ ~64:40](https://youtu.be/yfMWLZGEPwo?t=3880):
   - `new Scanner(System.in)` for the keyboard.
   - `new Scanner(new File("temp.txt"))` for a file. That constructor throws `FileNotFoundException`.
   - `new Scanner("10 20 30")` to read from a string.
-- **Tokenization** [66:34]: "Hello I am Aditya" becomes 4 tokens, using whitespace as the **delimiter**. Which method you call decides how much gets consumed.
-- **Methods** [67:12]:
+- **Tokenization** [▶ ~66:34](https://youtu.be/yfMWLZGEPwo?t=3994): "Hello I am Aditya" becomes 4 tokens, using whitespace as the **delimiter**. Which method you call decides how much gets consumed.
+- **Methods** [▶ ~67:12](https://youtu.be/yfMWLZGEPwo?t=4032):
   - `next()` reads **one token (word)**, so input "Aditya Tandon" gives "Aditya".
   - `nextLine()` reads **the rest of the line**.
   - `nextInt()`, `nextDouble()`, `nextBoolean()`, `nextLong()`, `nextFloat()`, `nextShort()`, `nextByte()`, `nextBigDecimal()`, … parse the token directly. Typing `28` gives 28, `34.56` gives 34.56, `false` gives false.
 
-### `Scanner` vs `BufferedReader` [69:06]
+### `Scanner` vs `BufferedReader` [▶ ~69:06](https://youtu.be/yfMWLZGEPwo?t=4146)
 - **`Scanner` is slower**. It tokenizes, uses **regular expressions** internally, and converts types.
 - **`BufferedReader` is faster**. It just hands you the characters.
 - Use `Scanner` for everyday convenience. Use `BufferedReader` when performance matters, for example in **competitive programming**, where milliseconds count.

@@ -30,80 +30,80 @@
 
 ## Detailed Notes
 
-### Java is hiding something [01:04]
-- `float f = 8.125f;` prints `8.125`, and `float f = 0.7f;` [01:55] prints `0.7`. Everything looks fine.
-- Switch to `System.out.printf("%.20f", f)` [02:56], which means "show 20 decimal places". `8.125f` shows `8.12500000000000000000`, but `0.7f` shows `0.6999999880…` [04:30].
+### Java is hiding something [▶ ~01:04](https://youtu.be/iV8hy9DdKFM?t=64)
+- `float f = 8.125f;` prints `8.125`, and `float f = 0.7f;` [▶ ~01:55](https://youtu.be/iV8hy9DdKFM?t=115) prints `0.7`. Everything looks fine.
+- Switch to `System.out.printf("%.20f", f)` [▶ ~02:56](https://youtu.be/iV8hy9DdKFM?t=176), which means "show 20 decimal places". `8.125f` shows `8.12500000000000000000`, but `0.7f` shows `0.6999999880…` [▶ ~04:30](https://youtu.be/iV8hy9DdKFM?t=270).
 - `println` was **rounding for display**. The value in memory is very close to 0.7, but not exactly 0.7. The rest of the video explains why.
 
-### Positive integers recap [05:53]
+### Positive integers recap [▶ ~05:53](https://youtu.be/iV8hy9DdKFM?t=353)
 - `byte b = 42;` uses 8 bits with place values 128, 64, 32, 16, 8, 4, 2, 1. 42 = 32 + 8 + 2, so it's `00101010`.
-- **Division method** [07:25]: divide by 2 repeatedly, write down each remainder, and read the remainders **bottom-up**. 42 → 21 r0 → 10 r1 → 5 r0 → 2 r1 → 1 r0 → 0 r1 gives `101010`. Pad with leading zeros to get 8 bits.
+- **Division method** [▶ ~07:25](https://youtu.be/iV8hy9DdKFM?t=445): divide by 2 repeatedly, write down each remainder, and read the remainders **bottom-up**. 42 → 21 r0 → 10 r1 → 5 r0 → 2 r1 → 1 r0 → 0 r1 gives `101010`. Pad with leading zeros to get 8 bits.
 - Storing means converting to binary and keeping the bits in the memory cell called `b`. Printing means converting the bits back to decimal.
 
-### Negative integers: two's complement [10:06]
+### Negative integers: two's complement [▶ ~10:06](https://youtu.be/iV8hy9DdKFM?t=606)
 For `byte b = -42;`:
 1. Ignore the sign and write +42 in binary: `00101010`.
-2. **One's complement** [10:41], flip every bit: `11010101`.
-3. **Two's complement** [11:19], add 1. Binary addition works like decimal with carries: 1 + 1 = 0 carry 1. The result is `11010110`.
+2. **One's complement** [▶ ~10:41](https://youtu.be/iV8hy9DdKFM?t=641), flip every bit: `11010101`.
+3. **Two's complement** [▶ ~11:19](https://youtu.be/iV8hy9DdKFM?t=679), add 1. Binary addition works like decimal with carries: 1 + 1 = 0 carry 1. The result is `11010110`.
 4. Store `11010110` in `b`.
 
-### How the computer knows it's negative [14:18]
-- Look at the **MSB** [16:06]. If it's 1 the number is negative, and if it's 0 the number is positive.
-- "But couldn't a positive number have MSB 1?" [16:41] Not within the type's range. The largest `byte` is 127 = `01111111`. Setting the MSB would mean 128 or more, which is out of range. So every valid positive has MSB 0. Inverting a positive number's bits always sets the MSB to 1, and adding 1 keeps it there, except in the zero case described below.
+### How the computer knows it's negative [▶ ~14:18](https://youtu.be/iV8hy9DdKFM?t=858)
+- Look at the **MSB** [▶ ~16:06](https://youtu.be/iV8hy9DdKFM?t=966). If it's 1 the number is negative, and if it's 0 the number is positive.
+- "But couldn't a positive number have MSB 1?" [▶ ~16:41](https://youtu.be/iV8hy9DdKFM?t=1001) Not within the type's range. The largest `byte` is 127 = `01111111`. Setting the MSB would mean 128 or more, which is out of range. So every valid positive has MSB 0. Inverting a positive number's bits always sets the MSB to 1, and adding 1 keeps it there, except in the zero case described below.
 
-### Reading a negative number back [20:25]
+### Reading a negative number back [▶ ~20:25](https://youtu.be/iV8hy9DdKFM?t=1225)
 - `println(b)` reads `11010110`. The MSB is 1, so the number is negative.
 - Apply two's complement again: invert to get `00101001`, add 1 to get `00101010` = 42. Attach the minus sign: **−42**.
 
-### Why two's complement and not one's? Zero. [21:53]
+### Why two's complement and not one's? Zero. [▶ ~21:53](https://youtu.be/iV8hy9DdKFM?t=1313)
 - `byte b = 0` is `00000000`.
-- Suppose someone writes `-0` [22:44]. One's complement would give `11111111`, a "negative zero", which is a second representation of the same number.
+- Suppose someone writes `-0` [▶ ~22:44](https://youtu.be/iV8hy9DdKFM?t=1364). One's complement would give `11111111`, a "negative zero", which is a second representation of the same number.
 - Two's complement adds 1 to `11111111`. The carry ripples through all 8 bits and produces a 9th bit: `1 00000000`. A `byte` only keeps the low 8 bits, so the extra bit is discarded and the result is `00000000` again.
 - So zero has exactly one representation, and the MSB is 0 for it as expected. That's the special case mentioned earlier.
 
-### Floating point: the 32-bit layout [26:57]
+### Floating point: the 32-bit layout [▶ ~26:57](https://youtu.be/iV8hy9DdKFM?t=1617)
 ```
 | S |  Exponent (8)  |            Mantissa (23)              |
  31   30         23   22                                    0
 ```
-- 1 bit **sign** [28:39] (0 = positive, 1 = negative), 8 bits **exponent**, 23 bits **mantissa**.
+- 1 bit **sign** [▶ ~28:39](https://youtu.be/iV8hy9DdKFM?t=1719) (0 = positive, 1 = negative), 8 bits **exponent**, 23 bits **mantissa**.
 - The example uses `float` because 32 bits are easier to write out than 64, but `double` works the same way.
 
 ### Storing 8.125f step by step
-1. **Convert to binary.** The integer part 8 = `1000`. The fraction .125 uses **multiply by 2** [30:28]: 0.125×2 = **0**.25, 0.25×2 = **0**.5, 0.5×2 = **1**.0, then stop because the fraction is 0. Reading top-down gives `.001`. So 8.125 = `1000.001`₂.
-2. **Normalize** [32:45] to `1.x × 2^e`: move the binary point 3 places left to get `1.000001 × 2³`. It's 2³ and not 10³ because this is base 2.
-3. **Add the bias** [34:04]: exponent 3 + 127 = 130 = `10000010`.
-4. **Place the values in memory** [35:27]:
+1. **Convert to binary.** The integer part 8 = `1000`. The fraction .125 uses **multiply by 2** [▶ ~30:28](https://youtu.be/iV8hy9DdKFM?t=1828): 0.125×2 = **0**.25, 0.25×2 = **0**.5, 0.5×2 = **1**.0, then stop because the fraction is 0. Reading top-down gives `.001`. So 8.125 = `1000.001`₂.
+2. **Normalize** [▶ ~32:45](https://youtu.be/iV8hy9DdKFM?t=1965) to `1.x × 2^e`: move the binary point 3 places left to get `1.000001 × 2³`. It's 2³ and not 10³ because this is base 2.
+3. **Add the bias** [▶ ~34:04](https://youtu.be/iV8hy9DdKFM?t=2044): exponent 3 + 127 = 130 = `10000010`.
+4. **Place the values in memory** [▶ ~35:27](https://youtu.be/iV8hy9DdKFM?t=2127):
    - sign = `0`
    - exponent = `10000010`
    - mantissa = `000001` followed by 17 zeros. The leading `1.` isn't stored because it's always there.
    - Full bit pattern: `0 10000010 00000100000000000000000` (hex `0x41020000`).
 
-### Reading 8.125 back [37:59]
+### Reading 8.125 back [▶ ~37:59](https://youtu.be/iV8hy9DdKFM?t=2279)
 - Formula: **value = (−1)^S × (1 + mantissa) × 2^(E − bias)**
   - (−1)^0 = 1 for a positive number and (−1)^1 = −1 for a negative one, so the first factor applies the sign.
   - `1 +` puts back the implicit leading 1.
   - `E − bias` undoes the bias: 130 − 127 = 3.
 - Fractional place values are 2⁻¹, 2⁻², 2⁻³, … The mantissa `000001` has a single 1 at 2⁻⁶ = 1/64 = 0.015625.
-- So 1 × (1 + 0.015625) × 2³ = 1.015625 × 8 = **8.125** [42:19]. It's exact.
+- So 1 × (1 + 0.015625) × 2³ = 1.015625 × 8 = **8.125** [▶ ~42:19](https://youtu.be/iV8hy9DdKFM?t=2539). It's exact.
 
-### Storing 0.7f: the problem case [43:52]
-1. **Binary of .7** with the multiply-by-2 method: 0.7→**1**.4, 0.4→**0**.8, 0.8→**1**.6, 0.6→**1**.2, 0.2→**0**.4, 0.4→**0**.8, 0.8→**1**.6, … The fractions 0.4 → 0.8 → 0.6 → 0.2 start **repeating** [44:42]. So 0.7 = `0.1 0110 0110 0110…`₂ and it never ends.
-2. **Normalize** [46:07]: `1.0110 0110 0110… × 2⁻¹`.
+### Storing 0.7f: the problem case [▶ ~43:52](https://youtu.be/iV8hy9DdKFM?t=2632)
+1. **Binary of .7** with the multiply-by-2 method: 0.7→**1**.4, 0.4→**0**.8, 0.8→**1**.6, 0.6→**1**.2, 0.2→**0**.4, 0.4→**0**.8, 0.8→**1**.6, … The fractions 0.4 → 0.8 → 0.6 → 0.2 start **repeating** [▶ ~44:42](https://youtu.be/iV8hy9DdKFM?t=2682). So 0.7 = `0.1 0110 0110 0110…`₂ and it never ends.
+2. **Normalize** [▶ ~46:07](https://youtu.be/iV8hy9DdKFM?t=2767): `1.0110 0110 0110… × 2⁻¹`.
 3. **Bias:** −1 + 127 = 126 = `01111110`.
-4. **Store:** sign `0`, exponent `01111110`, and only 23 mantissa bits fit: `01100110011001100110011`. Everything after that is lost [48:12].
+4. **Store:** sign `0`, exponent `01111110`, and only 23 mantissa bits fit: `01100110011001100110011`. Everything after that is lost [▶ ~48:12](https://youtu.be/iV8hy9DdKFM?t=2892).
 - Reading it back gives (1 + Σ 2⁻ᵏ over the 1-bits) × 2⁻¹, which is very close to 0.7 but not 0.7. That's the `0.69999998…` printed at the start.
 
-### Where the bias comes from [51:51]
-- **IEEE 754** [52:22] stores the exponent as an unsigned number. Adding a bias shifts negative exponents (like −1 for 0.7) into positive territory, which simplifies hardware comparisons and arithmetic.
+### Where the bias comes from [▶ ~51:51](https://youtu.be/iV8hy9DdKFM?t=3111)
+- **IEEE 754** [▶ ~52:22](https://youtu.be/iV8hy9DdKFM?t=3142) stores the exponent as an unsigned number. Adding a bias shifts negative exponents (like −1 for 0.7) into positive territory, which simplifies hardware comparisons and arithmetic.
 - An 8-bit exponent field holds 0 to 255. The bias sits near the middle: **2^(8−1) − 1 = 127**.
 - Why 127 and not 128? It comes down to hardware and microarchitecture details that the video skips. See the Further Study note on special exponents.
 
-### `double` [55:21]
-- 64 bits: 1 sign, **11 exponent**, **52 mantissa**. Bias = 2^(11−1) − 1 = **1023** [56:35]. The procedure is otherwise identical.
+### `double` [▶ ~55:21](https://youtu.be/iV8hy9DdKFM?t=3321)
+- 64 bits: 1 sign, **11 exponent**, **52 mantissa**. Bias = 2^(11−1) − 1 = **1023** [▶ ~56:35](https://youtu.be/iV8hy9DdKFM?t=3395). The procedure is otherwise identical.
 - More mantissa bits make the approximation much closer, but 0.7 still isn't exact in a `double`. Neither `float` nor `double` can store every decimal exactly.
 
-### The fix: `BigDecimal` [57:24]
+### The fix: `BigDecimal` [▶ ~57:24](https://youtu.be/iV8hy9DdKFM?t=3444)
 - Java provides **`BigDecimal`** for exact decimal values. Put in 0.7 and you get exactly 0.7 back. It's covered when the series moves to non-primitive types.
 
 ## Code Examples

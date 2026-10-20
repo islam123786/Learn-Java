@@ -30,58 +30,58 @@
 
 ## Detailed Notes
 
-### Recap and agenda [00:00]
+### Recap and agenda [▶ ~00:00](https://youtu.be/2nBJPpERul4?t=0)
 - So far: atomic variables (`AtomicInteger`, `AtomicLong`, `AtomicBoolean`), `AtomicReference`, and `compareAndSet`, used for the seat-booking example.
 - Today: volatile vs atomic, the CAS retry loop, `AtomicReferenceArray`, how `incrementAndGet` works, and the ABA problem.
 
-### `volatile` vs atomic [00:50]
+### `volatile` vs atomic [▶ ~00:50](https://youtu.be/2nBJPpERul4?t=50)
 - `volatile` = **visibility**. In the video's model, each CPU core has its own cache, and `volatile` forces reads and writes to go to main memory (RAM).
   - *Correction:* real CPUs keep caches coherent in hardware. What `volatile` actually guarantees is a *happens-before* ordering: a write to a volatile field is visible to any later read of it, and the compiler/CPU can't reorder around it. The "always reads RAM" picture is a useful simplification.
 - Atomic variables = operations that are **never partially executed**. They are volatile internally, so you don't need to write `volatile` yourself.
 - `compareAndSet(expected, new)` returns `true` if the current value equalled `expected` (and was replaced), and `false` otherwise.
 
-### When one winner isn't enough: the retry loop [03:01]
+### When one winner isn't enough: the retry loop [▶ ~03:01](https://youtu.be/2nBJPpERul4?t=181)
 - Seat booking: only one of T1/T2 *should* win, so a single `compareAndSet` is enough and the loser is told "already booked".
 - Like counter: if T2 and T3 both like a post, the count must go 2 → 3 → 4. **Both** updates have to land, just one after the other.
 - A lock would work, but the goal here is a lock-free solution.
 
-### Building `LikeCounter` with `AtomicReference<Integer>` [04:25]
+### Building `LikeCounter` with `AtomicReference<Integer>` [▶ ~04:25](https://youtu.be/2nBJPpERul4?t=265)
 - The naive version is `totalCount.set(totalCount.get() + 1)`.
   - `get()` and `set()` are each atomic, but **the pair isn't**. Two threads can both read 0, both compute 1, and both write 1, so one like is lost.
-- The retry loop [06:27]:
+- The retry loop [▶ ~06:27](https://youtu.be/2nBJPpERul4?t=387):
   1. `current = totalCount.get()` (this is the *expected* value)
   2. `next = current + 1`
   3. `if (totalCount.compareAndSet(current, next)) return;`
   4. Otherwise someone else updated the counter in between. Loop back and re-read.
 - Trace: T1 reads 0 and computes 1, then gets switched out. T2 reads 0, computes 1, and its CAS(0 → 1) succeeds. T1 resumes and tries CAS(0 → 1), but the value is now 1, so it **fails**. T1 re-reads 1, computes 2, and its CAS(1 → 2) succeeds.
-- The video prints "Conflict detected, retrying" on failure [12:28] so you can see the retries. It also moves the `current`/`next` declarations out of the loop to "reuse the variables".
+- The video prints "Conflict detected, retrying" on failure [▶ ~12:28](https://youtu.be/2nBJPpERul4?t=748) so you can see the retries. It also moves the `current`/`next` declarations out of the loop to "reuse the variables".
   - *Correction:* that gives no real benefit. Local variables are just stack slots or registers, and declaring them inside the loop is cleaner.
 
-### Running it [15:20]
+### Running it [▶ ~15:20](https://youtu.be/2nBJPpERul4?t=920)
 - 10 threads × 1 like each gives a total of **10** every run. The number of conflicts varies (4 one run, 2 the next).
-- Then 10 threads × 10 likes each gives **100** every time, however many retries happen [15:52].
+- Then 10 threads × 10 likes each gives **100** every time, however many retries happen [▶ ~15:52](https://youtu.be/2nBJPpERul4?t=952).
 - The demo waits with `Thread.sleep(3000)` in `main`. *Tip:* use `join()` on each thread instead, because a sleep is a guess.
 
-### `AtomicReferenceArray` [17:01]
+### `AtomicReferenceArray` [▶ ~17:01](https://youtu.be/2nBJPpERul4?t=1021)
 - A plain `int[]` shared between threads can have two threads overwrite the same index.
 - `AtomicReferenceArray<String> arr = new AtomicReferenceArray<>(5);`
   - `arr.set(0, "Aditya")`, `arr.get(0)`
   - `arr.compareAndSet(2, "Rohan", "Sohan")`: if index 2 holds `"Rohan"`, replace it with `"Sohan"`; otherwise return `false`.
-- Exercise [19:00]: extend seat booking to a row of seats. Each thread CASes `null → name` on a seat. If it loses, it moves on to the next seat.
+- Exercise [▶ ~19:00](https://youtu.be/2nBJPpERul4?t=1140): extend seat booking to a row of seats. Each thread CASes `null → name` on a seat. If it loses, it moves on to the next seat.
 - There are also `AtomicIntegerArray` and `AtomicLongArray` for primitive arrays.
 
-### `AtomicInteger` does all of this for you [20:03]
+### `AtomicInteger` does all of this for you [▶ ~20:03](https://youtu.be/2nBJPpERul4?t=1203)
 - `AtomicInteger`, `AtomicLong` and `AtomicBoolean` are all built on the same CAS primitive.
-- The six-line loop collapses to `totalCount.incrementAndGet()` [20:33], and it still prints 100.
+- The six-line loop collapses to `totalCount.incrementAndGet()` [▶ ~20:33](https://youtu.be/2nBJPpERul4?t=1233), and it still prints 100.
 - The video says `incrementAndGet` contains the full CAS + retry loop internally.
   - *Precision:* the JDK's Java-level fallback for it is indeed a CAS loop (`getAndAddInt` in `Unsafe`), but the JIT usually replaces it with one atomic fetch-and-add instruction (`LOCK XADD` on x86), so in practice there may be no retry at all. For arbitrary updates, use `updateAndGet(fn)` / `accumulateAndGet(x, fn)`, which really are CAS loops.
 
-### Compare-and-swap as a technique [23:21]
+### Compare-and-swap as a technique [▶ ~23:21](https://youtu.be/2nBJPpERul4?t=1401)
 - The usual pattern is read → modify → write. The gap between the read and the write is where race conditions come from.
 - CAS: write **only if** the value is still what I originally read. Otherwise do nothing (and retry). Each attempt is atomic. Either the swap happens or it doesn't.
 - The video sums it up as *compare-and-swap = `compareAndSet` + retry logic*.
 
-### Locking vs CAS [25:07]
+### Locking vs CAS [▶ ~25:07](https://youtu.be/2nBJPpERul4?t=1507)
 | | Locks (`synchronized`, `ReentrantLock`) | CAS (atomics) |
 |---|---|---|
 | Contention | One thread inside, others **blocked/waiting** | All threads try, one wins, others **retry** |
@@ -89,14 +89,14 @@
 | Scope | Any critical section, many variables | One variable / one reference at a time |
 | Safety | Simplest to get right | Tricky beyond simple cases |
 
-### The ABA problem [26:15]
+### The ABA problem [▶ ~26:15](https://youtu.be/2nBJPpERul4?t=1575)
 - T1 reads A, then gets context-switched out.
 - T2 reads A, writes B, then writes A again, and finishes.
 - T1 comes back, sees A, concludes "nothing changed", and its CAS succeeds. It has ignored the history.
-- When it doesn't matter [28:58]: for a like counter, 1 → 2 → 1 really is the same state, so T1 incrementing 1 to 2 is correct.
+- When it doesn't matter [▶ ~28:58](https://youtu.be/2nBJPpERul4?t=1738): for a like counter, 1 → 2 → 1 really is the same state, so T1 incrementing 1 to 2 is correct.
 - When it does matter: when "A" stands for something whose history matters, like a node pointer in a lock-free stack that was popped, freed or reused, and pushed back.
 
-### Fix: versioning [29:44]
+### Fix: versioning [▶ ~29:44](https://youtu.be/2nBJPpERul4?t=1784)
 - Store a value plus a version that increments on every write: A1 → B2 → A3.
 - T1 expects (A, 1), but memory holds (A, 3), so the CAS fails. T1 re-reads and retries.
 - Java's built-in version is `AtomicStampedReference<V>` (value + `int` stamp). `AtomicMarkableReference<V>` is a simpler cousin that holds value + `boolean` mark.

@@ -26,30 +26,30 @@
 
 ## Detailed Notes
 
-### Recap: a sequential stream [00:00]
+### Recap: a sequential stream [▶ ~00:00](https://youtu.be/zrtVQ1ev_0w?t=0)
 - `List<Integer> list = new ArrayList<>(List.of(1, 2, …, 11)); list.stream().map(x -> x * 2).forEach(System.out::println);` prints 2, 4, …, 22 in order.
-- That's a **sequential stream** [01:00]: its spliterator takes one element at a time and passes it **vertically** through the pipeline (map, then forEach).
+- That's a **sequential stream** [▶ ~01:00](https://youtu.be/zrtVQ1ev_0w?t=60): its spliterator takes one element at a time and passes it **vertically** through the pipeline (map, then forEach).
 
-### Why parallelism is possible: stateless vs stateful [03:00]
+### Why parallelism is possible: stateless vs stateful [▶ ~03:00](https://youtu.be/zrtVQ1ev_0w?t=180)
 - `map` is **stateless**: doubling 1 doesn't depend on any other element.
 - Add `.sorted()` and you have a **stateful** operation. Element 1 passes `map` but has to **wait** at `sorted` until every element has arrived.
 - If the operations are stateless and the elements are independent, there's no reason to wait for element 1 before starting element 2. They can go through the pipe at the same time.
 - Threads (covered properly later in the multithreading series): for now, think of a thread as a lightweight program that can run independently.
 
-### `parallelStream()` in action [06:00]
+### `parallelStream()` in action [▶ ~06:00](https://youtu.be/zrtVQ1ev_0w?t=360)
 - `list.parallelStream().map(x -> x * 2).forEach(System.out::println)` prints all the doubled values, but **out of order** (e.g. 6, 20, 14, 16, …).
 - The reason: different threads process different elements at their own pace. Some wait their turn (context switching), others get ahead. The elements are effectively racing. Not every element gets its own thread: there are a few threads, each handling several elements.
-- **`forEachOrdered`** [07:15] restores the original order, but it's **overhead**: it has to wait until results are ready in order, which removes much of the reason for using parallelism.
+- **`forEachOrdered`** [▶ ~07:15](https://youtu.be/zrtVQ1ev_0w?t=435) restores the original order, but it's **overhead**: it has to wait until results are ready in order, which removes much of the reason for using parallelism.
 - With only ~11 elements you won't notice any speed difference. With something like a million elements and enough CPU work per element, the parallel version can finish faster.
 
-### Architecture: split, assign, process, combine [09:00]
+### Architecture: split, assign, process, combine [▶ ~09:00](https://youtu.be/zrtVQ1ev_0w?t=540)
 - The steps: **split the data into chunks → assign each chunk to a thread → process the chunks independently → combine the results**.
 - Analogy: you have to double 10 numbers. Alone, that's n units of work. Give 5 to a friend and do 5 yourself, sharing the same "pipeline" concurrently, and each of you does n/2.
-- Under the hood this is the **Fork/Join pool** [12:30]: a pool of idle worker threads (your "friends"). Chunks get assigned to T1, T2, …
+- Under the hood this is the **Fork/Join pool** [▶ ~12:30](https://youtu.be/zrtVQ1ev_0w?t=750): a pool of idle worker threads (your "friends"). Chunks get assigned to T1, T2, …
 - A huge input (say a billion elements) is split **recursively**: halves (1–5, 6–10), then halves again (1–3, 4–5, 6–8, 9–10), spread over T1–T4 so that each does about n/4. Some chunks really run at the same moment.
-- **You don't decide any of this** [15:00]. Java's algorithms choose how many splits and threads to use. Writing `parallelStream()` only tells Java "parallelize this if you can".
+- **You don't decide any of this** [▶ ~15:00](https://youtu.be/zrtVQ1ev_0w?t=900). Java's algorithms choose how many splits and threads to use. Writing `parallelStream()` only tells Java "parallelize this if you can".
 
-### `Spliterator` vs `Iterator` [16:30]
+### `Spliterator` vs `Iterator` [▶ ~16:30](https://youtu.be/zrtVQ1ev_0w?t=990)
 - A normal `Iterator` (`hasNext`, `next`, `remove`) can only walk **one element at a time**, so a parallel stream can't split work with it.
 - **`Spliterator` = split + iterator.** It has three jobs:
   1. **Traverse** the elements, like any iterator.
@@ -58,41 +58,41 @@
 - Without the Spliterator there would be no parallel streams.
 - You'll almost never call Spliterator methods or write your own (in the video's words, 99.9% of the time). Custom `Iterator`s are already rare.
 
-### `tryAdvance` and `trySplit` [20:00]
+### `tryAdvance` and `trySplit` [▶ ~20:00](https://youtu.be/zrtVQ1ev_0w?t=1200)
 - **`tryAdvance(action)`**: handles traversal. If a next element exists, it feeds it to the pipeline (it plays the role of `hasNext`/`next`).
 - **`trySplit()`**: *tries* to split the data in two. If it succeeds, it returns a new spliterator for one part (SI1/SI2), and the original keeps the rest.
-- Note the word **"try"** [22:00]: splitting isn't always possible or worthwhile, and parallel processing isn't magic.
+- Note the word **"try"** [▶ ~22:00](https://youtu.be/zrtVQ1ev_0w?t=1320): splitting isn't always possible or worthwhile, and parallel processing isn't magic.
 
-### Parallel ≠ automatically faster [22:00]
+### Parallel ≠ automatically faster [▶ ~22:00](https://youtu.be/zrtVQ1ev_0w?t=1320)
 - Example: `list.parallelStream().filter(x -> x > 10).map(x -> x * 2).sorted().distinct().forEach(System.out::println)`.
   - `filter` and `map` are stateless, so the chunks (1–3, 4–5, 6–8, 9–10) can pass through them in parallel. That's where time is saved.
   - `sorted` and `distinct` are **stateful**. Neither lets anything past until it has every element, so the chunks have to be **joined** back together there.
-- **Fork** = divide the data. **Join** = bring it back together for operations that need everything [25:30].
+- **Fork** = divide the data. **Join** = bring it back together for operations that need everything [▶ ~25:30](https://youtu.be/zrtVQ1ev_0w?t=1530).
 - With many stateful operations, the thread-management cost of the Fork/Join pool can make the parallel version **slower than sequential**. That's why most real code uses ordinary sequential streams.
-- How Java decides how far to split [27:30]: **size of the data**, **complexity of the problem**, and **available threads** (the pool is limited). For small data it keeps parallelism low to limit overhead.
+- How Java decides how far to split [▶ ~27:30](https://youtu.be/zrtVQ1ev_0w?t=1650): **size of the data**, **complexity of the problem**, and **available threads** (the pool is limited). For small data it keeps parallelism low to limit overhead.
 
-### When parallel streams actually help [29:30]
+### When parallel streams actually help [▶ ~29:30](https://youtu.be/zrtVQ1ev_0w?t=1770)
 - **Huge data sets** (millions of elements). Even with a few stateful steps, the stateless parts gain a lot.
 - **CPU-intensive work per element.** A multi-core CPU can run several threads truly at the same time (T1–T4 on different cores).
 - **Mostly or only stateless operations.**
 - **Data structures that split well**: indexed, random-access structures (**arrays**, **`ArrayList`**). The spliterator can jump straight to the middle in O(1).
 
-### When not to use them [32:00]
+### When not to use them [▶ ~32:00](https://youtu.be/zrtVQ1ev_0w?t=1920)
 - **`LinkedList`**: there's no random access, so finding the middle means walking from the head (or tail). Splitting works but is expensive.
-- **Small data sets**: the overhead outweighs the gain [33:00].
+- **Small data sets**: the overhead outweighs the gain [▶ ~33:00](https://youtu.be/zrtVQ1ev_0w?t=1980).
 - **Lots of stateful operations**: little or no benefit.
-- **Shared mutable resources, which is a real bug** [34:00]:
+- **Shared mutable resources, which is a real bug** [▶ ~34:00](https://youtu.be/zrtVQ1ev_0w?t=2040):
   - `List<Integer> result = new ArrayList<>(); list.parallelStream().map(...).forEach(x -> result.add(x));`
   - Sequentially this is fine. In parallel, two threads can reach `result.add` at the same moment. Both may write into the same slot before the internal size/index is updated, so one value overwrites the other and data is **lost**. That's a **race condition**.
   - `result` is **shared** (any thread can reach it) and **mutable** (it gets modified). Avoid that combination. *(Fix: let the stream build the result, `list.parallelStream().map(...).toList()` / `collect(...)`, or use a thread-safe structure.)*
-- Summary [37:00]: parallel streams aren't "always better". With a `LinkedList`, many stateful operations and little data, they're slower because of the thread and work-pool overhead.
+- Summary [▶ ~37:00](https://youtu.be/zrtVQ1ev_0w?t=2220): parallel streams aren't "always better". With a `LinkedList`, many stateful operations and little data, they're slower because of the thread and work-pool overhead.
 
-### Primitive optional classes [38:00]
+### Primitive optional classes [▶ ~38:00](https://youtu.be/zrtVQ1ev_0w?t=2280)
 - Recap: `Optional<T>` wraps an object to avoid returning `null`, e.g. `Optional<String> name = getName(); name.get() / name.orElse(...)`.
 - It can wrap `Integer`, but then every operation **unboxes** to `int` and every store **autoboxes** back. Java already added primitive streams and primitive functional interfaces to avoid this, so `Optional` gets **primitive versions** too.
 - **`OptionalInt`, `OptionalDouble`, `OptionalLong`**: there are no byte/short/float/char versions, for the same reason as before (int, double and long cover real use).
 - Where you meet them: `IntStream.of(1, 2, 3, 4).filter(...).max()` returns **`OptionalInt`**, and `average()` always returns **`OptionalDouble`**, even on an `IntStream`.
-- Reading the value [41:00]: **`getAsInt()`**, **`getAsDouble()`**, **`getAsLong()`** instead of `get()`. `orElse`, `isPresent`, `ifPresent`, … work the same way.
+- Reading the value [▶ ~41:00](https://youtu.be/zrtVQ1ev_0w?t=2460): **`getAsInt()`**, **`getAsDouble()`**, **`getAsLong()`** instead of `get()`. `orElse`, `isPresent`, `ifPresent`, … work the same way.
 - *(Note: primitive optionals don't have `map`, `filter` or `flatMap`. If you need those, box it, or work on the stream before the terminal operation.)*
 
 ## Code Examples

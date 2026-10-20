@@ -26,106 +26,106 @@
 
 ## Detailed Notes
 
-### Set hierarchy [00:00]
+### Set hierarchy [▶ ~00:00](https://youtu.be/b1Uj_2MPBwA?t=0)
 - `Iterable` → `Collection` → `Set`. Under `Set`: `HashSet` (with `LinkedHashSet` extending it) and `TreeSet`.
 - `TreeSet` doesn't implement `Set` directly. Between them sit two interfaces: **`Set` → `SortedSet` → `NavigableSet` → `TreeSet`**. `TreeSet` implements the methods of all of them.
 
-### `Set` has no special methods [02:44]
+### `Set` has no special methods [▶ ~02:44](https://youtu.be/b1Uj_2MPBwA?t=164)
 - Unlike `List` (which adds `get(index)`, `set`, `add(index, e)`, …), `Set` adds nothing new. `add`, `remove`, `contains`, `clear`, `isEmpty`, `size` all come from `Collection`.
 - So `HashSet`/`LinkedHashSet` have no methods you haven't already seen. Only `TreeSet` brings new ones.
 
-### `HashSet` / `LinkedHashSet` constructors [04:33]
+### `HashSet` / `LinkedHashSet` constructors [▶ ~04:33](https://youtu.be/b1Uj_2MPBwA?t=273)
 1. `new HashSet<>()`: empty, default capacity 16 and load factor 0.75 (from the backing `HashMap`).
 2. `new HashSet<>(100)`: initial capacity.
 3. `new HashSet<>(100, 0.8f)`: capacity **and** load factor (a `float`). With 0.8, rehashing waits until the table is 80% full.
 4. `new HashSet<>(List.of(1, 2, …, 9))`: copy from another collection.
 - All four exist for `LinkedHashSet` too, since it extends `HashSet`.
 
-### `TreeSet` overview [07:45]
+### `TreeSet` overview [▶ ~07:45](https://youtu.be/b1Uj_2MPBwA?t=465)
 - `TreeSet` is a self-balancing BST (backed by a `TreeMap`). Its extra methods are exactly the operations a BST is good at. Once you know them, `TreeMap`'s methods are the same with "Key"/"Entry" in the name.
 - You don't need to memorize the list; know what's possible and let the IDE fill in names.
 
-### `TreeSet` constructors and demo [09:20]
+### `TreeSet` constructors and demo [▶ ~09:20](https://youtu.be/b1Uj_2MPBwA?t=560)
 - Constructors shown: empty `new TreeSet<>()`, and from a collection `new TreeSet<>(List.of(2, 5, 7, 9))`. There's no capacity or load factor because there's no bucket array.
 - *Addition:* `TreeSet` also has `TreeSet(Comparator)` for custom ordering and `TreeSet(SortedSet)`. Comparators come in videos #36 and #37.
 - Demo data: `80, 23, 10, 90, 50`.
 
-### `SortedSet` methods [11:37]
+### `SortedSet` methods [▶ ~11:37](https://youtu.be/b1Uj_2MPBwA?t=697)
 - First attempt: `Set<Integer> set = new TreeSet<>(); set.first();` → compile error "first() is undefined for the type Set". The object is a `TreeSet`, but the **reference type** decides which methods you can call. Declare it as `TreeSet<Integer>` (or `NavigableSet`/`SortedSet`; with `SortedSet` you can't reach the `NavigableSet` methods).
 - `first()` → smallest (10). `last()` → largest (90). In a BST the leftmost node is the smallest and the rightmost the largest.
 - Most `TreeSet` operations are **O(log n)**.
-- `headSet(80)` [14:21] → elements **strictly less** than 80: `[10, 23, 50]`.
-- `tailSet(80)` [15:43] → elements **≥ 80**: `[80, 90]` (inclusive).
-- `subSet(23, 80)` [16:10] → from 23 **inclusive** to 80 **exclusive**: `[23, 50]`.
+- `headSet(80)` [▶ ~14:21](https://youtu.be/b1Uj_2MPBwA?t=861) → elements **strictly less** than 80: `[10, 23, 50]`.
+- `tailSet(80)` [▶ ~15:43](https://youtu.be/b1Uj_2MPBwA?t=943) → elements **≥ 80**: `[80, 90]` (inclusive).
+- `subSet(23, 80)` [▶ ~16:10](https://youtu.be/b1Uj_2MPBwA?t=970) → from 23 **inclusive** to 80 **exclusive**: `[23, 50]`.
 - *Correction:* the video says `NavigableSet` "repeats" `first`/`last`/`headSet`/… These are inherited from `SortedSet`, not re-declared. What `NavigableSet` adds are the boolean overloads (below).
 
-### `NavigableSet` methods [17:32]
+### `NavigableSet` methods [▶ ~17:32](https://youtu.be/b1Uj_2MPBwA?t=1052)
 - `lower(80)` → largest element **strictly less** than 80: `50`.
-- `floor(80)` [18:27] → largest element **≤** 80: `80`. The difference shows at the bottom: `lower(10)` → `null`, `floor(10)` → `10`.
-- `higher(80)` [19:49] → smallest element **strictly greater**: `90`. `ceiling(80)` → smallest **≥**: `80`.
-- `pollFirst()` / `pollLast()` [20:57] → return **and remove** the smallest/largest (10 and 90). Afterwards `first()` is 23. `first()`/`last()` only look.
-- `descendingSet()` [22:33] → `[90, 80, 50, 23, 10]`. `descendingIterator()` walks the same order with `hasNext()`/`next()`.
-- Tunable range views [23:28]: `headSet(80, true)` includes 80 → `[10, 23, 50, 80]`; `tailSet(80, false)` excludes it; `subSet(10, true, 80, true)` lets you choose both ends. The one-argument versions have fixed rules (`headSet` exclusive, `tailSet` inclusive, `subSet` from-inclusive/to-exclusive).
+- `floor(80)` [▶ ~18:27](https://youtu.be/b1Uj_2MPBwA?t=1107) → largest element **≤** 80: `80`. The difference shows at the bottom: `lower(10)` → `null`, `floor(10)` → `10`.
+- `higher(80)` [▶ ~19:49](https://youtu.be/b1Uj_2MPBwA?t=1189) → smallest element **strictly greater**: `90`. `ceiling(80)` → smallest **≥**: `80`.
+- `pollFirst()` / `pollLast()` [▶ ~20:57](https://youtu.be/b1Uj_2MPBwA?t=1257) → return **and remove** the smallest/largest (10 and 90). Afterwards `first()` is 23. `first()`/`last()` only look.
+- `descendingSet()` [▶ ~22:33](https://youtu.be/b1Uj_2MPBwA?t=1353) → `[90, 80, 50, 23, 10]`. `descendingIterator()` walks the same order with `hasNext()`/`next()`.
+- Tunable range views [▶ ~23:28](https://youtu.be/b1Uj_2MPBwA?t=1408): `headSet(80, true)` includes 80 → `[10, 23, 50, 80]`; `tailSet(80, false)` excludes it; `subSet(10, true, 80, true)` lets you choose both ends. The one-argument versions have fixed rules (`headSet` exclusive, `tailSet` inclusive, `subSet` from-inclusive/to-exclusive).
 - *Note:* `headSet`, `tailSet` and `subSet` return **views** backed by the original set, not copies. Changes to one show up in the other.
 
-### Map hierarchy and the zoo of maps [25:44]
+### Map hierarchy and the zoo of maps [▶ ~25:44](https://youtu.be/b1Uj_2MPBwA?t=1544)
 - `Map` → `HashMap` → `LinkedHashMap`; `Map` → `SortedMap` → `NavigableMap` → `TreeMap`.
 - Other maps covered at the end: `Hashtable`, `Properties`, `EnumMap`, `IdentityHashMap`, `WeakHashMap`, `ConcurrentHashMap`. Some are niche, some are legacy.
 - Because `Map` is outside `Collection`, it must declare `size`, `isEmpty`, `containsKey`, etc. itself. Java kept the names close to `Collection`'s so there's little new to remember.
 
-### `Map` methods [27:47]
+### `Map` methods [▶ ~27:47](https://youtu.be/b1Uj_2MPBwA?t=1667)
 - Setup: `Map<Integer, String> map = new HashMap<>()` with roll number → name: `101 → Aditya`, `102 → Rohit`, `103 → Rohan`. (The transcript sometimes says "1001"; the outputs shown match 101.)
 - `size()` → 3. `isEmpty()` → false.
-- **`containsKey(102)`** / **`containsValue("Aditya")`** [29:50]. `containsKey` is O(1) on average (keys are hashed). `containsValue` is **O(n)**: values aren't hashed, so it must walk every bucket and every chain.
-- **`get(101)`** [31:12] → "Aditya". `get(105)` → `null` for a missing key.
-- **`put` returns something** [32:07]: `put(104, "Abhay")` (new key) → `null`. `put(103, "Abhay")` (existing key) → `"Rohan"`, the **old** value, and `get(103)` is now "Abhay".
-- `remove(101)`, `putAll(otherMap)` (bulk `put`), `clear()` [33:02].
-- **`keySet()`** [34:51] → `Set<Integer>` of all keys (a `Set` because keys are unique).
-- **`values()`** [35:46] → `Collection<String>`. Not a set, because values can repeat. That's why there's no `valueSet()`.
-- **`entrySet()`** [36:54] → `Set<Map.Entry<Integer, String>>`. `Map.Entry` is an interface nested inside `Map`; each entry is one key-value pair and prints as `101=Aditya`.
-- **`getOrDefault(105, "Unknown")`** [38:57] → "Unknown" instead of `null`. Used a lot in production because it avoids `null` checks and `NullPointerException`s.
-- **`putIfAbsent(103, "Abhay")`** [39:51] → does nothing because 103 exists. Plain `put` always replaces; `putIfAbsent` **never replaces an existing value**.
-- **`remove(key, value)`** [41:13] → removes only if the key currently maps to that value. `remove(101, "Abhay")` does nothing.
+- **`containsKey(102)`** / **`containsValue("Aditya")`** [▶ ~29:50](https://youtu.be/b1Uj_2MPBwA?t=1790). `containsKey` is O(1) on average (keys are hashed). `containsValue` is **O(n)**: values aren't hashed, so it must walk every bucket and every chain.
+- **`get(101)`** [▶ ~31:12](https://youtu.be/b1Uj_2MPBwA?t=1872) → "Aditya". `get(105)` → `null` for a missing key.
+- **`put` returns something** [▶ ~32:07](https://youtu.be/b1Uj_2MPBwA?t=1927): `put(104, "Abhay")` (new key) → `null`. `put(103, "Abhay")` (existing key) → `"Rohan"`, the **old** value, and `get(103)` is now "Abhay".
+- `remove(101)`, `putAll(otherMap)` (bulk `put`), `clear()` [▶ ~33:02](https://youtu.be/b1Uj_2MPBwA?t=1982).
+- **`keySet()`** [▶ ~34:51](https://youtu.be/b1Uj_2MPBwA?t=2091) → `Set<Integer>` of all keys (a `Set` because keys are unique).
+- **`values()`** [▶ ~35:46](https://youtu.be/b1Uj_2MPBwA?t=2146) → `Collection<String>`. Not a set, because values can repeat. That's why there's no `valueSet()`.
+- **`entrySet()`** [▶ ~36:54](https://youtu.be/b1Uj_2MPBwA?t=2214) → `Set<Map.Entry<Integer, String>>`. `Map.Entry` is an interface nested inside `Map`; each entry is one key-value pair and prints as `101=Aditya`.
+- **`getOrDefault(105, "Unknown")`** [▶ ~38:57](https://youtu.be/b1Uj_2MPBwA?t=2337) → "Unknown" instead of `null`. Used a lot in production because it avoids `null` checks and `NullPointerException`s.
+- **`putIfAbsent(103, "Abhay")`** [▶ ~39:51](https://youtu.be/b1Uj_2MPBwA?t=2391) → does nothing because 103 exists. Plain `put` always replaces; `putIfAbsent` **never replaces an existing value**.
+- **`remove(key, value)`** [▶ ~41:13](https://youtu.be/b1Uj_2MPBwA?t=2473) → removes only if the key currently maps to that value. `remove(101, "Abhay")` does nothing.
   - *Correction:* the video says the one-argument `remove(Object key)` "comes from the Object class". It doesn't; it's declared in `Map`. It just takes an `Object` parameter.
-- **`replace(101, "Sonu")`** [41:54] → updates only if the key exists; unlike `put`, it **never inserts** a new key.
+- **`replace(101, "Sonu")`** [▶ ~41:54](https://youtu.be/b1Uj_2MPBwA?t=2514) → updates only if the key exists; unlike `put`, it **never inserts** a new key.
 - **`replace(101, "Aditya", "Sonu")`** → "safe replace": only if the current value equals the given old value.
-- **Looping with entries** [43:57]: `for (Map.Entry<Integer, String> e : map.entrySet())` with `e.getKey()` and `e.getValue()`.
-- **`Map.of(k1, v1, k2, v2, …)`** [45:47] → an **immutable** map. `put` on it throws `UnsupportedOperationException`.
+- **Looping with entries** [▶ ~43:57](https://youtu.be/b1Uj_2MPBwA?t=2637): `for (Map.Entry<Integer, String> e : map.entrySet())` with `e.getKey()` and `e.getValue()`.
+- **`Map.of(k1, v1, k2, v2, …)`** [▶ ~45:47](https://youtu.be/b1Uj_2MPBwA?t=2747) → an **immutable** map. `put` on it throws `UnsupportedOperationException`.
   - *Note:* `Map.of` has overloads up to 10 pairs; beyond that use `Map.ofEntries(Map.entry(k, v), …)`. It also rejects `null` keys/values and duplicate keys, and its iteration order is unspecified.
 
-### `HashMap` / `LinkedHashMap` constructors [47:09]
+### `HashMap` / `LinkedHashMap` constructors [▶ ~47:09](https://youtu.be/b1Uj_2MPBwA?t=2829)
 - Same four as the sets: `new HashMap<>()`, `new HashMap<>(100)`, `new HashMap<>(100, 0.8f)`, and `new HashMap<>(otherMap)` (e.g. from `Map.of(...)`). All work for `LinkedHashMap` too.
 
-### `TreeMap` methods [49:12]
+### `TreeMap` methods [▶ ~49:12](https://youtu.be/b1Uj_2MPBwA?t=2952)
 - Declare as `TreeMap` (or `NavigableMap`) to reach these. They mirror `TreeSet`, but since only keys are unique, names say **Key** or **Entry**:
-  - `firstKey()` → 101, `lastKey()` → 103 [51:28]; `firstEntry()` → `101=Aditya`, `lastEntry()` → `103=Rohan`.
-  - `headMap(103)` → `{101=Aditya, 102=Rohit}` (exclusive) [52:37]; `tailMap(102)` → `{102=Rohit, 103=Rohan}` (inclusive); `subMap(101, 103)` → `{101=Aditya, 102=Rohit}`.
-  - `lowerKey(102)` → 101 [53:59], `lowerEntry(102)` → `101=Aditya`. Likewise `floorKey/floorEntry`, `ceilingKey/ceilingEntry`, `higherKey/higherEntry`.
+  - `firstKey()` → 101, `lastKey()` → 103 [▶ ~51:28](https://youtu.be/b1Uj_2MPBwA?t=3088); `firstEntry()` → `101=Aditya`, `lastEntry()` → `103=Rohan`.
+  - `headMap(103)` → `{101=Aditya, 102=Rohit}` (exclusive) [▶ ~52:37](https://youtu.be/b1Uj_2MPBwA?t=3157); `tailMap(102)` → `{102=Rohit, 103=Rohan}` (inclusive); `subMap(101, 103)` → `{101=Aditya, 102=Rohit}`.
+  - `lowerKey(102)` → 101 [▶ ~53:59](https://youtu.be/b1Uj_2MPBwA?t=3239), `lowerEntry(102)` → `101=Aditya`. Likewise `floorKey/floorEntry`, `ceilingKey/ceilingEntry`, `higherKey/higherEntry`.
   - `pollFirstEntry()`, `pollLastEntry()`, `descendingMap()` → `{103=Rohan, 102=Rohit, 101=Aditya}`.
   - Boolean overloads: `headMap(k, inclusive)`, `tailMap(k, inclusive)`, `subMap(from, fromInc, to, toInc)`.
 - *Correction:* the video attributes `headMap`/`tailMap`/`subMap` to `NavigableMap` and `lowerKey` etc. to `SortedMap`. It's mostly the other way: `firstKey`, `lastKey` and the one/two-argument `headMap`/`tailMap`/`subMap` come from **`SortedMap`**. The `…Entry` methods, `lower/floor/ceiling/higher…`, `poll…`, `descendingMap` and the boolean overloads come from **`NavigableMap`**.
 
-### `Hashtable` [56:15]
+### `Hashtable` [▶ ~56:15](https://youtu.be/b1Uj_2MPBwA?t=3375)
 - A **legacy** class from before the Collections Framework. Same job as `HashMap`, but every method is synchronized (thread-safe).
 - Like `Vector` for lists, avoid it in new code: locking the whole table for every call is slow. For thread safety use **`ConcurrentHashMap`**.
 - *Addition:* `Hashtable` also rejects `null` keys and values.
 
-### `Properties` [57:51]
+### `Properties` [▶ ~57:51](https://youtu.be/b1Uj_2MPBwA?t=3471)
 - Extends `Hashtable`. A specialized map for **configuration data**, which is text: `username=admin`, `password=123`.
 - You'll see it again with Spring Boot configuration. Many people use it without realizing it's a `Map`.
 - *Addition:* use `setProperty`/`getProperty(key, default)` rather than `put`/`get`, and `load(Reader)`/`store(...)` to read/write `.properties` files.
 
-### `WeakHashMap` [59:13]
+### `WeakHashMap` [▶ ~59:13](https://youtu.be/b1Uj_2MPBwA?t=3553)
 - Rarely used. Keys are held through **weak references**, so an entry can disappear once nothing else references its key. Sometimes used for cache-like behavior.
 - Weak references come with memory management later in the course.
 
-### `IdentityHashMap` [59:54]
+### `IdentityHashMap` [▶ ~59:54](https://youtu.be/b1Uj_2MPBwA?t=3594)
 - A normal `HashMap` is **equality-based**: it uses `hashCode()` and `equals()`. Two `new String("Aditya")` objects are different heap objects, but they are `equals`, have the same hash, and count as **one** key.
 - `IdentityHashMap` breaks that rule on purpose: keys are equal only if they are the **same object** (`==`). Those two strings are two different keys.
 - Rare uses, e.g. graph algorithms (cycle detection, topological sort) where you track specific node objects, or serialization/deep-copy code.
 - *Addition:* it uses `System.identityHashCode` and open addressing (linear probing) internally, not chaining.
 
-### `EnumMap` [65:08]
+### `EnumMap` [▶ ~65:08](https://youtu.be/b1Uj_2MPBwA?t=3908)
 - For maps whose keys are enum constants (`enum Day { MONDAY, TUESDAY, … }`). A `HashMap<Day, Integer>` works, but `EnumMap` is better.
 - Java knows an enum has a fixed, small set of constants, each with an **ordinal** (MONDAY = 0, TUESDAY = 1, …). `EnumMap` uses the ordinal as an array index, so there's **no hashing** and no collisions.
 - Benefits: more memory-efficient and faster; **iteration follows enum declaration order** (MONDAY, TUESDAY, …), whatever order you inserted.
@@ -133,7 +133,7 @@
 - Create it with `new EnumMap<>(Day.class)`. The video writes `new EnumMap<>()`, which doesn't compile: there is no no-arg constructor because the map needs the enum's class.
 - *Correction:* the video talks about "better distribution in buckets". There are no buckets: it's a plain array with one slot per constant.
 
-### `ConcurrentHashMap` [69:01]
+### `ConcurrentHashMap` [▶ ~69:01](https://youtu.be/b1Uj_2MPBwA?t=4141)
 - The modern **thread-safe** map for multithreaded code (race conditions). It doesn't lock the whole map for reads or for updates to different parts, so it's much faster than `Hashtable`.
 - Summary: day to day use `HashMap`; `LinkedHashMap` for insertion order; `TreeMap` for sorted keys; `ConcurrentHashMap` for multiple threads; `EnumMap`/`IdentityHashMap` for their niche; `WeakHashMap` and `Hashtable` almost never.
 

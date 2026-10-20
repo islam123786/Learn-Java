@@ -32,99 +32,99 @@
 
 ## Detailed Notes
 
-### What loops are [01:03]
+### What loops are [▶ ~01:03](https://youtu.be/d6hNDJrj1bw?t=63)
 - Selection statements split the flow into several paths; a loop instead makes the flow **go back up** and re-run a block a set number of times (e.g. n = 3 iterations), then continue below it.
-- Java's three loops [02:07]: `while`, `do-while`, `for`.
+- Java's three loops [▶ ~02:07](https://youtu.be/d6hNDJrj1bw?t=127): `while`, `do-while`, `for`.
 
-### Motivation: printing 1 to 10 [03:11]
+### Motivation: printing 1 to 10 [▶ ~03:11](https://youtu.be/d6hNDJrj1bw?t=191)
 - Without loops you would write `System.out.println(1); System.out.println(2); …` or `println(i); i++;` again and again. That doesn't scale.
 
-### The `while` loop [04:14]
+### The `while` loop [▶ ~04:14](https://youtu.be/d6hNDJrj1bw?t=254)
 - Syntax: `while (condition) { body }`. The condition must be a `boolean`, just like in `if`.
 - `int i = 1; while (i <= 10) { System.out.println(i); i++; }` prints 1 to 10. When `i` becomes 11 the condition is false and control continues after the loop.
 - Unlike `if`, the block runs again and again until the condition becomes false.
-- Forget `i++` [06:22] and you get 1, 1, 1, … forever: an **infinite loop**.
+- Forget `i++` [▶ ~06:22](https://youtu.be/d6hNDJrj1bw?t=382) and you get 1, 1, 1, … forever: an **infinite loop**.
 - `println` prints and then moves to a new line.
-- Braces [09:33]: with a single body statement you can omit `{}`, but then `i++` on the next line is **outside** the loop, which gives another infinite loop. Always use braces.
-- Counting down [10:37]: start at 10, use `i >= 1`, and `i--`. *Correction:* the transcript reads "i <= 1", but a countdown needs `i >= 1`.
+- Braces [▶ ~09:33](https://youtu.be/d6hNDJrj1bw?t=573): with a single body statement you can omit `{}`, but then `i++` on the next line is **outside** the loop, which gives another infinite loop. Always use braces.
+- Counting down [▶ ~10:37](https://youtu.be/d6hNDJrj1bw?t=637): start at 10, use `i >= 1`, and `i--`. *Correction:* the transcript reads "i <= 1", but a countdown needs `i >= 1`.
 
-### Increment inside the condition [11:41]
+### Increment inside the condition [▶ ~11:41](https://youtu.be/d6hNDJrj1bw?t=701)
 - `while (i++ <= 10)` with `i = 1` prints **2 to 11**: the comparison uses the old value, then `i` is incremented before the body runs.
 - Fix: start with `i = 0` and use `<` instead of `<=`, i.e. `while (i++ < 10)`, which prints 1 to 10.
 
-### The `do-while` loop [13:48]
+### The `do-while` loop [▶ ~13:48](https://youtu.be/d6hNDJrj1bw?t=828)
 - Syntax: `do { body } while (condition);` Note the **semicolon** at the end.
 - The body runs first, then the condition is checked.
-- Key difference [16:59]: with `i = 11`, `while (i <= 10)` prints nothing, but the `do-while` prints **11** once before checking.
-- Use case [18:03]: **menu selection**. A game shows "1. Play, 2. Load saved game, 3. Exit" at least once, performs the choice, and shows the menu again until the user picks Exit.
+- Key difference [▶ ~16:59](https://youtu.be/d6hNDJrj1bw?t=1019): with `i = 11`, `while (i <= 10)` prints nothing, but the `do-while` prints **11** once before checking.
+- Use case [▶ ~18:03](https://youtu.be/d6hNDJrj1bw?t=1083): **menu selection**. A game shows "1. Play, 2. Load saved game, 3. Exit" at least once, performs the choice, and shows the menu again until the user picks Exit.
 
-### The `for` loop [21:14]
+### The `for` loop [▶ ~21:14](https://youtu.be/d6hNDJrj1bw?t=1274)
 - Syntax: `for (int i = 1; i <= 10; i++) { … }`. The three parts are separated by **semicolons**.
 - The counter can be declared outside (`int i; for (i = 1; …)`), but declaring it in the header is the norm when it's only needed inside the loop.
-- Order of execution [24:25]:
+- Order of execution [▶ ~24:25](https://youtu.be/d6hNDJrj1bw?t=1465):
   1. Initialization runs **once**.
   2. The condition is evaluated.
   3. If it's true, the body runs.
   4. Control goes back to the `for` and the update (`i++`) runs.
   5. The condition is evaluated again.
   6. Steps 3–5 repeat until the condition is false.
-- Reverse [27:37]: `for (int i = 10; i >= 1; i--)` prints 10 down to 1.
+- Reverse [▶ ~27:37](https://youtu.be/d6hNDJrj1bw?t=1657): `for (int i = 10; i >= 1; i--)` prints 10 down to 1.
 - The **for-each** loop is covered later, with arrays and strings.
 
-### Infinite loops on purpose (and by accident) [28:40]
+### Infinite loops on purpose (and by accident) [▶ ~28:40](https://youtu.be/d6hNDJrj1bw?t=1720)
 - An empty body with an unchanged variable (`while (i < 10) { }`) spins forever, so the code after it never runs.
 - *Correction:* the video says it runs "until RAM runs out". An empty or printing loop doesn't consume memory; it just runs (and uses CPU) until you stop the program.
-- For loops [30:48]: removing `i++`, removing the condition (`for (int i = 1; ; i++)`), or removing everything (`for (;;)`) all give infinite loops. **All three parts are optional**, but both semicolons are required.
+- For loops [▶ ~30:48](https://youtu.be/d6hNDJrj1bw?t=1848): removing `i++`, removing the condition (`for (int i = 1; ; i++)`), or removing everything (`for (;;)`) all give infinite loops. **All three parts are optional**, but both semicolons are required.
 
-### Comma-separated `for` [33:59]
+### Comma-separated `for` [▶ ~33:59](https://youtu.be/d6hNDJrj1bw?t=2039)
 - Several variables in init and update: `for (int i = 1, j = 1; i <= 10; i++, j += 2) System.out.println(i * j);` prints 1, 6, 15, 28, 45, …
 - Each variable can be updated differently (`i++`, `j += 2`, `k *= 2`).
-- The **condition can't be comma-separated** [38:14] ("Syntax error on token ','"). Combine conditions with `&&` (stop as soon as either is false) or `||` (stop only when both are false). With `i <= 10 && j <= 5` and `j += 2`, it prints just 1, 6, 15.
+- The **condition can't be comma-separated** [▶ ~38:14](https://youtu.be/d6hNDJrj1bw?t=2294) ("Syntax error on token ','"). Combine conditions with `&&` (stop as soon as either is false) or `||` (stop only when both are false). With `i <= 10 && j <= 5` and `j += 2`, it prints just 1, 6, 15.
 
-### Any boolean works as a condition [40:22]
+### Any boolean works as a condition [▶ ~40:22](https://youtu.be/d6hNDJrj1bw?t=2422)
 - `for (…; b == true; …)` keeps going while a flag is true; some `if` inside the loop can set `b = false` to end it.
 
-### Why loop counters are `int`, not `byte`/`short` [41:25]
+### Why loop counters are `int`, not `byte`/`short` [▶ ~41:25](https://youtu.be/d6hNDJrj1bw?t=2485)
 - Most loops would fit in a `short`, so why always `int`? Because of type promotion: `byte`/`short` values are promoted to `int` in arithmetic and comparisons anyway. The JVM also stores locals in 32-bit slots, so a `short` counter saves nothing. Use `long` only when the range really exceeds `int`.
 
-### Nested loops [43:33]
+### Nested loops [▶ ~43:33](https://youtu.be/d6hNDJrj1bw?t=2613)
 - A loop inside a loop; any loop type can be nested, to any depth.
-- With `for (i = 1..5) { for (j = 1..5) { … } }` [45:40], for `i = 1` the inner loop runs `j = 1..5` completely, then `i = 2` runs `j = 1..5` again, and so on.
-- Count [47:48]: outer n, inner m gives **n × m** executions of the body. With n = m = 5 that's 25 (O(n²)); three nested loops give O(n³).
+- With `for (i = 1..5) { for (j = 1..5) { … } }` [▶ ~45:40](https://youtu.be/d6hNDJrj1bw?t=2740), for `i = 1` the inner loop runs `j = 1..5` completely, then `i = 2` runs `j = 1..5` again, and so on.
+- Count [▶ ~47:48](https://youtu.be/d6hNDJrj1bw?t=2868): outer n, inner m gives **n × m** executions of the body. With n = m = 5 that's 25 (O(n²)); three nested loops give O(n³).
 
-### Pattern printing: right-angled triangle [49:55]
+### Pattern printing: right-angled triangle [▶ ~49:55](https://youtu.be/d6hNDJrj1bw?t=2995)
 - Outer loop = **rows** (`i = 1..n`). Inner loop = what goes on each row. Row `i` needs `i` stars, so the inner condition is `j <= i`, not `j <= 5`.
 - Use `System.out.print("* ")` (no newline) inside, and `System.out.println()` after the inner loop to end the row.
 - Change n from 5 to 10 or 20 and the triangle grows. Pattern problems are great loop practice.
 
-### Jump statements: `break` [57:21]
+### Jump statements: `break` [▶ ~57:21](https://youtu.be/d6hNDJrj1bw?t=3441)
 - Two jump statements here: `break` and `continue`. You already saw `break` in `switch`, but both are mostly used in loops.
 - `for (i = 1..10) { println(i); if (i > 5) break; }` prints **1 to 6**: 6 is printed, then `6 > 5` triggers the break.
 - Why not just change the loop bound? Because the stopping point is often decided **dynamically** at runtime (e.g. a flag set by some other condition).
 
-### Example: prime check with `break` [61:36]
+### Example: prime check with `break` [▶ ~61:36](https://youtu.be/d6hNDJrj1bw?t=3696)
 - To test whether `p` is prime, try divisors `i = 2 … p - 1`. If `p % i == 0` for any of them, print "not prime" and `break`, since there's no need to test further.
 - After the loop: if `i == p`, the loop finished without breaking, so `p` is prime.
-- **Scope** [68:03]: `i` declared in the `for` header isn't visible after the loop ("i cannot be resolved to a variable"). Declare `int i;` before the loop.
+- **Scope** [▶ ~68:03](https://youtu.be/d6hNDJrj1bw?t=4083): `i` declared in the `for` header isn't visible after the loop ("i cannot be resolved to a variable"). Declare `int i;` before the loop.
 - Results: 7 gives "The number is prime", 9 gives "The number is not prime" (it breaks at `i = 3`).
 - Optimization: you only need to test up to √p (`i * i <= p`). *Correction:* the transcript garbles this as "i < P".
 
-### `continue` [70:06]
+### `continue` [▶ ~70:06](https://youtu.be/d6hNDJrj1bw?t=4206)
 - Print odd numbers 1 to 10: `if (i % 2 != 0) println(i);` works, and so does `if (i % 2 == 0) continue; println(i);`.
 - `continue` skips the rest of the body and goes to the next iteration. In a `for` loop the update `i++` still runs.
 - Summary: **`break` leaves the loop; `continue` skips to the next iteration.**
 
-### `break` / `continue` in nested loops [74:21]
+### `break` / `continue` in nested loops [▶ ~74:21](https://youtu.be/d6hNDJrj1bw?t=4461)
 - An unlabelled `break` exits only the **innermost** loop that contains it.
 - In the triangle with `if (j >= 5) break;` inside the inner loop: rows 1–4 are normal, and every row from 5 on is capped at 5 stars, while the outer loop keeps going.
 - `continue` in the inner loop likewise only affects the inner loop.
 
-### Labels [78:36]
+### Labels [▶ ~78:36](https://youtu.be/d6hNDJrj1bw?t=4716)
 - Name a loop: `outer: for (…) { inner: for (…) { … } }`.
 - `break outer;` exits **both** loops at once. In the triangle example, the pattern stops after the 5th row.
 - `continue outer;` jumps straight to the outer loop's next iteration.
 
-### Plain (labelled) code blocks [81:47]
+### Plain (labelled) code blocks [▶ ~81:47](https://youtu.be/d6hNDJrj1bw?t=4907)
 - Any `{ … }` is a block, even without `if`/`for`, and blocks can be nested and labelled: `first: { second: { third: { println("Hello"); break first; } } }`.
 - `break first;` jumps to the end of the `first` block. You rarely need this; labels are mostly used with loops.
 - Note: `continue` with a label only works if the label is on a loop; `break label` works on any labelled block.

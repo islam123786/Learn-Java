@@ -30,67 +30,67 @@
 
 ## Detailed Notes
 
-### Recap: Future and Callable [00:00]
+### Recap: Future and Callable [▶ ~00:00](https://youtu.be/FGN225TiXaE?t=0)
 - This is the last lecture of the series. It builds on #56 (Executor framework).
 - `executor.submit(task)` hands the task to a pool. It may run now or wait in the queue, so the result goes into a `Future`.
 - `Callable` is like `Runnable` but returns a value. *(The video calls `Runnable` "consumer-type". Strictly, a `Runnable` takes nothing and returns nothing, while a `Consumer` takes an argument.)*
 
-### The three `submit` overloads [01:53]
+### The three `submit` overloads [▶ ~01:53](https://youtu.be/FGN225TiXaE?t=113)
 1. `submit(Callable<T>)` → `Future<T>`, e.g. `() -> 10` gives a `Future<Integer>`.
 2. `submit(Runnable)` → `Future<?>`. `get()` returns `null`. You still keep the `Future` so that you can call `isDone()` or `cancel()` on it.
 3. `submit(Runnable, T result)` → `Future<T>`. `get()` returns the result you supplied (e.g. `"success"`) once the runnable finishes. It's an easy way to signal "done".
 
-### Future's methods [06:00]
+### Future's methods [▶ ~06:00](https://youtu.be/FGN225TiXaE?t=360)
 - **`get()`** blocks the current thread until the result is ready. It throws the checked exceptions `InterruptedException` and `ExecutionException` (the latter wraps whatever the task threw).
 - **Anti-pattern:** calling `submit(...)` and then `get()` on the very next line. The main thread just waits, so you might as well have called a plain method. Better: submit, do other useful work, and call `get()` only when you actually need the value.
 - **`get(2, TimeUnit.SECONDS)`** waits at most that long, then throws `TimeoutException`.
 - **`isDone()`** is non-blocking and returns true or false. You can check it and only call `get()` once it's true.
-- **`cancel(boolean mayInterruptIfRunning)`** [12:30]:
+- **`cancel(boolean mayInterruptIfRunning)`** [▶ ~12:30](https://youtu.be/FGN225TiXaE?t=750):
   - Task not started yet (still in the queue): it is cancelled and will never run.
   - Task already running with `true`: the worker thread gets **interrupted**. If the task is in `sleep`/`wait`/blocking I/O it gets an `InterruptedException`. A busy loop only stops if it checks `Thread.interrupted()`.
   - Task already running with `false`: the task runs to completion.
   - *Correction:* the video says a task that can't be interrupted "will throw an InterruptedException". It's more accurate to say that interruption is only a request. After a successful `cancel`, `isCancelled()` and `isDone()` both return `true` right away, and **`get()` throws `CancellationException`**, even if the task's code is technically still running.
 - **`isCancelled()`** returns whether the task was cancelled.
 
-### Limitations of Future [15:45]
+### Limitations of Future [▶ ~15:45](https://youtu.be/FGN225TiXaE?t=945)
 1. **Blocking**: the only way to get the result is `get()`, which blocks.
 2. **No chaining**: you can't say "when this finishes, transform it, then combine it with that one". `Future` is *passive*: you can only poll it or wait on it.
 - `CompletableFuture` is the "advanced Future" that fixes both, and it's used far more in production code.
 
-### CompletableFuture: supplyAsync / runAsync [18:41]
+### CompletableFuture: supplyAsync / runAsync [▶ ~18:41](https://youtu.be/FGN225TiXaE?t=1121)
 - You don't need to create an executor. `CompletableFuture.supplyAsync(() -> 10)` submits the work to the **`ForkJoinPool` common pool**.
 - `supplyAsync(Supplier)` is for work that returns a value. `runAsync(Runnable)` returns a `CompletableFuture<Void>`. *(The video says supplyAsync takes a Callable. It actually takes a `Supplier`, which can't throw checked exceptions.)*
-- Demo [21:56]: `f1.get()` still works and prints 10, but that defeats the purpose.
+- Demo [▶ ~21:56](https://youtu.be/FGN225TiXaE?t=1316): `f1.get()` still works and prints 10, but that defeats the purpose.
 
-### Chaining: thenApply, thenAccept, thenRun [24:10]
+### Chaining: thenApply, thenAccept, thenRun [▶ ~24:10](https://youtu.be/FGN225TiXaE?t=1450)
 - **`thenApply(Function)`**: runs after the previous stage and transforms its result. `supplyAsync(() -> 10).thenApply(r -> r * 2).thenApply(r -> r * 3)` gives **60**.
-- **`thenAccept(Consumer)`** [26:27]: consumes the result (e.g. prints it) and returns nothing. The result type becomes `CompletableFuture<Void>`, and assigning it to `CompletableFuture<Integer>` is a compile error ("cannot convert from `CompletableFuture<Void>`…").
-- **`thenRun(Runnable)`** [28:56]: ignores the result and just runs something, e.g. prints `"Done"`.
+- **`thenAccept(Consumer)`** [▶ ~26:27](https://youtu.be/FGN225TiXaE?t=1587): consumes the result (e.g. prints it) and returns nothing. The result type becomes `CompletableFuture<Void>`, and assigning it to `CompletableFuture<Integer>` is a compile error ("cannot convert from `CompletableFuture<Void>`…").
+- **`thenRun(Runnable)`** [▶ ~28:56](https://youtu.be/FGN225TiXaE?t=1736): ignores the result and just runs something, e.g. prints `"Done"`.
 - The point: these stages are **non-blocking**. The main thread carries on while the pipeline runs.
   - *Caveat:* common-pool threads are daemon threads. If `main` ends before the pipeline finishes, the JVM exits and the `thenAccept` output never appears. It worked in the demo because the task was instant. In small programs, finish with `.join()`. In servers, the app stays alive anyway.
 
-### thenCombine [29:30]
+### thenCombine [▶ ~29:30](https://youtu.be/FGN225TiXaE?t=1770)
 - `f1.thenCombine(f2, (a, b) -> a + b)` waits for **both** futures and merges their results with a `BiFunction`. 10 + 20 gives 30, and you can chain `.thenAccept(System.out::println)` onto it.
 
-### Custom executor [32:05]
+### Custom executor [▶ ~32:05](https://youtu.be/FGN225TiXaE?t=1925)
 - Every `…Async` method has an overload that takes an `Executor`: `supplyAsync(task, myExecutor)`. Use it when you want a dedicated pool (e.g. one created with `Executors.newFixedThreadPool`) instead of the shared common pool. This matters for blocking I/O, which should not tie up common-pool threads.
 
-### ThreadPoolExecutor recap → ForkJoinPool idea [33:08]
+### ThreadPoolExecutor recap → ForkJoinPool idea [▶ ~33:08](https://youtu.be/FGN225TiXaE?t=1988)
 - A normal pool has N workers and one shared queue. Extra tasks wait in the queue, and new threads are created up to the maximum pool size.
-- **Fork/Join principle** [35:28]: split a big task into subtasks, split those again recursively until a **base case**, solve the small pieces in parallel, then **join** the partial results. This is divide and conquer, as in DSA. *Fork* = split, *join* = combine.
+- **Fork/Join principle** [▶ ~35:28](https://youtu.be/FGN225TiXaE?t=2128): split a big task into subtasks, split those again recursively until a **base case**, solve the small pieces in parallel, then **join** the partial results. This is divide and conquer, as in DSA. *Fork* = split, *join* = combine.
 
-### Inside ForkJoinPool: work-stealing queues [37:10]
+### Inside ForkJoinPool: work-stealing queues [▶ ~37:10](https://youtu.be/FGN225TiXaE?t=2230)
 - A ForkJoinPool has worker threads plus a **submission queue** (shared, like the normal blocking queue).
 - Each worker **also has its own deque**, the **work-stealing queue**.
 - **Scenario 1:** Task 1 arrives and T1 takes it. T1 splits it into ST1 and ST2, keeps working on ST1, and pushes ST2 onto its own deque. T2 is idle, the submission queue is empty and its own deque is empty, so it **steals** ST2 from T1's deque. Both finish, and the results are joined into Task 1's result.
-- **Scenario 2** [41:27]: Task 1 can't be split, so T1 runs it whole. Task 2 is split, so T2 runs ST1 and parks ST2 in its own deque. Task 3 waits in the submission queue. When T1 becomes free, it takes **Task 3 from the submission queue first**. Only when that is done and nothing else is waiting does it steal ST2 from T2.
-- The rule from the video [44:52]: shared submission-queue work comes first, and stealing happens when there's nothing else to do. *(This is a simplification. Real workers drain their **own** deque first, LIFO from the top, and then scan other queues, both submission queues and other workers' deques, stealing FIFO from the bottom. Stealing the oldest, usually biggest, piece is what makes it efficient.)*
+- **Scenario 2** [▶ ~41:27](https://youtu.be/FGN225TiXaE?t=2487): Task 1 can't be split, so T1 runs it whole. Task 2 is split, so T2 runs ST1 and parks ST2 in its own deque. Task 3 waits in the submission queue. When T1 becomes free, it takes **Task 3 from the submission queue first**. Only when that is done and nothing else is waiting does it steal ST2 from T2.
+- The rule from the video [▶ ~44:52](https://youtu.be/FGN225TiXaE?t=2692): shared submission-queue work comes first, and stealing happens when there's nothing else to do. *(This is a simplification. Real workers drain their **own** deque first, LIFO from the top, and then scan other queues, both submission queues and other workers' deques, stealing FIFO from the bottom. Stealing the oldest, usually biggest, piece is what makes it efficient.)*
 
-### RecursiveTask and RecursiveAction [45:24]
+### RecursiveTask and RecursiveAction [▶ ~45:24](https://youtu.be/FGN225TiXaE?t=2724)
 - A ForkJoinPool can only split tasks written as `RecursiveTask<V>` (returns a value) or `RecursiveAction` (returns nothing). Both are abstract classes. You extend one and override `compute()`.
 - Example problem: the sum of a huge array. A loop is O(n) on one thread. Two threads each summing half, then adding `s1 + s2`, roughly halves the time, and you can keep splitting recursively. This works because the problem is **independent** (the order of the additions doesn't matter).
 
-### Coding the SumTask [48:49]
+### Coding the SumTask [▶ ~48:49](https://youtu.be/FGN225TiXaE?t=2929)
 - `class SumTask extends RecursiveTask<Integer>` with fields `arr`, `start` and `end`, set through the constructor.
 - `protected Integer compute()`:
   1. **Base case:** if the range is small (the video uses `end - start <= 2`), sum it with a plain loop.
@@ -98,34 +98,34 @@
   3. **Fork / compute / join:** `left.fork()` pushes the left half onto this worker's deque so another thread can steal it. `right.compute()` does the right half on the current thread. `left.join()` waits for the left half's result. Return `leftSum + rightSum`.
 - Compared with single-threaded divide and conquer (`left.compute() + right.compute()`), the only change is that the left half is offered to other threads.
 - `main`: `ForkJoinPool pool = new ForkJoinPool(); int result = pool.invoke(new SumTask(arr, 0, arr.length - 1)); pool.shutdown();`
-- The bug in the demo [62:12]: passing `arr.length` as `end` caused `ArrayIndexOutOfBoundsException`, because the code treats `end` as **inclusive**. The fix is `arr.length - 1`. For 1..8 the output is **36**.
-- `Executors.newWorkStealingPool()` [62:45] also returns a `ForkJoinPool`, but the video recommends using the `ForkJoinPool` class directly.
+- The bug in the demo [▶ ~62:12](https://youtu.be/FGN225TiXaE?t=3732): passing `arr.length` as `end` caused `ArrayIndexOutOfBoundsException`, because the code treats `end` as **inclusive**. The fix is `arr.length - 1`. For 1..8 the output is **36**.
+- `Executors.newWorkStealingPool()` [▶ ~62:45](https://youtu.be/FGN225TiXaE?t=3765) also returns a `ForkJoinPool`, but the video recommends using the `ForkJoinPool` class directly.
 
-### ThreadLocal [62:56]
+### ThreadLocal [▶ ~62:56](https://youtu.be/FGN225TiXaE?t=3776)
 - Heap memory is shared. If T1, T2 and T3 all write `resource.name`, they race and overwrite each other.
 - `ThreadLocal<String> name = new ThreadLocal<>();` keeps **one value per thread**. Inside T1, `name.set("Aditya")`. Inside T2, `name.set("Rohit")`. Then `name.get()` anywhere in T1's code returns "Aditya" and anywhere in T2's returns "Rohit". There's no race and no lock.
-- **Why not just a local variable?** [66:33] Locals live only as long as one method call, and you'd have to pass them as parameters everywhere. A `ThreadLocal` field lives in a long-lived object and is reachable from any method running on that thread.
+- **Why not just a local variable?** [▶ ~66:33](https://youtu.be/FGN225TiXaE?t=3993) Locals live only as long as one method call, and you'd have to pass them as parameters everywhere. A `ThreadLocal` field lives in a long-lived object and is reachable from any method running on that thread.
 
-### Virtual threads: the problem with platform threads [67:07]
-- `new Thread(...)` followed by `start()` asks the OS for a real thread and links the JVM thread to it **one-to-one** [69:14].
+### Virtual threads: the problem with platform threads [▶ ~67:07](https://youtu.be/FGN225TiXaE?t=4027)
+- `new Thread(...)` followed by `start()` asks the OS for a real thread and links the JVM thread to it **one-to-one** [▶ ~69:14](https://youtu.be/FGN225TiXaE?t=4154).
 - Problems:
   - Each thread is expensive (roughly 512 KB to 1 MB of stack, plus creation cost), and having many of them causes heavy context switching.
   - When a thread blocks on I/O, its OS thread sits idle and can't be used for anything else.
   - Thread-per-request web servers therefore don't scale. Thread pools (the Executor framework) cap the thread count, but that also caps concurrency at the pool size.
 
-### Virtual threads: how they work [71:41]
+### Virtual threads: how they work [▶ ~71:41](https://youtu.be/FGN225TiXaE?t=4301)
 - The JVM manages **virtual threads**. You can create a huge number, and they're just lightweight objects.
 - When a virtual thread actually needs to run, the JVM **mounts** it on an OS-backed **carrier thread**.
 - When it blocks (I/O, `sleep`, waiting on a lock), the JVM **unmounts** it and puts a runnable virtual thread on that carrier. OS threads stay busy, and when the blocked virtual thread is ready again it gets mounted on whichever carrier is free.
 - The mapping is "one OS thread to many virtual threads" (M:N). You can have hundreds of thousands of virtual threads with almost no memory cost.
 
-### Virtual threads: code [76:03]
+### Virtual threads: code [▶ ~76:03](https://youtu.be/FGN225TiXaE?t=4563)
 - `Thread t1 = Thread.startVirtualThread(runnable); t1.join();`
   - Printing `Thread.currentThread()` shows something like `VirtualThread[#21]/runnable@ForkJoinPool-1-worker-1`. The carrier threads come from a ForkJoinPool.
   - `getName()` printed an empty string. *Correction:* that's not because "we don't use getName() on virtual threads". Virtual threads simply have **no name by default**. Use `Thread.ofVirtual().name("x").start(...)` to give them one.
   - Without `join()`, nothing printed. *Correction:* the video says it "behaves like a daemon thread but isn't one". In fact virtual threads **are always daemon threads** (`isDaemon()` returns `true`), so the JVM doesn't wait for them.
-- The usual way [79:10]: `Executors.newVirtualThreadPerTaskExecutor()`. Submit tasks and each one runs in its own new virtual thread. *(It's not really a "pool": virtual threads are never reused, because they're cheap enough to throw away.)* The video uses `Thread.sleep(3000)` to wait for output. Closing the executor (try-with-resources), or `shutdown()` + `awaitTermination()`, is the proper way.
-- Use cases [81:03]: web servers (one virtual thread per request), API calls and DB calls, which is any work that spends most of its time **waiting**.
+- The usual way [▶ ~79:10](https://youtu.be/FGN225TiXaE?t=4750): `Executors.newVirtualThreadPerTaskExecutor()`. Submit tasks and each one runs in its own new virtual thread. *(It's not really a "pool": virtual threads are never reused, because they're cheap enough to throw away.)* The video uses `Thread.sleep(3000)` to wait for output. Closing the executor (try-with-resources), or `shutdown()` + `awaitTermination()`, is the proper way.
+- Use cases [▶ ~81:03](https://youtu.be/FGN225TiXaE?t=4863): web servers (one virtual thread per request), API calls and DB calls, which is any work that spends most of its time **waiting**.
 
 ## Code Examples
 

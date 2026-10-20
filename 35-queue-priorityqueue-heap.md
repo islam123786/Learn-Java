@@ -30,85 +30,85 @@
 
 ## Detailed Notes
 
-### Two ways to implement a queue or stack [00:00]
+### Two ways to implement a queue or stack [▶ ~00:00](https://youtu.be/zj0-JIc5oPw?t=0)
 - Both can be built on an **array** or a **linked list**.
 - Requirement either way: insertion and deletion in **constant time**.
 
-### Array queue: `front` and `rear` [01:39]
+### Array queue: `front` and `rear` [▶ ~01:39](https://youtu.be/zj0-JIc5oPw?t=99)
 - FIFO: elements enter at the **rear** and leave from the **front**. Insert 4, 5, 6, 7 and 4 comes out first.
 - Start with `front = rear = -1`.
 - `offer(x)` (also called **enqueue**): `arr[++rear] = x`. On the very first insert, also set `front = 0`.
 - `poll()` (also called **dequeue**): `int x = arr[front]; front++; return x;`. The old value can stay in the array; it'll be overwritten later.
 
-### Circular queue [05:23]
+### Circular queue [▶ ~05:23](https://youtu.be/zj0-JIc5oPw?t=323)
 - After a few polls the front slots are free, but `rear` has reached the end. Reuse them with `rear = (rear + 1) % n`: from index 5 in a size-6 array, `6 % 6 = 0` wraps to the start.
 - The queue is **full** when the slot after `rear` is `front`.
 
-### Resizing [06:50]
+### Resizing [▶ ~06:50](https://youtu.be/zj0-JIc5oPw?t=410)
 - When full, either refuse (a bounded queue) or allocate a bigger array (e.g. double) and copy.
 - Two ways to copy: lay elements out from `front` to `rear` starting at index 0, or keep the wrapped layout and move the front part to the end of the new array, leaving the gap in the middle. Java's choice comes later.
 
-### Linked-list queue [08:29]
+### Linked-list queue [▶ ~08:29](https://youtu.be/zj0-JIc5oPw?t=509)
 - `Node { int data; Node next; }`. The first node is both `front` and `rear`.
 - `offer`: create a node, link `rear.next` to it, move `rear`.
 - `poll`: `int x = front.data; front = front.next; return x;`.
 - Advantages: never "full", no circular logic, no wasted nodes (removed nodes can be garbage-collected). Time complexity is the same as the array version: O(1) per insert/remove.
 
-### Stack: LIFO [11:35]
+### Stack: LIFO [▶ ~11:35](https://youtu.be/zj0-JIc5oPw?t=695)
 - Push 5, 10, 3, 4, 6 and the first thing out is 6. Entry and exit are at the **same** end.
 
-### Array stack [12:37]
+### Array stack [▶ ~12:37](https://youtu.be/zj0-JIc5oPw?t=757)
 - One pointer `top`, starting at `-1`.
 - `push(x)`: `arr[++top] = x`. `pop()`: `int x = arr[top--]; return x;`.
 - No circular logic needed, because both operations use the same end. When full, resize (double and copy).
 
-### Linked-list stack [15:18]
+### Linked-list stack [▶ ~15:18](https://youtu.be/zj0-JIc5oPw?t=918)
 - If you push by appending at the tail of a **singly** linked list, `pop` can't move `top` back (a node doesn't know its predecessor).
 - Fix: push at the **head**. `Node temp = new Node(x); temp.next = top; top = temp;`. Pop: `x = top.data; top = top.next;`.
 - Java's `LinkedList` is doubly linked, so either end works.
 
-### The `Queue` hierarchy [17:35]
+### The `Queue` hierarchy [▶ ~17:35](https://youtu.be/zj0-JIc5oPw?t=1055)
 - `Iterable` → `Collection` → **`Queue`** (interface) → **`Deque`** (interface, "double-ended queue": insert and remove at both ends) → **`ArrayDeque`** (class, the array implementation).
 - A deque can act as a single-ended queue: just add at one end and remove at the other.
 
-### `LinkedList` is also a `Deque` [19:51]
+### `LinkedList` is also a `Deque` [▶ ~19:51](https://youtu.be/zj0-JIc5oPw?t=1191)
 - `LinkedList` implements both `List` and `Deque`. You can use it as a list or as a queue: it's the linked-list implementation of a queue, while `ArrayDeque` is the array implementation.
 
-### Where is the stack? [20:53]
+### Where is the stack? [▶ ~20:53](https://youtu.be/zj0-JIc5oPw?t=1253)
 - The old `Stack` class (under `List`, extends `Vector`) is legacy. For stacks Java uses **`ArrayDeque`** too.
 - A stack is a deque with one end "walled off". Use only the front: `offerFirst` to insert, `pollFirst` to remove. Ignore `offerLast`/`pollLast`.
 - So `ArrayDeque` can be used three ways: a queue, a double-ended queue, or a stack. `LinkedList` can too.
 
-### `push`/`pop` wrappers [24:12]
+### `push`/`pop` wrappers [▶ ~24:12](https://youtu.be/zj0-JIc5oPw?t=1452)
 - Because people are used to stack names, `Deque` also has `push`, `pop` and `peek`. They are wrappers over the front-end methods. The names also remind you that you're using it as a stack.
 - *Correction:* the video says `push` = `offerFirst` and `pop` = `pollFirst`. According to the `Deque` Javadoc, **`push` = `addFirst`** and **`pop` = `removeFirst`**, the *throwing* versions. On an empty deque `pop()` throws `NoSuchElementException`, while `pollFirst()` returns `null`. `peek()` = `peekFirst()` (returns `null` when empty).
 
-### Inside `ArrayDeque` [25:26]
+### Inside `ArrayDeque` [▶ ~25:26](https://youtu.be/zj0-JIc5oPw?t=1526)
 - An internal array plus two indexes (called `head` and `tail` in the JDK; front/rear in the video). Insert 5: rear moves and stores it; front points at 0. Insert 7, 9, 10, 11 the same way.
-- **Growth** [27:31]: when full, allocate a bigger array and copy. The video says it grows by 50% (5 → 7.5 → 7).
+- **Growth** [▶ ~27:31](https://youtu.be/zj0-JIc5oPw?t=1651): when full, allocate a bigger array and copy. The video says it grows by 50% (5 → 7.5 → 7).
   - *Precise version:* `ArrayDeque` (JDK 9+) **doubles** the capacity while it's small (under 64) and grows by **50%** after that. The default initial capacity is 16 (plus one spare slot).
-- **It is circular** [28:33]: after two polls, front has moved to index 2. New elements wrap around with `(i + 1) % n` into indexes 0 and 1. When rear's next slot is front, it's full again.
-- **Copy on resize** [29:59]: Java keeps the wrapped layout. The part at the start of the array (`10, 12`) stays at the start, and the front part (`9, 10, 11`) moves to the **end** of the new array, so the free space opens up between rear and front.
+- **It is circular** [▶ ~28:33](https://youtu.be/zj0-JIc5oPw?t=1713): after two polls, front has moved to index 2. New elements wrap around with `(i + 1) % n` into indexes 0 and 1. When rear's next slot is front, it's full again.
+- **Copy on resize** [▶ ~29:59](https://youtu.be/zj0-JIc5oPw?t=1799): Java keeps the wrapped layout. The part at the start of the array (`10, 12`) stays at the start, and the front part (`9, 10, 11`) moves to the **end** of the new array, so the free space opens up between rear and front.
 - Being a deque, you can also insert at the front (one slot before `front`) or remove from the rear.
 
-### Inside `LinkedList` as a queue [31:14]
+### Inside `LinkedList` as a queue [▶ ~31:14](https://youtu.be/zj0-JIc5oPw?t=1874)
 - Same as the linked-list queue above, but doubly linked, so both ends support insertion and deletion.
 - A "stack" built on `ArrayDeque` or `LinkedList` is the same internal structure. Java doesn't know you're using it as a stack; you only use one end.
 
-### `ArrayDeque` vs `LinkedList` [33:18]
+### `ArrayDeque` vs `LinkedList` [▶ ~33:18](https://youtu.be/zj0-JIc5oPw?t=1998)
 - The linked list looks more elegant (no wrap-around, never full), and both are O(1) per operation.
 - But the Java docs recommend **`ArrayDeque`** in almost all cases. Arrays are **contiguous**, so they are **cache-friendly**: when the CPU loads one element it also brings nearby ones into cache, and queue/stack operations always touch the neighbouring slot. Linked-list nodes are scattered across the heap (address 1000, 3000, …), and each node also costs extra memory.
-- **`null`** [35:47]: `ArrayDeque` **rejects** `null` elements (throws `NullPointerException`); `LinkedList` allows them. Avoid `null` elements anyway, because `poll`/`peek` use `null` to mean "empty".
+- **`null`** [▶ ~35:47](https://youtu.be/zj0-JIc5oPw?t=2147): `ArrayDeque` **rejects** `null` elements (throws `NullPointerException`); `LinkedList` allows them. Avoid `null` elements anyway, because `poll`/`peek` use `null` to mean "empty".
 
-### Why not the `Stack` class [36:37]
+### Why not the `Stack` class [▶ ~36:37](https://youtu.be/zj0-JIc5oPw?t=2197)
 - `Stack` is legacy and slow (it extends `Vector`, whose methods are all synchronized). Use `ArrayDeque` and its `push`/`pop`/`peek`.
 
-### Queue methods in code [37:51]
+### Queue methods in code [▶ ~37:51](https://youtu.be/zj0-JIc5oPw?t=2271)
 - `Queue<Integer> q = new ArrayDeque<>();`. Declaring it as `Queue` limits you to queue methods, which is what you want for a plain FIFO. (Declare `Deque` or `ArrayDeque` to reach the double-ended methods.)
-- **Insert** [39:43]: `add(1)` vs `offer(2)`. If insertion fails, `add` **throws** and `offer` returns **`false`**.
-- **Examine** [41:22]: `peek()` vs `element()` show the front without removing it. On an empty queue, `peek()` returns `null` and `element()` throws **`NoSuchElementException`**.
-- **Remove** [42:49]: `remove()` (throws if empty) vs `poll()` (returns `null` if empty).
-- The summary table [43:26]:
+- **Insert** [▶ ~39:43](https://youtu.be/zj0-JIc5oPw?t=2383): `add(1)` vs `offer(2)`. If insertion fails, `add` **throws** and `offer` returns **`false`**.
+- **Examine** [▶ ~41:22](https://youtu.be/zj0-JIc5oPw?t=2482): `peek()` vs `element()` show the front without removing it. On an empty queue, `peek()` returns `null` and `element()` throws **`NoSuchElementException`**.
+- **Remove** [▶ ~42:49](https://youtu.be/zj0-JIc5oPw?t=2569): `remove()` (throws if empty) vs `poll()` (returns `null` if empty).
+- The summary table [▶ ~43:26](https://youtu.be/zj0-JIc5oPw?t=2606):
 
 | | Throws exception | Returns special value |
 |---|---|---|
@@ -118,7 +118,7 @@
 
 - *Note:* for unbounded queues like `ArrayDeque`, `LinkedList` and `PriorityQueue`, `add` and `offer` both effectively always succeed. The difference matters for **capacity-restricted** queues (e.g. `ArrayBlockingQueue`), where `add` throws `IllegalStateException` when full.
 
-### `Deque` methods [43:51]
+### `Deque` methods [▶ ~43:51](https://youtu.be/zj0-JIc5oPw?t=2631)
 - Every method splits into a `First` and a `Last` version:
 
 | | Throws (first / last) | Special value (first / last) |
@@ -128,42 +128,42 @@
 | Examine | `getFirst` / `getLast` | `peekFirst` / `peekLast` |
 
 - All of these exist on both `ArrayDeque` and `LinkedList`.
-- **As a stack** [45:18]: use only one end (`offerFirst`/`pollFirst`/`peekFirst`, or the throwing versions), or the convenience names **`push`, `pop`, `peek`** [46:20]. Prefer `push`/`pop`/`peek` because the names say "stack".
+- **As a stack** [▶ ~45:18](https://youtu.be/zj0-JIc5oPw?t=2718): use only one end (`offerFirst`/`pollFirst`/`peekFirst`, or the throwing versions), or the convenience names **`push`, `pop`, `peek`** [▶ ~46:20](https://youtu.be/zj0-JIc5oPw?t=2780). Prefer `push`/`pop`/`peek` because the names say "stack".
 
-### Behavioral contracts [46:57]
+### Behavioral contracts [▶ ~46:57](https://youtu.be/zj0-JIc5oPw?t=2817)
 - `Queue` inherits everything from `Collection`. `add` appends at the rear, which fits. But `remove(Object o)` can delete from the **middle**, which breaks FIFO.
 - Likewise you can call `offerLast` on a deque you're treating as a stack.
 - Java doesn't prevent this. FIFO for queues and LIFO for stacks are **behavioral contracts** that you, the developer, must respect. Java exposes all the methods for the sake of a clean inheritance/polymorphism design.
 
-### `PriorityQueue` [49:51]
+### `PriorityQueue` [▶ ~49:51](https://youtu.be/zj0-JIc5oPw?t=2991)
 - A class that implements `Queue` directly (not via `Deque`).
 - `poll()` removes the element with the **highest priority**, not the oldest. There is no FIFO, front or rear.
 - Priority comes from **natural ordering** by default: the **smallest** element has the highest priority. With 5, 10, 1, 7, 3: `poll()` → 1, then 3, then 5, …
 - It can be reversed so the largest comes out first (10, 7, 5, …).
-- **Use case** [51:55]: scheduling and job-scheduling problems, where some jobs are more important.
+- **Use case** [▶ ~51:55](https://youtu.be/zj0-JIc5oPw?t=3115): scheduling and job-scheduling problems, where some jobs are more important.
 
-### Heap data structure [52:45]
+### Heap data structure [▶ ~52:45](https://youtu.be/zj0-JIc5oPw?t=3165)
 - `PriorityQueue` is implemented with a **binary heap** (unrelated to heap *memory*; it just shares the name).
-- **Complete binary tree** [53:22]: each node has at most two children, and the tree is filled **level by level, left to right**. You never start a new level before the current one is full.
+- **Complete binary tree** [▶ ~53:22](https://youtu.be/zj0-JIc5oPw?t=3202): each node has at most two children, and the tree is filled **level by level, left to right**. You never start a new level before the current one is full.
 - **Min-heap property**: every parent is smaller than its children. Example: root 10, children 20 and 30; 20's children 40 and 50.
 - *Correction:* the transcript says the tree is "implemented using a stack". It's implemented using an **array**.
 
-### Array representation [55:38]
+### Array representation [▶ ~55:38](https://youtu.be/zj0-JIc5oPw?t=3338)
 - Because the tree is complete, store it level by level in an array: `[10, 20, 30, 40, 50]`. No `Node` objects with `left`/`right` pointers.
 - For a node at index `i`: **left child = `2i + 1`**, **right child = `2i + 2`**. Check: 0 → 1, 2; 1 → 3, 4.
-- **A heap is not a sorted array** [57:55]. `[10, 30, 20, 40, 50]` is also a valid min-heap. The heap only promises that `poll` returns the smallest, then the next smallest, and so on.
-- **Min-heap vs max-heap** [58:32]: in a max-heap every parent is larger than its children. `PriorityQueue` is a min-heap by default; a comparator in the constructor turns it into a max-heap.
+- **A heap is not a sorted array** [▶ ~57:55](https://youtu.be/zj0-JIc5oPw?t=3475). `[10, 30, 20, 40, 50]` is also a valid min-heap. The heap only promises that `poll` returns the smallest, then the next smallest, and so on.
+- **Min-heap vs max-heap** [▶ ~58:32](https://youtu.be/zj0-JIc5oPw?t=3512): in a max-heap every parent is larger than its children. `PriorityQueue` is a min-heap by default; a comparator in the constructor turns it into a max-heap.
 
-### Insert: up-heapify (sift up) [60:11]
+### Insert: up-heapify (sift up) [▶ ~60:11](https://youtu.be/zj0-JIc5oPw?t=3611)
 - Heap `[10, 30, 20, 40, 50]`, `offer(5)`:
   1. Put 5 at the next free spot (the end of the array, index 5).
   2. Compare with its parent (20). 5 is smaller → swap.
   3. Compare with the new parent (10). Smaller → swap. 5 is now the root; stop.
 - Result: `[5, 30, 10, 40, 50, 20]`.
-- **Parent formula** [64:07]: parent of `i` = **`floor((i - 1) / 2)`**. It works for both children: (5 - 1) / 2 = 2 and (6 - 1) / 2 = 2.5 → 2. (The video says "ceiling" once and then corrects it to floor. Floor is right, and in Java integer division `(i - 1) / 2` already does it.)
+- **Parent formula** [▶ ~64:07](https://youtu.be/zj0-JIc5oPw?t=3847): parent of `i` = **`floor((i - 1) / 2)`**. It works for both children: (5 - 1) / 2 = 2 and (6 - 1) / 2 = 2.5 → 2. (The video says "ceiling" once and then corrects it to floor. Floor is right, and in Java integer division `(i - 1) / 2` already does it.)
 - `offer(8)`: goes to index 6, parent index 2 (10) → swap; then parent 5 → stop. Result: `[5, 30, 8, 40, 50, 20, 10]`.
 
-### Remove: down-heapify (sift down) [69:05]
+### Remove: down-heapify (sift down) [▶ ~69:05](https://youtu.be/zj0-JIc5oPw?t=4145)
 - `poll()` must return the root (5), but you can't just delete it: its children would be orphaned.
 - Steps:
   1. Swap the root with the **last** element (10), then remove the last slot and return 5.
@@ -173,15 +173,15 @@
 - *Precise version:* the video compares with the left child, then the right. The correct rule is to swap with the **smaller** of the two children (for a min-heap); otherwise you can break the heap property.
 - Summary: `offer` → up-heapify, `poll` → down-heapify.
 
-### Complexity [72:11]
+### Complexity [▶ ~72:11](https://youtu.be/zj0-JIc5oPw?t=4331)
 - Both walk at most the height of a complete binary tree, so `offer` and `poll` are **O(log n)**. `peek` is O(1) (it's `arr[0]`).
 - *Addition:* `remove(Object)` and `contains` are O(n), because the heap isn't searchable.
 
-### `PriorityQueue` in code [73:38]
+### `PriorityQueue` in code [▶ ~73:38](https://youtu.be/zj0-JIc5oPw?t=4418)
 - `PriorityQueue<Integer> pq = new PriorityQueue<>();` offer 10, 30, 20, 40, 50 → polling gives 10, 20, 30, 40, 50.
-- **Max-heap** [75:05]: `new PriorityQueue<>((a, b) -> b - a)` → 50, 40, 30, 20, 10. The lambda is a **comparator**; lambdas are explained in video #37.
+- **Max-heap** [▶ ~75:05](https://youtu.be/zj0-JIc5oPw?t=4505): `new PriorityQueue<>((a, b) -> b - a)` → 50, 40, 30, 20, 10. The lambda is a **comparator**; lambdas are explained in video #37.
   - *Tip:* prefer `Comparator.reverseOrder()` (or `Collections.reverseOrder()`). `b - a` can overflow for large values of opposite sign (e.g. `Integer.MIN_VALUE`) and give the wrong order.
-- **Methods** [76:19]: the usual queue pairs, `add`/`offer`, `remove`/`poll`, `element`/`peek`. The second of each pair is the safe one.
+- **Methods** [▶ ~76:19](https://youtu.be/zj0-JIc5oPw?t=4579): the usual queue pairs, `add`/`offer`, `remove`/`poll`, `element`/`peek`. The second of each pair is the safe one.
 
 ## Code Examples
 

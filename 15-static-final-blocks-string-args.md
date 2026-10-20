@@ -32,72 +32,72 @@
 
 ## Detailed Notes
 
-### Motivation: the same college in every object [00:45]
+### Motivation: the same college in every object [▶ ~00:45](https://youtu.be/Lyg4ZcrjUBw?t=45)
 - An app for IIT Guwahati: every `Student` object has `name`, `age`, `rollNumber`, `college`, and `college` is identical in all of them.
 - Storing the same 4-byte reference in thousands of objects is waste. Better to store it **once** in a common place and have every object share it.
 
-### `static` fields = class variables [05:00]
+### `static` fields = class variables [▶ ~05:00](https://youtu.be/Lyg4ZcrjUBw?t=300)
 - `static String college;` means the field isn't part of any object. It belongs to the **class**.
 - Heap objects now contain only `name`, `age`, `rollNumber`, and every object shares the single `college`.
 - Naming: per-object fields are **instance variables**, and a `static` field is a **class variable**.
 - *Correction:* the video says static variables "are not stored in the heap" and leaves where they go for a later video. In HotSpot since Java 8, static fields are stored **in the heap**, together with the class's `java.lang.Class` object. Class *metadata* (method code etc.) lives in **Metaspace**. What matters is that there is **one copy per class**, not one per object.
 
-### Accessing static fields [06:30]
+### Accessing static fields [▶ ~06:30](https://youtu.be/Lyg4ZcrjUBw?t=390)
 - `s1.college = "IIT Guwahati";` works (every object can reach the shared field), but the compiler or IDE warns: *"The static field Student.college should be accessed in a static way."*
 - Preferred: `Student.college = "IIT Guwahati";`, which is `ClassName.staticVariable`.
 - `s3.college = "IIT Kharagpur";` changes it for **everyone**, so `s1.college` also prints IIT Kharagpur.
 
-### `static` methods [09:30]
+### `static` methods [▶ ~09:30](https://youtu.be/Lyg4ZcrjUBw?t=570)
 - `static void markAttendance()` belongs to the class, and all objects share one method. You can call it as `s1.markAttendance()`, `s2.markAttendance()` or (preferred) `Student.markAttendance()`.
 - Side note from the video: methods, static or not, are **never** stored inside objects. Objects hold only their instance fields, and method code is stored once per class.
 
-### Rules for static methods [12:00]
+### Rules for static methods [▶ ~12:00](https://youtu.be/Lyg4ZcrjUBw?t=720)
 1. **A static method can call only static methods** (directly). If `Student.markAttendance()` called a non-static `print()`, *whose* `print()` would run? You can call a static method with no object at all.
 2. **A static method can access only static variables** (directly). Instance fields don't exist until an object is created, and even then there could be many.
 3. **A static method has no `this`.** `this` is the current object, and there isn't one.
 - *Precision:* rules 1 and 2 are about *implicit* access. A static method can still use instance members **through an explicit reference**, e.g. `static void show(Student s) { s.print(); }` or creating `new Student()` inside it. That's exactly what `main` does all the time.
 
-### Code demo [16:30]
+### Code demo [▶ ~16:30](https://youtu.be/Lyg4ZcrjUBw?t=990)
 - `static String college;` in `Student`. Assigning `this.college = college` in the constructor triggers the "should be accessed in a static way" warning, and `college = college` has no effect. So `college` is dropped from the constructor.
 - `Student.college = "IIT Guwahati";` in `main`, then printing both students shows IIT Guwahati for both. Writing `Student.college` instead of `s1.college` removes the warning.
 
-### Static blocks [19:30]
+### Static blocks [▶ ~19:30](https://youtu.be/Lyg4ZcrjUBw?t=1170)
 - `static { college = "IIT Guwahati"; grade = 8; }` initializes static fields. It's to static fields what a constructor is to instance fields.
 - You can also initialize at the declaration: `static String college = "IIT Guwahati";`.
 - **Runs once, when the class is loaded**, before any object is created.
   - *Precision:* the class is initialized on its **first active use** (first `new`, first static method call, or first access to a static field), not necessarily when the program starts.
 
-### What can't be static [23:00]
+### What can't be static [▶ ~23:00](https://youtu.be/Lyg4ZcrjUBw?t=1380)
 - **Method parameters and local variables can't be `static`.** They're locals in the stack frame and have nothing to do with objects or the class. `void print(static String name)` is a compile error.
 - **A top-level class can't be `static`.** It belongs to a package, and there's nothing for it to be "static" relative to. Only a **nested** class can be `static` (covered later).
 
-### `final` variables: constants [25:30]
+### `final` variables: constants [▶ ~25:30](https://youtu.be/Lyg4ZcrjUBw?t=1530)
 - `class Random { final double PI = 3.14; }`. Nobody can later write `r1.PI = 3.16`. That's a compile error: *"The final field Random.PI cannot be assigned"*.
 - `final` makes a variable a **constant**.
 
-### Naming constants [28:00]
+### Naming constants [▶ ~28:00](https://youtu.be/Lyg4ZcrjUBw?t=1680)
 - Constants are written in all capitals, with words separated by underscores: `PI`, `PI_VALUE`, `MAX_RETRY_COUNT`.
 
-### `final` everywhere [29:00]
+### `final` everywhere [▶ ~29:00](https://youtu.be/Lyg4ZcrjUBw?t=1740)
 - Variable → constant. Parameter → can't be reassigned inside the method (`void print(final String name)`). Method → can't be overridden (covered with polymorphism). Class → can't be subclassed (covered with inheritance).
 
-### `final` in code: when can you assign? [30:00]
+### `final` in code: when can you assign? [▶ ~30:00](https://youtu.be/Lyg4ZcrjUBw?t=1800)
 - At the declaration: `final double PI = 3.14;`.
 - **Blank final field** assigned in the constructor: `final double PI;` plus `Random() { this.PI = 3.14; }`. That's allowed, because the object's fields are created and the constructor runs exactly once per object.
 - Local: `final int x = 4;`, or `final int x;` followed by `x = 4;`. Both are allowed. A second assignment `x = 5;` is an error: *"The final local variable x may already have been assigned."*
 - *Correction:* the video first says you can't split the declaration and the assignment of a `final`, and then shows that it works. The real rule is **definite assignment**: a `final` must be assigned **exactly once** before use. A blank `final` field must be assigned in every constructor, and a `static final` at its declaration or in a static block.
 
-### Why `main` is `static` [34:00]
+### Why `main` is `static` [▶ ~34:00](https://youtu.be/Lyg4ZcrjUBw?t=2040)
 - If `main` weren't static, the JVM would have to create an object first (`Demo4 d = new Demo4(); d.main(...)`). Making it static lets the JVM simply call `Demo4.main(args)`.
 - That's also why the helper methods we wrote in the `main` class had to be `static`. Calling a non-static `print()` from `main` gives *"Cannot make a static reference to the non-static method print()"*.
 - *Version note:* Java 21 offered "instance main methods" as a **preview**, and Java 25 finalized them (JEP 512, compact source files). There a launcher can run a non-static `void main()` by creating the object itself. The classic `public static void main(String[] args)` is still the standard form and works everywhere.
 
-### `static final` together [37:00]
+### `static final` together [▶ ~37:00](https://youtu.be/Lyg4ZcrjUBw?t=2220)
 - `static final double PI;` can't be assigned in the constructor (it's not per-object). The errors are *"The blank final field PI may not have been initialized"* and *"should be accessed in a static way"*.
 - Assign it at the declaration or in a `static { PI = 3.14; }` block.
 - It's common for real constants: one shared copy that can never change.
 
-### `String[] args`: command-line arguments [39:30]
+### `String[] args`: command-line arguments [▶ ~39:30](https://youtu.be/Lyg4ZcrjUBw?t=2370)
 - Old-school run: `javac Demo5.java` then `java Demo5`.
 - A program that prints `args.length` and each `args[i]`:
   - `java Demo5` → `Number of arguments are 0`

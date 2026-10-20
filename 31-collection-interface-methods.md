@@ -28,70 +28,70 @@
 
 ## Detailed Notes
 
-### Where `Collection` sits [00:00]
+### Where `Collection` sits [▶ ~00:00](https://youtu.be/cazzzwdLAkQ?t=0)
 - `Iterable` is at the top, then `Collection`, then `List`, `Set` and `Queue`.
 - *(Correction: the video says "Iterable extends Collection". It's the reverse: `Collection<E> extends Iterable<E>`.)*
 - `Collection` is the parent of every data structure in the framework. It tells you what **any** collection can do, whatever its internal structure.
 - `Collection<Integer> c = new ...` can be followed by `ArrayList`, `LinkedList`, `HashSet`, `ArrayDeque` or any other concrete class. Then `c.` shows every method of the `Collection` interface. That's inheritance plus polymorphism.
 
-### `Collection` vs `Collections` [02:36]
+### `Collection` vs `Collections` [▶ ~02:36](https://youtu.be/cazzzwdLAkQ?t=156)
 - `Collection` is an **interface**. `Collections` (with an extra "s") is a **utility class**.
 - The same pattern exists elsewhere: `Object` (the parent class) vs `Objects` (the utility class). The utility class gets its own video later.
 
-### Grouping the methods logically [03:20]
+### Grouping the methods logically [▶ ~03:20](https://youtu.be/cazzzwdLAkQ?t=200)
 - Methods specific to one structure belong to `List`, `Set` or `Queue`. Only operations common to *all* collections live in `Collection`.
 - Ask yourself, from first principles, what you can do with *any* container. The answer is the method list. In practice you type `c.` in the IDE and choose.
 
-### Query methods: `size`, `isEmpty`, `contains` [05:38]
+### Query methods: `size`, `isEmpty`, `contains` [▶ ~05:38](https://youtu.be/cazzzwdLAkQ?t=338)
 - Setup: `import java.util.*; Collection<Integer> c = new ArrayList<>(); c.add(1); c.add(2); c.add(3);`
-- `c.size()` [06:31] gives `3`.
-- `c.isEmpty()` [07:07] gives `false`. Why not just `size() == 0`? `isEmpty` can be cheaper for some structures, so prefer it.
+- `c.size()` [▶ ~06:31](https://youtu.be/cazzzwdLAkQ?t=391) gives `3`.
+- `c.isEmpty()` [▶ ~07:07](https://youtu.be/cazzzwdLAkQ?t=427) gives `false`. Why not just `size() == 0`? `isEmpty` can be cheaper for some structures, so prefer it.
   - *(Detail: for most JDK collections both are O(1). For a few, such as `ConcurrentLinkedQueue`, `size()` is O(n) while `isEmpty()` is O(1).)*
-- `boolean contains(Object o)` [07:43]:
+- `boolean contains(Object o)` [▶ ~07:43](https://youtu.be/cazzzwdLAkQ?t=463):
   - The parameter is `Object` because the check is done with **`equals()`**, which every object inherits from `Object`.
   - `ArrayList`/`LinkedList` compare element by element: **O(n)**. `HashSet` hashes straight to the bucket: **O(1)** on average.
   - `c.contains(2)` gives `true` for both `ArrayList` and `HashSet`. Only the cost differs.
 
-### `iterator()` [10:31]
+### `iterator()` [▶ ~10:31](https://youtu.be/cazzzwdLAkQ?t=631)
 - `Collection` extends `Iterable`, so it has `iterator()`, which returns an `Iterator` (covered in #30).
 
-### `toArray` [10:49]
+### `toArray` [▶ ~10:49](https://youtu.be/cazzzwdLAkQ?t=649)
 - `Object[] toArray()` copies any collection (a list, set, stack, queue, …) into an array, which gives you contiguous memory and random access.
   - The catch: you get `Object[]`, so you can only call `Object` methods unless you cast. `for (Object o : obj) System.out.println(o);` prints `1 2 3`.
-- `<T> T[] toArray(T[] a)` [12:22] returns an array of the type you ask for:
+- `<T> T[] toArray(T[] a)` [▶ ~12:22](https://youtu.be/cazzzwdLAkQ?t=742) returns an array of the type you ask for:
   - `Integer[] arr = c.toArray(new Integer[0]);`. The zero-length array only *signals the type*. Loop with `for (Integer i : arr)` to get `1 2 3`.
   - *(Details: if the passed array is big enough, it's filled and returned. Otherwise a new array of the same type is created. Since Java 11 you can also write `c.toArray(Integer[]::new)`.)*
 
-### `add` [15:02]
+### `add` [▶ ~15:02](https://youtu.be/cazzzwdLAkQ?t=902)
 - `boolean add(E e)` takes an `E` (generic), so a `Collection<Integer>` accepts only `Integer`s.
 - It returns `true` if the collection changed. `c.add(4)` on a `LinkedList` gives `true`.
-- It returns `false` when nothing changes. With a **`HashSet`** [16:18], `c.add(3)` when 3 is already present gives `false`, since duplicates aren't allowed.
+- It returns `false` when nothing changes. With a **`HashSet`** [▶ ~16:18](https://youtu.be/cazzzwdLAkQ?t=978), `c.add(3)` when 3 is already present gives `false`, since duplicates aren't allowed.
 
-### `remove` [16:57]
+### `remove` [▶ ~16:57](https://youtu.be/cazzzwdLAkQ?t=1017)
 - `boolean remove(Object o)` again takes `Object`, because finding the element uses `equals`.
 - On a `HashSet` it's constant time. `c.remove(2)` gives `true`, and `c.remove(4)` (absent) gives `false`.
-- For a list with duplicates [19:08], `[1, 2, 3, 3]` with `c.remove(3)` removes the **first** occurrence and leaves `[1, 2, 3]`.
+- For a list with duplicates [▶ ~19:08](https://youtu.be/cazzzwdLAkQ?t=1148), `[1, 2, 3, 3]` with `c.remove(3)` removes the **first** occurrence and leaves `[1, 2, 3]`.
 
-### Bulk operations [19:44]
+### Bulk operations [▶ ~19:44](https://youtu.be/cazzzwdLAkQ?t=1184)
 - `boolean addAll(Collection<? extends E> c)` adds all the elements of another collection.
   - Why `? extends E`: if the collection holds `Animal`s, you can also add a collection of `Dog`s or `Cat`s (subtypes). That's the producer side of PECS.
   - `c.addAll(List.of(5, 6, 7, 8, 9));`. `List.of` builds a small list, explained in the `List` video.
-- **Printing a collection directly** [21:16]: `System.out.println(c)` calls `c.toString()`. Collections override `toString()` and print `[1, 2, 3, 5, 6, 7, 8, 9]`, so you don't need a loop.
-- `boolean containsAll(Collection<?> c)` [21:49]. It takes any collection (`?`) because it only compares with `equals`. `c.containsAll(List.of(1, 2, 3))` gives `true`.
-- `boolean removeAll(Collection<?> c)` [23:03] removes every element that's also in the argument.
-- `boolean retainAll(Collection<?> c)` [23:42] is the opposite: it keeps **only** the elements that are in the argument, which is a set **intersection**.
+- **Printing a collection directly** [▶ ~21:16](https://youtu.be/cazzzwdLAkQ?t=1276): `System.out.println(c)` calls `c.toString()`. Collections override `toString()` and print `[1, 2, 3, 5, 6, 7, 8, 9]`, so you don't need a loop.
+- `boolean containsAll(Collection<?> c)` [▶ ~21:49](https://youtu.be/cazzzwdLAkQ?t=1309). It takes any collection (`?`) because it only compares with `equals`. `c.containsAll(List.of(1, 2, 3))` gives `true`.
+- `boolean removeAll(Collection<?> c)` [▶ ~23:03](https://youtu.be/cazzzwdLAkQ?t=1383) removes every element that's also in the argument.
+- `boolean retainAll(Collection<?> c)` [▶ ~23:42](https://youtu.be/cazzzwdLAkQ?t=1422) is the opposite: it keeps **only** the elements that are in the argument, which is a set **intersection**.
   - On `[1, 2, 3]`, `removeAll(List.of(1, 2))` gives `[3]` and `retainAll(List.of(1, 2))` gives `[1, 2]`.
-- `void clear()` [25:00] empties the collection and prints as `[]`.
+- `void clear()` [▶ ~25:00](https://youtu.be/cazzzwdLAkQ?t=1500) empties the collection and prints as `[]`.
 
-### Recap, and methods from `Object` [25:26]
+### Recap, and methods from `Object` [▶ ~25:26](https://youtu.be/cazzzwdLAkQ?t=1526)
 - Groups: `add`/`remove`; `addAll`/`removeAll`/`retainAll`; `contains`/`containsAll`; the two `toArray`s; `iterator`; `size`/`isEmpty`; `clear`.
 - From `Object`: `equals` and `hashCode`. Collections compare **contents**, not references.
   - The contract: if `a.equals(b)` then `a.hashCode() == b.hashCode()`. The reverse doesn't have to hold.
   - If you write your own `Student` class and override `equals`, also override `hashCode`.
   - *(Correction: `Collection` itself doesn't define value equality. `List` and `Set` do, in their own contracts. Two lists are equal if they hold equal elements in the same order. Two sets are equal if they hold the same elements. A `List` never equals a `Set`, even with the same elements, and `ArrayDeque` doesn't override `equals` at all.)*
 
-### Modern default methods [27:19]
-- `removeIf`, `spliterator`, `stream` and `parallelStream` [27:44] are **`default`** methods, so code written against the old interface keeps compiling without implementing them.
+### Modern default methods [▶ ~27:19](https://youtu.be/cazzzwdLAkQ?t=1639)
+- `removeIf`, `spliterator`, `stream` and `parallelStream` [▶ ~27:44](https://youtu.be/cazzzwdLAkQ?t=1664) are **`default`** methods, so code written against the old interface keeps compiling without implementing them.
 - `removeIf` takes a `Predicate`, a functional interface (covered with lambdas). Streams and spliterators are covered with streams.
 - Most of what you can do to a container is declared right here. `List`/`Set`/`Queue` only add structure-specific methods: index access for lists, front/back operations for queues, ordered navigation for `TreeSet` (a BST).
 

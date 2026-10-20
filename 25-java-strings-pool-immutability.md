@@ -31,57 +31,57 @@
 
 ## Detailed Notes
 
-### Characters → Strings [00:00]
+### Characters → Strings [▶ ~00:00](https://youtu.be/N0b8lRXtK_Y?t=0)
 - A **character** is any symbol a human can read: letters (`A`, `a`), digits (`0`–`9`) and special symbols (`.`, `,`, …), in any language. Java has the primitive `char` for one character.
 - **A String is a sequence of characters.** A sequence is stored in an array, so a String is basically an abstraction over a **character array**. "Aditya" is `['A','d','i','t','y','a']`.
-- In memory each character is stored as its **Unicode value** [02:20], e.g. `a` = 97.
+- In memory each character is stored as its **Unicode value** [▶ ~02:20](https://youtu.be/N0b8lRXtK_Y?t=140), e.g. `a` = 97.
 
-### Why a separate String type? [02:45]
+### Why a separate String type? [▶ ~02:45](https://youtu.be/N0b8lRXtK_Y?t=165)
 - With a raw `char[]` you'd have to write your own algorithms for comparison, concatenation, substring and more.
 - `String` is a **non-primitive** class (just as `Integer` wraps `int`) that bundles fields, constructors and lots of methods.
 - Strings are everywhere (names, passwords, emails, URLs, DB connection strings), so having all this built in is essential.
-- It lives in **`java.lang`** [05:39] (auto-imported, like `System` and `Object`).
+- It lives in **`java.lang`** [▶ ~05:39](https://youtu.be/N0b8lRXtK_Y?t=339) (auto-imported, like `System` and `Object`).
 
-### How is `String s = "Hello"` even legal? [06:37]
+### How is `String s = "Hello"` even legal? [▶ ~06:37](https://youtu.be/N0b8lRXtK_Y?t=397)
 - Objects normally need `new`. With `Integer i = 4`, Java secretly calls `Integer.valueOf(4)` (autoboxing). For Strings, the literal syntax is a special shortcut: Java creates or reuses the object for you (see the String Pool below).
 
-### Immutability [08:03]
+### Immutability [▶ ~08:03](https://youtu.be/N0b8lRXtK_Y?t=483)
 - `String` is an **immutable class**. Recall the recipe: make the class `final` (no subclass can change behavior), have no setters, keep fields `private final`, and set everything in the constructor.
-- **Why Java made Strings immutable** [08:42]: Strings hold passwords, URLs (DB and app), and keys and hashes for `HashMap`/`HashSet`. If a String could change after being used as a key, hashes would change and hash collections would break. Security-sensitive values could also be modified.
-- Demo [10:16]: `String s1 = "Hello"; s1.concat(" World"); System.out.println(s1);` prints **`Hello`**. `concat` built a new `"Hello World"` object that nothing references. To keep it, write `s1 = s1.concat(" World");`.
+- **Why Java made Strings immutable** [▶ ~08:42](https://youtu.be/N0b8lRXtK_Y?t=522): Strings hold passwords, URLs (DB and app), and keys and hashes for `HashMap`/`HashSet`. If a String could change after being used as a key, hashes would change and hash collections would break. Security-sensitive values could also be modified.
+- Demo [▶ ~10:16](https://youtu.be/N0b8lRXtK_Y?t=616): `String s1 = "Hello"; s1.concat(" World"); System.out.println(s1);` prints **`Hello`**. `concat` built a new `"Hello World"` object that nothing references. To keep it, write `s1 = s1.concat(" World");`.
 
 > **Correction:** the video lists "make all methods final" as part of the immutability recipe. Once the class itself is `final`, that's redundant, since nothing can override its methods. What really matters is: final class, private final fields, no mutators, and defensive copies of any mutable inputs.
 
-### Two ways to create a String [11:41]
+### Two ways to create a String [▶ ~11:41](https://youtu.be/N0b8lRXtK_Y?t=701)
 1. **Literal**: `String s = "hello";`
 2. **`new` operator**: `String s = new String("hello");`
 
-### The String Pool [13:59]
+### The String Pool [▶ ~13:59](https://youtu.be/N0b8lRXtK_Y?t=839)
 - Millions of Strings are created in typical apps, and a new object for every one would waste memory. Java **reuses** them.
 - Inside the heap, Java reserves a special area: the **String Pool**.
 - `String s1 = "Hello";` checks whether the pool already has `"Hello"`. If not, it creates one there, and `s1` (on the stack) points to it.
 - `String s2 = "Hello";` finds the existing `"Hello"` and points `s2` at the **same object**. `s3 = "Hello"` does the same. Three references, one object.
 - `String s4 = "World";` isn't in the pool yet, so a new pooled object is created.
-- History [16:40]: the pool used to live in a special area called **PermGen**. In modern Java (since Java 7) it's part of the regular heap.
+- History [▶ ~16:40](https://youtu.be/N0b8lRXtK_Y?t=1000): the pool used to live in a special area called **PermGen**. In modern Java (since Java 7) it's part of the regular heap.
 
-### `new String(...)` [16:58]
+### `new String(...)` [▶ ~16:58](https://youtu.be/N0b8lRXtK_Y?t=1018)
 - `new String("Hello")` always creates a **new object in the regular heap**, even if the content is identical. Two `new` calls give two objects.
 - The literal is reused, while `new` gives every reference its own object.
 
-### `==` vs `equals()` for Strings [18:35]
+### `==` vs `equals()` for Strings [▶ ~18:35](https://youtu.be/N0b8lRXtK_Y?t=1115)
 - `==` compares **references**. `String` **overrides `equals()`** to compare **contents**.
-- Code: `"Hello" == "Hello"` (two literals) is **true**, because they're the same pooled object. `new String("Aditya") == new String("Aditya")` [19:59] is **false**, because they're two heap objects. `equals` is **true** in both cases.
+- Code: `"Hello" == "Hello"` (two literals) is **true**, because they're the same pooled object. `new String("Aditya") == new String("Aditya")` [▶ ~19:59](https://youtu.be/N0b8lRXtK_Y?t=1199) is **false**, because they're two heap objects. `equals` is **true** in both cases.
 
-### The golden rule [20:59]
+### The golden rule [▶ ~20:59](https://youtu.be/N0b8lRXtK_Y?t=1259)
 > **Only compile-time constants go to the String Pool. Strings created at runtime go to the regular heap.**
 
 Interview questions on Strings mostly test this rule.
 
-**Case 1: compile-time concatenation** [22:11]
+**Case 1: compile-time concatenation** [▶ ~22:11](https://youtu.be/N0b8lRXtK_Y?t=1331)
 - `String s1 = "Ja" + "va"; String s2 = "Java";` gives `s1 == s2` → **true**.
 - Both operands are literals, so the compiler folds them into `"Java"` *at compile time*. It's a single pooled literal, and `s2` reuses it.
 
-**Case 2: runtime concatenation** [23:47]
+**Case 2: runtime concatenation** [▶ ~23:47](https://youtu.be/N0b8lRXtK_Y?t=1427)
 - `String s1 = "Ja"; String s2 = s1 + "va"; String s3 = "Java";` gives `s2 == s3` → **false**.
 - `s1` is a variable, so the compiler can't know its value. The concatenation happens at **runtime**, and the result is a new object in the **regular heap**.
 - Side effect: the literal `"va"` still gets its own pool entry, referenced by nobody, and is eventually garbage-collected. (GC of the pool is slower or rarer; that comes up in the GC video.)
@@ -89,27 +89,27 @@ Interview questions on Strings mostly test this rule.
 
 > **Correction:** the "variable" part matters. If the variable is a **compile-time constant**, i.e. `final String s1 = "Ja";`, then `s1 + "va"` is folded at compile time and **is** the pooled `"Java"`, so `==` gives **true**. See the code example below.
 
-**Case 3: plain assignment** [28:21]
+**Case 3: plain assignment** [▶ ~28:21](https://youtu.be/N0b8lRXtK_Y?t=1701)
 - `String s1 = "Java"; String s2 = s1;` gives `s1 == s2` → **true**. Both references point to the same pooled object.
 
 > **Correction:** the video explains this as "assignment is resolved at compile time, so s2 goes to the pool". More precisely: `s2 = s1` **copies the reference** and creates no String object at all, so the result is the same whether `s1` points into the pool or the heap.
 
-**Case 4: reassignment** [30:01]
+**Case 4: reassignment** [▶ ~30:01](https://youtu.be/N0b8lRXtK_Y?t=1801)
 - `String s = "Hello"; s = "World";` creates (or reuses) a pooled `"World"`. `s` now points there, and `"Hello"` stays in the pool with no reference until it's collected. Printing gives `World`. The original object was never modified, only the reference moved.
 
-**Case 5: `new String("Hello")` creates up to two objects** [32:23]
+**Case 5: `new String("Hello")` creates up to two objects** [▶ ~32:23](https://youtu.be/N0b8lRXtK_Y?t=1943)
 - `new String("Hello")` puts a new object in the regular heap, *and* the literal `"Hello"` passed to the constructor lives in the pool (if it wasn't there already).
 - So a later `String s2 = "Hello";` reuses that pooled object and no new one is created. Meanwhile `s == s2` is **false** (heap vs pool).
-- Code walk-through of all these cases [33:30] [37:39] [39:40]: same results as above.
+- Code walk-through of all these cases [▶ ~33:30](https://youtu.be/N0b8lRXtK_Y?t=2010) [▶ ~37:39](https://youtu.be/N0b8lRXtK_Y?t=2259) [▶ ~39:40](https://youtu.be/N0b8lRXtK_Y?t=2380): same results as above.
 
-### The problem with immutability [41:04]
+### The problem with immutability [▶ ~41:04](https://youtu.be/N0b8lRXtK_Y?t=2464)
 - Code: `String s = ""; for (int i = 0; i < 5; i++) { s += i; System.out.println(s); }` prints `0`, `01`, `012`, `0123`, `01234`.
 - `s += i` means `s = s + i`. That's runtime concatenation, so **every iteration creates a new heap String**: "0", "01", "012", …. `s` moves to the newest one, and the old ones become garbage waiting for the GC. The empty literal `""` stays in the pool.
-- So a simple loop leaves lots of dead objects behind. The fix is to use **mutable** builders: **`StringBuilder`** and **`StringBuffer`** [48:01] (next video).
+- So a simple loop leaves lots of dead objects behind. The fix is to use **mutable** builders: **`StringBuilder`** and **`StringBuffer`** [▶ ~48:01](https://youtu.be/N0b8lRXtK_Y?t=2881) (next video).
 
 > **Note:** since Java 9, `javac` compiles `+` concatenation to an `invokedynamic` call (`StringConcatFactory`) instead of an explicit `StringBuilder`. Either way, each `s += i` still produces a new String, so the advice holds: inside loops, use one `StringBuilder`.
 
-### Inside the String class [48:36]
+### Inside the String class [▶ ~48:36](https://youtu.be/N0b8lRXtK_Y?t=2916)
 Roughly (simplified):
 ```
 public final class String {
@@ -120,29 +120,29 @@ public final class String {
 }
 ```
 
-### From `char[]` to `byte[]` (compact strings) [49:25]
-- Before Java 9, `value` was a `char[]`. A Java `char` is **2 bytes** [54:22], so `"Java"` used **8 bytes** of character data.
-- Since Java 9, `value` is a `byte[]`. For `"Java"` it holds the code values `74, 97, 118, 97` [52:12], at **1 byte each**, so **4 bytes**. That's 50% less.
-- Why that works: most strings in real programs are English letters, digits and keyboard symbols, and all of them fit in one byte. `char` is 2 bytes only because Java supports all of Unicode (Hindi, Chinese, …). For example, Hindi `क` needs 2 bytes [56:09].
+### From `char[]` to `byte[]` (compact strings) [▶ ~49:25](https://youtu.be/N0b8lRXtK_Y?t=2965)
+- Before Java 9, `value` was a `char[]`. A Java `char` is **2 bytes** [▶ ~54:22](https://youtu.be/N0b8lRXtK_Y?t=3262), so `"Java"` used **8 bytes** of character data.
+- Since Java 9, `value` is a `byte[]`. For `"Java"` it holds the code values `74, 97, 118, 97` [▶ ~52:12](https://youtu.be/N0b8lRXtK_Y?t=3132), at **1 byte each**, so **4 bytes**. That's 50% less.
+- Why that works: most strings in real programs are English letters, digits and keyboard symbols, and all of them fit in one byte. `char` is 2 bytes only because Java supports all of Unicode (Hindi, Chinese, …). For example, Hindi `क` needs 2 bytes [▶ ~56:09](https://youtu.be/N0b8lRXtK_Y?t=3369).
 
 > **Correction:** the video calls the 0–255 range "ASCII". **ASCII is only 0–127.** The one-byte encoding Java uses is **Latin-1 (ISO-8859-1)**, which covers 0–255 (ASCII plus Western-European letters like `é`). Also, a `char` is a UTF-16 *code unit*: characters outside the Basic Multilingual Plane (e.g. most emoji) need **two** chars (a surrogate pair), i.e. 4 bytes.
 
-### The `coder` field [60:21]
+### The `coder` field [▶ ~60:21](https://youtu.be/N0b8lRXtK_Y?t=3621)
 - `coder` tells String how to read `value`:
-  - **0 = LATIN1** [61:04]: every character fits in 1 byte, so read 1 byte per character.
+  - **0 = LATIN1** [▶ ~61:04](https://youtu.be/N0b8lRXtK_Y?t=3664): every character fits in 1 byte, so read 1 byte per character.
   - **1 = UTF16**: read **2 bytes per character**.
 - Example: `"Java"` has `coder = 0`, so 74 → J, 97 → a, 118 → v, 97 → a.
-- Example [62:45]: `"कग"` (two Hindi characters) has `coder = 1`. `value` has 4 bytes, read 2 at a time: क, then ग.
+- Example [▶ ~62:45](https://youtu.be/N0b8lRXtK_Y?t=3765): `"कग"` (two Hindi characters) has `coder = 1`. `value` has 4 bytes, read 2 at a time: क, then ग.
 
 > **Note:** the choice is made **per string**. If even one character is outside Latin-1, the *entire* string is stored as UTF-16 (2 bytes for every character, ASCII ones included). The JVM flag `-XX:-CompactStrings` turns the optimization off.
 
-### The cached `hash` [66:09]
+### The cached `hash` [▶ ~66:09](https://youtu.be/N0b8lRXtK_Y?t=3969)
 - `s.hashCode()` is computed on first use (the formula walks over all the characters) and saved in the `hash` field, which acts as a **cache**. Later calls, including those from `HashMap`/`HashSet`, return the stored value instantly.
 - This is only safe because Strings are immutable. If the content could change, the cached hash would become stale.
 
 > **Correction:** the video says `hashCode()` "comes from the Object class". It's *declared* in `Object`, but `String` **overrides** it with a content-based formula: `s[0]*31^(n-1) + s[1]*31^(n-2) + … + s[n-1]`. That's why equal strings always have equal hash codes.
 
-### Summary: three optimizations [67:54]
+### Summary: three optimizations [▶ ~67:54](https://youtu.be/N0b8lRXtK_Y?t=4074)
 1. **String Pool**: identical literals are shared, so far fewer objects get created.
 2. **`char[]` → `byte[]` + `coder`**: about half the memory for Latin-1 text.
 3. **Cached hash**: the hash is computed once and reused.

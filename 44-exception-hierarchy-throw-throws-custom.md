@@ -32,14 +32,14 @@
 
 ## Detailed Notes
 
-### Nested try/catch [00:30]
+### Nested try/catch [▶ ~00:30](https://youtu.be/xTxscoajikw?t=30)
 - You can nest `if`, loops, `switch` and classes, so you can nest `try`/`catch` too. There are two cases.
-- **Case 1, the inner try handles its own exception** [03:21]. Demo: print "outer try starts", "inner try starts", then `5 / 0`. The inner `catch (ArithmeticException)` prints "...inner". Then "outer try ends" prints. The outer `catch` never runs, because from the outer `try`'s point of view nothing was thrown.
-- **Case 2, the outer catch handles the inner exception** [06:42]. Same code, but the inner `catch` handles `NullPointerException`. The `ArithmeticException` doesn't match, so the JVM moves on to the outer `catch (ArithmeticException)`. Output: "outer try starts", "inner try starts", "...outer". "inner try ends" and "outer try ends" are both skipped.
-- **Nesting inside a `catch`** [10:04] works the same way. The inner `try` there only runs if the outer `try` threw. If nothing in the method matches, the exception propagates to the caller and eventually to the default handler.
-- **Advice** [11:44]: avoid nested `try`/`catch` in real code. Working out which `catch` handles which exception becomes hard. Extract a method instead.
+- **Case 1, the inner try handles its own exception** [▶ ~03:21](https://youtu.be/xTxscoajikw?t=201). Demo: print "outer try starts", "inner try starts", then `5 / 0`. The inner `catch (ArithmeticException)` prints "...inner". Then "outer try ends" prints. The outer `catch` never runs, because from the outer `try`'s point of view nothing was thrown.
+- **Case 2, the outer catch handles the inner exception** [▶ ~06:42](https://youtu.be/xTxscoajikw?t=402). Same code, but the inner `catch` handles `NullPointerException`. The `ArithmeticException` doesn't match, so the JVM moves on to the outer `catch (ArithmeticException)`. Output: "outer try starts", "inner try starts", "...outer". "inner try ends" and "outer try ends" are both skipped.
+- **Nesting inside a `catch`** [▶ ~10:04](https://youtu.be/xTxscoajikw?t=604) works the same way. The inner `try` there only runs if the outer `try` threw. If nothing in the method matches, the exception propagates to the caller and eventually to the default handler.
+- **Advice** [▶ ~11:44](https://youtu.be/xTxscoajikw?t=704): avoid nested `try`/`catch` in real code. Working out which `catch` handles which exception becomes hard. Extract a method instead.
 
-### The hierarchy [12:00]
+### The hierarchy [▶ ~12:00](https://youtu.be/xTxscoajikw?t=720)
 ```
 Object
 └── Throwable                       (class: getMessage, printStackTrace, toString)
@@ -64,27 +64,27 @@ Object
 ```
 - `Error` and `Exception` both extend `Throwable`. Anything that isn't a `Throwable` can't be thrown.
 - You *can* throw an `Error` yourself, but you normally don't. Errors arise on their own (memory exhausted) and can't be fixed from your code. Focus on exceptions.
-- The three most-used methods [14:30]:
+- The three most-used methods [▶ ~14:30](https://youtu.be/xTxscoajikw?t=870):
   - `getMessage()` returns the message, e.g. `/ by zero`.
   - `printStackTrace()` prints the full trace.
   - `toString()` returns `ClassName: message`.
   These are all defined in `Throwable`.
 
-### Runtime (unchecked) exceptions [16:46]
+### Runtime (unchecked) exceptions [▶ ~16:46](https://youtu.be/xTxscoajikw?t=1006)
 - **`NullPointerException`**: calling a method on, or accessing a field of, a `null` reference, e.g. `String s = null; s.length();`.
 - **`ArithmeticException`**: illegal arithmetic, such as integer division by zero.
 - **`IndexOutOfBoundsException`**, the parent of:
   - `ArrayIndexOutOfBoundsException`: index 4 of a 4-element array (valid indexes 0–3).
   - `StringIndexOutOfBoundsException`: index 5 of `"hello"` (valid 0–4).
   - *Correction:* the video writes `arr.get(4)` and `s.get(5)`. In Java it's `arr[4]` for an array and `s.charAt(5)` for a string. `list.get(4)` on a `List` throws a plain `IndexOutOfBoundsException`.
-- **`IllegalArgumentException`** [18:40]: a method received an argument it doesn't accept.
+- **`IllegalArgumentException`** [▶ ~18:40](https://youtu.be/xTxscoajikw?t=1120): a method received an argument it doesn't accept.
   - `NumberFormatException` is a subclass: `Integer.parseInt("abc")`. `"123"` works.
   - `Thread.sleep(-1500)`: a negative duration is illegal.
-- **`IllegalStateException`** [20:20]: the object isn't in a state where the call makes sense. Example: calling `iterator.remove()` before ever calling `next()`. There is no "previous element" to remove yet.
-- **`ClassCastException`** [21:49]: `Object obj = "hello"; Integer i = (Integer) obj;`. The object is a `String`, not an `Integer`.
+- **`IllegalStateException`** [▶ ~20:20](https://youtu.be/xTxscoajikw?t=1220): the object isn't in a state where the call makes sense. Example: calling `iterator.remove()` before ever calling `next()`. There is no "previous element" to remove yet.
+- **`ClassCastException`** [▶ ~21:49](https://youtu.be/xTxscoajikw?t=1309): `Object obj = "hello"; Integer i = (Integer) obj;`. The object is a `String`, not an `Integer`.
 - These are called **unchecked** because the compiler doesn't check whether you handle them. The code compiles either way. If one occurs and nobody catches it, the stack trace is printed and the program stops.
 
-### Checked exceptions [22:50]
+### Checked exceptions [▶ ~22:50](https://youtu.be/xTxscoajikw?t=1370)
 - The compiler **forces** you either to put the risky code in a `try` with a matching `catch` or to declare `throws` on the method.
 - Examples:
   - **`IOException`**: an input/output operation failed (file, stream). Subclasses: `FileNotFoundException` (the file is missing) and `EOFException` (the end of the file was reached unexpectedly).
@@ -93,39 +93,39 @@ Object
 - *Correction:* the video calls these "compile-time exceptions". They still *occur* at run time. It's only the handle-or-declare **check** that happens at compile time.
 - In practice you rarely memorize every built-in type. You use a handful, plus a generic handler and your own **custom exceptions** with meaningful names.
 
-### Catching via a parent type [25:40]
+### Catching via a parent type [▶ ~25:40](https://youtu.be/xTxscoajikw?t=1540)
 - `ArithmeticException` extends `RuntimeException`, which extends `Exception`, which extends `Throwable`. A parent reference can point to a child object, so `catch (RuntimeException e)`, `catch (Exception e)` and `catch (Throwable e)` all catch the `ArithmeticException`.
-- **Never catch `Throwable`** [28:31]. It also catches `Error`s, which you shouldn't handle. `catch (Exception e)` is the widest sensible handler: it catches `ArithmeticException`, `NullPointerException`, and the rest.
+- **Never catch `Throwable`** [▶ ~28:31](https://youtu.be/xTxscoajikw?t=1711). It also catches `Error`s, which you shouldn't handle. `catch (Exception e)` is the widest sensible handler: it catches `ArithmeticException`, `NullPointerException`, and the rest.
 
-### Multiple catch blocks and their order [29:40]
+### Multiple catch blocks and their order [▶ ~29:40](https://youtu.be/xTxscoajikw?t=1780)
 - A `try` can have several `catch` blocks, but only **one** runs. The first exception thrown stops the `try`, so a second one can never happen in the same pass.
 - The JVM checks the `catch` blocks **top to bottom**. Example: `ArithmeticException`, then `NullPointerException`, then `Exception`. A `ClassCastException` doesn't match either of the first two, so the generic `Exception` block handles it ("some generic exception").
-- **Rule** [33:00]: specific first, generic last. Putting `catch (Exception e)` first causes the compile error *"Unreachable catch block for ArithmeticException. It is already handled by the catch block for Exception."* The same applies to `RuntimeException` placed before its children.
+- **Rule** [▶ ~33:00](https://youtu.be/xTxscoajikw?t=1980): specific first, generic last. Putting `catch (Exception e)` first causes the compile error *"Unreachable catch block for ArithmeticException. It is already handled by the catch block for Exception."* The same applies to `RuntimeException` placed before its children.
 - Siblings such as `ArithmeticException` and `NullPointerException` can go in any order. Then come their parent `RuntimeException`, then `Exception`. The video calls this "chaining of catch blocks".
-- **Multi-catch** [34:50], Java 7+: `catch (ArithmeticException | NullPointerException e)`. `e` refers to whichever exception was actually thrown, so `e.getMessage()` prints `/ by zero` or the NPE's helpful message ("Cannot invoke "String.length()" because ... is null").
+- **Multi-catch** [▶ ~34:50](https://youtu.be/xTxscoajikw?t=2090), Java 7+: `catch (ArithmeticException | NullPointerException e)`. `e` refers to whichever exception was actually thrown, so `e.getMessage()` prints `/ by zero` or the NPE's helpful message ("Cannot invoke "String.length()" because ... is null").
 - You can't combine a parent and its child in a multi-catch (`ArithmeticException | Exception`). The compiler reports that the subtype "is already caught by the alternative Exception".
 
-### `throw`: raising your own exceptions [36:55]
+### `throw`: raising your own exceptions [▶ ~36:55](https://youtu.be/xTxscoajikw?t=2215)
 - Example: `checkEligibility(int age)` prints "You are eligible to vote" when `age >= 18`.
 - What about a negative age? Printing "Age cannot be negative" (even with `System.err`) doesn't tell the **caller** anything. The method just carries on.
-- Exceptions are how code *communicates* that something went wrong, the same way Java throws `ArithmeticException` for `5 / 0` instead of just printing a line. So [40:16]:
+- Exceptions are how code *communicates* that something went wrong, the same way Java throws `ArithmeticException` for `5 / 0` instead of just printing a line. So [▶ ~40:16](https://youtu.be/xTxscoajikw?t=2416):
   ```
   if (age < 0) throw new IllegalArgumentException("Age cannot be negative");
   ```
-- Constructor chain [41:57]: the message passes from `IllegalArgumentException(String)` to `super(message)` in `RuntimeException`, then `Exception`, then **`Throwable`**. `Throwable` stores the detail message and fills in the stack trace.
-- If the caller doesn't handle it, you get the default trace: `Exception in thread "main" java.lang.IllegalArgumentException: Age cannot be negative`. If `main` wraps the call in `try`/`catch (IllegalArgumentException e)` [43:38], it prints `e.getMessage()` and carries on (`Step 2` still runs).
-- **Anti-pattern** [45:18]: throwing an exception and catching it in the *same* method. The caller never finds out anything happened, so you might as well have printed the message. Throw it, and let the caller decide what to do.
+- Constructor chain [▶ ~41:57](https://youtu.be/xTxscoajikw?t=2517): the message passes from `IllegalArgumentException(String)` to `super(message)` in `RuntimeException`, then `Exception`, then **`Throwable`**. `Throwable` stores the detail message and fills in the stack trace.
+- If the caller doesn't handle it, you get the default trace: `Exception in thread "main" java.lang.IllegalArgumentException: Age cannot be negative`. If `main` wraps the call in `try`/`catch (IllegalArgumentException e)` [▶ ~43:38](https://youtu.be/xTxscoajikw?t=2618), it prints `e.getMessage()` and carries on (`Step 2` still runs).
+- **Anti-pattern** [▶ ~45:18](https://youtu.be/xTxscoajikw?t=2718): throwing an exception and catching it in the *same* method. The caller never finds out anything happened, so you might as well have printed the message. Throw it, and let the caller decide what to do.
 
-### `throws`: declaring and passing on responsibility [47:00]
+### `throws`: declaring and passing on responsibility [▶ ~47:00](https://youtu.be/xTxscoajikw?t=2820)
 - `new FileReader("abc.txt")` gives the compile error *"Unhandled exception type FileNotFoundException"*. The file lives outside the program, and Java can't guarantee it exists, so it forces you to deal with it.
 - Option 1: wrap it in `try`/`catch (FileNotFoundException e)`. With no such file, it prints "File not found".
-- Option 2 [50:20]: declare it on the method: `private static void readFile() throws FileNotFoundException`. The error disappears from `readFile` and moves to the **caller**, which now has to catch it or declare `throws` as well.
-- If `main` also declares `throws FileNotFoundException` [51:30], nobody handles it. Its caller is the JVM, so the stack trace is printed. That trace starts deep inside the JDK (`FileInputStream.open0`, a native method, then `FileInputStream.open`, then the `FileInputStream` and `FileReader` constructors) before it reaches `readFile` and `main`.
+- Option 2 [▶ ~50:20](https://youtu.be/xTxscoajikw?t=3020): declare it on the method: `private static void readFile() throws FileNotFoundException`. The error disappears from `readFile` and moves to the **caller**, which now has to catch it or declare `throws` as well.
+- If `main` also declares `throws FileNotFoundException` [▶ ~51:30](https://youtu.be/xTxscoajikw?t=3090), nobody handles it. Its caller is the JVM, so the stack trace is printed. That trace starts deep inside the JDK (`FileInputStream.open0`, a native method, then `FileInputStream.open`, then the `FileInputStream` and `FileReader` constructors) before it reaches `readFile` and `main`.
 - Advice: `throws` on helper methods is fine. It's an honest declaration. But **someone** should handle the exception. Don't declare `throws` on `main`; catch it there.
 
-### Custom exceptions [53:42]
+### Custom exceptions [▶ ~53:42](https://youtu.be/xTxscoajikw?t=3222)
 - Built-in names are generic. Business logic deserves specific names: `InsufficientBalanceException` (withdrawing ₹2000 from a ₹1000 balance), `PaymentFailedException`, `OrderNotFoundException` (for a Zomato/Swiggy-style app), `InvalidAgeException`.
-- Recipe [55:50]:
+- Recipe [▶ ~55:50](https://youtu.be/xTxscoajikw?t=3350):
   ```
   class InvalidAgeException extends Exception {
       public InvalidAgeException(String message) { super(message); }
@@ -133,10 +133,10 @@ Object
   ```
   `Exception` isn't abstract and has nothing you must override. Most production custom exceptions are just this: a meaningful name plus a message. The name works almost like a marker.
 - Because it extends `Exception`, it's **checked**. `throw new InvalidAgeException(...)` inside `checkEligibility` needs `throws InvalidAgeException` on the method, and the caller must catch `InvalidAgeException`.
-- **Extra data** [59:40]: add a `private int age` field, a constructor `(String message, int age)` that calls `super(message)` and sets `this.age`, and a `getAge()` getter. The handler can then print "Entered age was -5". Keep it simple unless you actually need the extra information.
+- **Extra data** [▶ ~59:40](https://youtu.be/xTxscoajikw?t=3580): add a `private int age` field, a constructor `(String message, int age)` that calls `super(message)` and sets `this.age`, and a `getAge()` getter. The handler can then print "Entered age was -5". Keep it simple unless you actually need the extra information.
 - *Tip not in the video:* extend `RuntimeException` instead if you want an **unchecked** custom exception that callers aren't forced to handle.
 
-### try-with-resources [61:50]
+### try-with-resources [▶ ~61:50](https://youtu.be/xTxscoajikw?t=3710)
 - A **resource** is any object you must close after use: files, DB connections (where `SQLException` is checked), network sockets.
 - The old way: open it in `try`, handle errors in `catch`, close it in `finally` (`db.close()`). People forgot, and resources leaked.
 - The new way: `try (FileReader fr = new FileReader("abc.txt")) { ... } catch (...) { ... }`. Java closes `fr` automatically whether the `try` completes or throws, so there's no `finally` needed for closing.

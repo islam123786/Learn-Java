@@ -26,97 +26,97 @@
 
 ## Detailed Notes
 
-### How does Java know what's "smaller"? [00:00]
+### How does Java know what's "smaller"? [▶ ~00:00](https://youtu.be/uUo7AV02vJM?t=0)
 - For primitives (`int`, `long`, …) and for `String`, smaller and larger are obvious: numbers have a natural order, strings have **lexicographic order**.
 - Primitive values are stored directly, so the JVM compares them natively.
 
-### The problem with custom classes [02:00]
+### The problem with custom classes [▶ ~02:00](https://youtu.be/uUo7AV02vJM?t=120)
 - `class Student { int marks; String name; }`, with `s1 = new Student(95, "Aditya")` and `s2 = new Student(85, "Rohit")`.
 - Which is smaller? Java can't tell whether you mean marks, name, or a combination.
 - Storing objects is easy; **comparing** them is the problem.
 
-### Where it breaks [03:46]
+### Where it breaks [▶ ~03:46](https://youtu.be/uUo7AV02vJM?t=226)
 - `Collections.sort(list)` on a `List<Student>`: Java doesn't know how to sort, so it's an error.
 - `TreeSet`/`TreeMap` can't store `Student`s either. They're BSTs, so every insert must compare with existing nodes to decide left or right.
 
-### The `Comparable` interface [05:06]
+### The `Comparable` interface [▶ ~05:06](https://youtu.be/uUo7AV02vJM?t=306)
 - Java's solution. A class that implements it promises: "I know how to compare myself with another object of the same type."
 - Its shape: `interface Comparable<T> { int compareTo(T o); }`. The interface doesn't compare anything itself; the implementing class supplies the logic.
-- It has only one abstract method, which makes it a **functional interface** [06:52]. That matters when lambdas arrive.
+- It has only one abstract method, which makes it a **functional interface** [▶ ~06:52](https://youtu.be/uUo7AV02vJM?t=412). That matters when lambdas arrive.
 
-### Demo: the compile error [07:18]
+### Demo: the compile error [▶ ~07:18](https://youtu.be/uUo7AV02vJM?t=438)
 - `Student` with `name`, `marks`, a constructor, and nothing else.
 - `List<Student> list = new ArrayList<>()`, add Aditya 95, Rohit 85, Rohan 56.
 - `Collections.sort(list)` → compile error: *"The method sort(List&lt;T&gt;) in the type Collections is not applicable for the arguments (List&lt;Student&gt;)"*.
   - *Why exactly:* the signature is `<T extends Comparable<? super T>> void sort(List<T> list)`. `Student` doesn't satisfy the bound, so the call doesn't type-check.
-- By contrast, a `List<Integer>` with 10, 5, 45 sorts fine to `[5, 10, 45]` [10:24], because `Integer` already implements `Comparable<Integer>`.
+- By contrast, a `List<Integer>` with 10, 5, 45 sorts fine to `[5, 10, 45]` [▶ ~10:24](https://youtu.be/uUo7AV02vJM?t=624), because `Integer` already implements `Comparable<Integer>`.
 
-### Implementing `compareTo` [11:31]
+### Implementing `compareTo` [▶ ~11:31](https://youtu.be/uUo7AV02vJM?t=691)
 - `class Student implements Comparable<Student>` and override `public int compareTo(Student other) { return this.marks - other.marks; }`. The error disappears.
-- Meaning of the result [12:24]: negative → `this` before `other`; positive → `other` before `this`.
-- Output [13:30] (printed with a for-each loop, since `toString()` isn't overridden): Rohan 56, Rohit 85, Aditya 95 (ascending by marks).
-- **Descending** [14:24]: flip it, `return other.marks - this.marks;` → Aditya, Rohit, Rohan.
+- Meaning of the result [▶ ~12:24](https://youtu.be/uUo7AV02vJM?t=744): negative → `this` before `other`; positive → `other` before `this`.
+- Output [▶ ~13:30](https://youtu.be/uUo7AV02vJM?t=810) (printed with a for-each loop, since `toString()` isn't overridden): Rohan 56, Rohit 85, Aditya 95 (ascending by marks).
+- **Descending** [▶ ~14:24](https://youtu.be/uUo7AV02vJM?t=864): flip it, `return other.marks - this.marks;` → Aditya, Rohit, Rohan.
 - *Tip:* prefer `Integer.compare(this.marks, other.marks)` to subtraction. Subtraction can **overflow** for large values of opposite signs and flip the sign. It's safe for small marks, but it's a bad habit.
 
-### What Java does with the result [14:50]
+### What Java does with the result [▶ ~14:50](https://youtu.be/uUo7AV02vJM?t=890)
 - During sorting Java effectively calls `s1.compareTo(s2)`; inside it, `this` is `s1` and `other` is `s2`.
-- **Case 1, `this.marks - other.marks`** [15:57]:
+- **Case 1, `this.marks - other.marks`** [▶ ~15:57](https://youtu.be/uUo7AV02vJM?t=957):
   - Aditya 10, Rohit 20: 10 - 20 = -10, negative → Aditya first. Ascending.
   - Swap the marks (Aditya 20, Rohit 10): 20 - 10 = +10, positive → Rohit first. Still ascending.
-- **Case 2, `other.marks - this.marks`** [18:49]: the same two scenarios now always give descending order.
-- **Conclusion** [20:09]: Java only looks at the sign. Negative → s1 before s2, positive → s1 after s2, zero → treated as equal (order between them doesn't matter for sorting).
+- **Case 2, `other.marks - this.marks`** [▶ ~18:49](https://youtu.be/uUo7AV02vJM?t=1129): the same two scenarios now always give descending order.
+- **Conclusion** [▶ ~20:09](https://youtu.be/uUo7AV02vJM?t=1209): Java only looks at the sign. Negative → s1 before s2, positive → s1 after s2, zero → treated as equal (order between them doesn't matter for sorting).
 
-### `TreeSet`/`TreeMap` call `compareTo` too [21:29]
+### `TreeSet`/`TreeMap` call `compareTo` too [▶ ~21:29](https://youtu.be/uUo7AV02vJM?t=1289)
 - Inserting 7 into a tree whose root is 10: Java calls `compareTo` on the element's type (`Integer`'s) and goes left.
 - For `Student`s, your `compareTo` decides left/right. All built-in classes (`String`, wrappers, …) implement `Comparable` directly or indirectly.
 
-### Only one natural ordering [23:15]
+### Only one natural ordering [▶ ~23:15](https://youtu.be/uUo7AV02vJM?t=1395)
 - Why not `compareByMarks()`, `compareByName()`, …? Because `sort`, `TreeSet` etc. need **one** agreed method to call. So each class has exactly one natural ordering: its `compareTo`.
 
-### Why `compareTo` returns `int` [24:35]
+### Why `compareTo` returns `int` [▶ ~24:35](https://youtu.be/uUo7AV02vJM?t=1475)
 - Three outcomes are needed (smaller, equal, larger). `boolean` has two, which is why `equals` (only "same or not") returns `boolean`.
 - An enum (`SMALLER`, `EQUAL`, `LARGER`) would work, but enums are objects, and a primitive `int` (often a simple subtraction) is faster.
 
-### Tie-breaking: marks, then name [26:48]
+### Tie-breaking: marks, then name [▶ ~26:48](https://youtu.be/uUo7AV02vJM?t=1608)
 - Add Monu with 85, the same marks as Rohit. With marks only, the order between them is whatever the list had (Rohit was inserted first, so Rohit stays first).
   - *Note:* this works because `Collections.sort` (`List.sort`) is **stable**: equal elements keep their relative order. That's guaranteed by the docs, not luck.
 - Wanted: equal marks → order by name lexicographically. "Monu" < "Rohit" because 'M' < 'R'.
 - A more complex `compareTo`: if marks differ, `return this.marks - other.marks;`, else `return this.name.compareTo(other.name);`. This reuses `String`'s own `compareTo`.
 - Output: Rohan 56, Monu 85, Rohit 85, Aditya 95.
 
-### The danger of returning zero [29:27]
+### The danger of returning zero [▶ ~29:27](https://youtu.be/uUo7AV02vJM?t=1767)
 - Zero means "**equal**", not just "similar". Some structures act on that.
 - `TreeSet`/`TreeMap` use `compareTo` (not `equals`) and don't allow duplicates. If two **different** students compare as 0, the second is **not inserted**. Silent data loss.
 - Why don't tree collections use `equals`? It only says yes or no. A BST needs to know smaller or larger to go left or right.
 - `HashSet`/`HashMap` are different: the bucket comes from `hashCode()` and duplicates are detected with `equals()`, so `compareTo` isn't involved.
 
-### The rule: consistent with `equals` [33:00]
+### The rule: consistent with `equals` [▶ ~33:00](https://youtu.be/uUo7AV02vJM?t=1980)
 - If `a.compareTo(b) == 0`, then `a.equals(b)` should be `true` (and vice versa). Your class is responsible for this.
 - You *can* return 0; just be sure the two objects really are the same as far as your business logic is concerned.
 - *Note:* the Javadoc calls this "consistent with equals" and *strongly recommends* it, but doesn't require it. `BigDecimal` is a famous exception: `new BigDecimal("1.0")` and `new BigDecimal("1.00")` are `compareTo`-equal but not `equals`.
 
-### Demo: data loss in a `TreeSet` [34:59]
+### Demo: data loss in a `TreeSet` [▶ ~34:59](https://youtu.be/uUo7AV02vJM?t=2099)
 - `Student("Aditya", 95)` and `Student("Rohit", 95)`, comparing by marks only. Add both to a `TreeSet<Student>` → `size()` is **1**.
 - Switch to the marks-then-name `compareTo` → size **2**. Two students who are both "Aditya, 95" still give 1, which is expected. Override `equals` (and `hashCode`) along the same lines.
 
-### When to use `Comparable` (and when not) [36:59]
+### When to use `Comparable` (and when not) [▶ ~36:59](https://youtu.be/uUo7AV02vJM?t=2219)
 - Use it when your class has an **obvious** natural ordering. Marks then name felt natural here; someone else might prefer name then marks. Choose one.
 - You can't write two `Comparable` implementations for one class. If the ordering isn't obvious, or you need different orderings in different places, use a **`Comparator`** (an external comparison strategy; covered after lambdas).
 
-### The `Collections` utility class [38:19]
+### The `Collections` utility class [▶ ~38:19](https://youtu.be/uUo7AV02vJM?t=2299)
 - `Collection` (interface, root of the hierarchy) ≠ `Collections` (utility class).
 - A utility class is a bag of **static** methods, so there are no objects to create: `Collections.sort(list)`.
-- Common methods [39:52]:
+- Common methods [▶ ~39:52](https://youtu.be/uUo7AV02vJM?t=2392):
   - `sort(list)`: sort a list by natural ordering (or `sort(list, comparator)`).
   - `max(coll)` / `min(coll)`: largest/smallest element.
-  - `fill(list, 0)` [40:18]: replace every element with the value.
+  - `fill(list, 0)` [▶ ~40:18](https://youtu.be/uUo7AV02vJM?t=2418): replace every element with the value.
   - `reverse(list)`, `shuffle(list)` (random order, like shuffling cards).
   - `swap(list, i, j)`: swap two positions. *Correction:* the video calls the arguments "two elements"; they are **indexes**.
   - `binarySearch(sortedList, key)`: O(log n) search, but the list **must be sorted** first. *Addition:* it returns the index, or a negative value `-(insertionPoint) - 1` when the key is absent.
   - `frequency(coll, x)`: how many times `x` appears.
-- `unmodifiableList(list)` [42:04] (also `unmodifiableSet`, `unmodifiableMap`): a read-only list; modification attempts throw `UnsupportedOperationException`.
+- `unmodifiableList(list)` [▶ ~42:04](https://youtu.be/uUo7AV02vJM?t=2524) (also `unmodifiableSet`, `unmodifiableMap`): a read-only list; modification attempts throw `UnsupportedOperationException`.
   - *Precise version:* it's a read-only **view**. If someone still holds the original list and changes it, the change shows through the view. For a true snapshot use `List.copyOf(list)`.
-- `emptyList()` [42:58] (also `emptySet`, `emptyMap`): an immutable empty list. Use case: a method that finds no results should return an empty list instead of `null`, so callers never have to null-check. This comes up again with Spring Boot.
+- `emptyList()` [▶ ~42:58](https://youtu.be/uUo7AV02vJM?t=2578) (also `emptySet`, `emptyMap`): an immutable empty list. Use case: a method that finds no results should return an empty list instead of `null`, so callers never have to null-check. This comes up again with Spring Boot.
 
 ## Code Examples
 

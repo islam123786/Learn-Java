@@ -30,51 +30,51 @@
 
 ## Detailed Notes
 
-### Why things go wrong [00:00]
+### Why things go wrong [▶ ~00:00](https://youtu.be/mJg9iQZJEpw?t=0)
 - Programs don't always run as planned: the user types bad input (their roll number in the age field), a file is missing, a denominator turns out to be zero.
 - Neither the programmer nor the user is perfect, so code has to be ready for these cases.
 
-### Java's two categories: Error and Exception [01:38]
+### Java's two categories: Error and Exception [▶ ~01:38](https://youtu.be/mJg9iQZJEpw?t=98)
 - **Exception**: a recoverable or handleable abnormal condition that occurs during program execution.
 - In Java an exception is not just an idea. It's an **object** that the JVM creates and throws when the flow of control hits a problem.
 - Classic example: `int num = a / b;` with `b == 0`. The JVM sees an illegal operation and throws an `ArithmeticException`.
 - Recovery examples: file missing → show "file not found"; wrong input → ask the user to retry; zero denominator → tell the user zero isn't allowed.
-- **Error** [04:00]: a serious problem you can't recover from, and that your code isn't built to handle.
+- **Error** [▶ ~04:00](https://youtu.be/mJg9iQZJEpw?t=240): a serious problem you can't recover from, and that your code isn't built to handle.
   - `OutOfMemoryError`: the **heap** is full, so no new objects can be created.
   - `StackOverflowError`: the **stack** is full.
   - Errors are objects too. So the JVM throws either an exception object or an error object, depending on the problem.
 
-### Simulating both [05:30]
+### Simulating both [▶ ~05:30](https://youtu.be/mJg9iQZJEpw?t=330)
 - `int num = 5 / 0;` → `java.lang.ArithmeticException: / by zero`.
 - An error is simulated by having `main` call itself recursively forever. The program runs for a while and then dies because the stack fills up.
 - *Correction:* the video says the IDE "stops it automatically". It's actually the JVM that throws `StackOverflowError` once the thread's stack is exhausted. The IDE just shows the result.
 
-### Why handle exceptions? [06:55]
+### Why handle exceptions? [▶ ~06:55](https://youtu.be/mJg9iQZJEpw?t=415)
 - Demo: print `Step 1`, compute `a / b` with `b = 0`, print `Step 2`. Only `Step 1` appears, followed by the exception. `Step 2` never runs.
 - So an unhandled exception **disrupts the whole flow** and terminates the program at that line.
 
-### Preventing vs handling [08:30]
+### Preventing vs handling [▶ ~08:30](https://youtu.be/mJg9iQZJEpw?t=510)
 - One option is an `if`/`else`: `if (b == 0) print("b cannot be zero") else print(a / b)`. This is a **preventive measure**: the illegal operation never happens, so no exception object is created.
 - Exception handling doesn't mean removing every possible problem. It means **deciding what your code should do** when the problem occurs.
 - If you don't handle it, the **JVM decides everything**: it stops the flow and crashes the program. You have lost control.
 - Handling it yourself gives you:
   - control over the flow,
   - easier debugging, since you know how each exception is dealt with,
-  - a better **user experience** [11:30]. Example: a restaurant app fetching menu items from a database. If the connection fails and the `SQLException` isn't handled, the user may see a raw exception. If it's handled, you can show an empty list or "can't load items right now, try again later".
+  - a better **user experience** [▶ ~11:30](https://youtu.be/mJg9iQZJEpw?t=690). Example: a restaurant app fetching menu items from a database. If the connection fails and the `SQLException` isn't handled, the user may see a raw exception. If it's handled, you can show an empty list or "can't load items right now, try again later".
 
-### What the JVM does when an exception happens [13:07]
+### What the JVM does when an exception happens [▶ ~13:07](https://youtu.be/mJg9iQZJEpw?t=787)
 - Walk-through of `int a = 5; int b = 0; System.out.println(a / b);`. Creating `a` and `b` is fine. At `a / b` the JVM spots an illegal operation.
 - Internally it does the equivalent of `throw new ArithmeticException("/ by zero");`. Built-in exceptions come with a predefined message.
 - "Throw" means: stop the normal flow (nothing after this line in the block runs), then search for code that handles this exception.
 - *Correction:* the video loosely says throwing means "returning" the exception to you. It's not a normal return. The method completes *abruptly*, and the exception propagates to whatever handler is found.
-- If no handler is found, the exception is printed on the console. This is **default exception handling** [16:24].
+- If no handler is found, the exception is printed on the console. This is **default exception handling** [▶ ~16:24](https://youtu.be/mJg9iQZJEpw?t=984).
 
-### The call stack [16:50]
+### The call stack [▶ ~16:50](https://youtu.be/mJg9iQZJEpw?t=1010)
 - `main` calls `methodA`, which calls `methodB`. Each call is **pushed** onto the stack. When `methodB` finishes it's **popped**, and control returns to `methodA`, then `main`, then the stack is empty.
 - When `methodB` throws, the JVM asks: did `methodB` handle it? No → pop, ask `methodA`. No → pop, ask `main`. No → print the **stack trace** and terminate.
 - The stack trace records the whole path: the failing line, the method it was in, who called that method, and so on.
 
-### Reading a stack trace [20:30]
+### Reading a stack trace [▶ ~20:30](https://youtu.be/mJg9iQZJEpw?t=1230)
 ```
 Exception in thread "main" java.lang.ArithmeticException: / by zero
     at Demo2.methodB(Demo2.java:13)
@@ -87,44 +87,44 @@ Exception in thread "main" java.lang.ArithmeticException: / by zero
 - Each `at` line is `ClassName.methodName(FileName.java:lineNumber)`, **innermost call first**. Here: the failure is at line 13 in `methodB`, which was called from line 10 in `methodA`, which was called from line 6 in `main`.
 - The video says "divide by zero" when talking about the message. The actual text the JDK prints is `/ by zero`.
 
-### `try` / `catch` syntax [26:40]
+### `try` / `catch` syntax [▶ ~26:40](https://youtu.be/mJg9iQZJEpw?t=1600)
 - Goal: when an exception occurs, **don't crash**. Handle it and continue the flow.
 - Put the **risky code** in `try`. In the demo the values are hard-coded, but imagine `a` and `b` come from the user, so you can't know in advance whether `b` is zero.
 - Put the handling (**preventive**) code in `catch (ExceptionType e)`. Think of `catch` as a method that receives the exception object as its parameter. `ArithmeticException` extends `RuntimeException`; the full hierarchy comes in the next video.
-- Demo [29:50]: `Step 1` → try `a / b` → catch prints "Division by zero is not allowed" → `Step 2`. The program no longer crashes.
+- Demo [▶ ~29:50](https://youtu.be/mJg9iQZJEpw?t=1790): `Step 1` → try `a / b` → catch prints "Division by zero is not allowed" → `Step 2`. The program no longer crashes.
 - Flow: the JVM enters `try`, runs the statements, hits the illegal one, creates the exception, breaks the flow, finds a `catch` in the current method that matches `ArithmeticException`, runs it, and then carries on normally after the `try`/`catch`.
 
-### Handling in a chain of methods [34:28]
+### Handling in a chain of methods [▶ ~34:28](https://youtu.be/mJg9iQZJEpw?t=2068)
 - The same `main → methodA → methodB` chain. You can put the `try`/`catch`:
   - **inside `methodB`** around `a / b`,
   - **inside `methodA`** around the call `methodB(a, b)`, or
   - **inside `main`** around the call `methodA(5, 0)`.
 - All three print the same message. The difference is *where the normal flow resumes*.
-- Puzzle [38:00]: `main` prints `Step 1`, calls `methodA` inside `try` (with the `catch` in `main`), and `methodB` prints `Step 2` after the division. Output is only `Step 1` then the catch message. `methodB` and `methodA` are popped while the JVM searches for a handler, so the rest of `methodB` never runs.
+- Puzzle [▶ ~38:00](https://youtu.be/mJg9iQZJEpw?t=2280): `main` prints `Step 1`, calls `methodA` inside `try` (with the `catch` in `main`), and `methodB` prints `Step 2` after the division. Output is only `Step 1` then the catch message. `methodB` and `methodA` are popped while the JVM searches for a handler, so the rest of `methodB` never runs.
 - If the `try`/`catch` is moved into `methodB` itself, nothing is popped. After the catch, `methodB` carries on and `Step 2` prints.
 
-### Using the exception object [42:50]
+### Using the exception object [▶ ~42:50](https://youtu.be/mJg9iQZJEpw?t=2570)
 - `e` is a reference to the exception object on the heap. Useful methods:
   - `e.getMessage()` → `"/ by zero"`.
   - `e.printStackTrace()` → prints the full stack trace (to `System.err`) without crashing. Call it directly, not inside `println`.
   - Others listed by the IDE: `getStackTrace()`, `fillInStackTrace()`, `getCause()`, `getSuppressed()`, `initCause()`, plus the `Object` methods.
 - In real applications you'd send the stack trace to a **log file** so you can find production failures later (class, method, line).
 
-### `try`/`catch` vs `if`/`else` [45:00]
+### `try`/`catch` vs `if`/`else` [▶ ~45:00](https://youtu.be/mJg9iQZJEpw?t=2700)
 - It's a difference of intent. `if`/`else` is **preventive**: you check first and never perform the illegal operation, so no exception object exists.
 - `try`/`catch` is **try first**: attempt the operation, and if it fails, an exception is thrown and caught.
 
-### `finally` [46:40]
+### `finally` [▶ ~46:40](https://youtu.be/mJg9iQZJEpw?t=2800)
 - `finally { ... }` takes no parameter and **always runs**, whether or not an exception happened.
 - No exception (`b = 2`): `Step 1`, `2` (integer division drops `.5`), the finally message, `Step 2`. The `catch` is skipped.
 - Exception (`b = 0`): `Step 1`, catch message, finally message, `Step 2`. Any statement in `try` **after** the failing line (`"hey"` in the demo) is skipped.
-- Why it exists [49:50]: `try` = risky code, `catch` = handling, `finally` = **cleanup**. If you open a resource (file, DB connection) in `try` and an exception fires before your `close()` line, the resource stays open. That leaks memory and can block other threads. Put the closing (and things like logging) in `finally`.
+- Why it exists [▶ ~49:50](https://youtu.be/mJg9iQZJEpw?t=2990): `try` = risky code, `catch` = handling, `finally` = **cleanup**. If you open a resource (file, DB connection) in `try` and an exception fires before your `close()` line, the resource stays open. That leaks memory and can block other threads. Put the closing (and things like logging) in `finally`.
 
-### Catching the wrong type [51:50]
+### Catching the wrong type [▶ ~51:50](https://youtu.be/mJg9iQZJEpw?t=3110)
 - If `try` throws `ArithmeticException` but the only `catch` is for `NullPointerException`, nothing matches. The program behaves exactly as if it weren't handled: `Step 1`, stack trace, and `Step 2` never prints.
-- You can write **multiple `catch` blocks** [53:00], one per exception type. The JVM uses the first one that matches.
+- You can write **multiple `catch` blocks** [▶ ~53:00](https://youtu.be/mJg9iQZJEpw?t=3180), one per exception type. The JVM uses the first one that matches.
 
-### `try` + `finally` with no `catch` [54:10]
+### `try` + `finally` with no `catch` [▶ ~54:10](https://youtu.be/mJg9iQZJEpw?t=3250)
 - `catch` is optional too. `try { ... } finally { ... }` compiles.
 - If an exception occurs, nothing handles it, but `finally` still runs **before** the exception leaves the method. Then the default handler prints the stack trace.
 - There are a few rare cases where `finally` doesn't run (e.g. `System.exit()`); they come later. Next video: the exception class hierarchy.

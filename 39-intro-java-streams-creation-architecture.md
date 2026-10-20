@@ -30,16 +30,16 @@
 
 ## Detailed Notes
 
-### The problem: imperative data processing [00:00]
+### The problem: imperative data processing [▶ ~00:00](https://youtu.be/-jHyDEXHr_U?t=0)
 - Typical task: from a list of `Employee` objects, keep those with salary > 50,000, take their names, and sort them.
-- Traditional code [02:11]: create `List<String> result = new ArrayList<>()`, loop `for (Employee e : employees)`, `if (e.getSalary() > 50000) result.add(e.getName())`, then `Collections.sort(result)`.
-- Nothing is *wrong* with it, but it's **imperative** [03:17]: it spells out *how* (loop, condition, add, sort) instead of *what* you want. With more loops chained together it gets hard to read.
+- Traditional code [▶ ~02:11](https://youtu.be/-jHyDEXHr_U?t=131): create `List<String> result = new ArrayList<>()`, loop `for (Employee e : employees)`, `if (e.getSalary() > 50000) result.add(e.getName())`, then `Collections.sort(result)`.
+- Nothing is *wrong* with it, but it's **imperative** [▶ ~03:17](https://youtu.be/-jHyDEXHr_U?t=197): it spells out *how* (loop, condition, add, sort) instead of *what* you want. With more loops chained together it gets hard to read.
 
-### The declarative goal (SQL analogy) [04:23]
+### The declarative goal (SQL analogy) [▶ ~04:23](https://youtu.be/-jHyDEXHr_U?t=263)
 - Functional programming wants code that just lists the operations, like an SQL query where you say `SELECT … FROM …` and don't care whether the database uses loops or indexes internally.
 - That's why Java 8 brought lambdas and then **Streams**, which are designed to work with lambdas.
 
-### The same task with streams [06:35]
+### The same task with streams [▶ ~06:35](https://youtu.be/-jHyDEXHr_U?t=395)
 ```text
 List<String> result = employees.stream()
         .filter(e -> e.getSalary() > 50000)
@@ -49,83 +49,83 @@ List<String> result = employees.stream()
 ```
 - `stream()` (and `parallelStream()`) are methods on the **`Collection` interface** (we skipped them in the Collection video). So every `List`, `Set` and `Queue` (`ArrayList`, `LinkedList`, `ArrayDeque`, …) can be streamed.
 - *(The video writes the filter as `x -> x > 50000`. It has to compare the salary, `e.getSalary() > 50000`, because `e` is an `Employee`.)*
-- Convention: put each operation on its own line [09:52]. It's still a single expression, just easier to read.
+- Convention: put each operation on its own line [▶ ~09:52](https://youtu.be/-jHyDEXHr_U?t=592). It's still a single expression, just easier to read.
 
-### Definition and the water-pipeline picture [10:58]
+### Definition and the water-pipeline picture [▶ ~10:58](https://youtu.be/-jHyDEXHr_U?t=658)
 - "A stream is a tool for processing a sequence of data through a chain of operations."
-- The analogy [12:04]: water comes from a **source**, passes through filters F1, F2, F3 (like an RO purifier), and what's left at the end is the result.
-- Example [13:10]: `numbers.stream().filter(x -> x > 10).filter(x -> x % 2 == 0).map(x -> x * x).forEach(System.out::println)` keeps the numbers > 10, then the even ones, squares them and prints them. No loop, no `if`.
+- The analogy [▶ ~12:04](https://youtu.be/-jHyDEXHr_U?t=724): water comes from a **source**, passes through filters F1, F2, F3 (like an RO purifier), and what's left at the end is the result.
+- Example [▶ ~13:10](https://youtu.be/-jHyDEXHr_U?t=790): `numbers.stream().filter(x -> x > 10).filter(x -> x % 2 == 0).map(x -> x * x).forEach(System.out::println)` keeps the numbers > 10, then the even ones, squares them and prints them. No loop, no `if`.
 
-### Streams process data; they don't store it [15:21]
+### Streams process data; they don't store it [▶ ~15:21](https://youtu.be/-jHyDEXHr_U?t=921)
 - An `ArrayList` is a **collection**: it actually stores elements in heap memory.
 - `numbers.stream()` does **not** copy the data into a new collection. The stream is a **wrapper** over the existing source, and the operations run against that source.
-- Internally, the stream uses a **`Spliterator`** [18:39] (a "splittable iterator", covered later) to walk the source and feed elements into the pipeline one by one. You never write the iteration yourself.
+- Internally, the stream uses a **`Spliterator`** [▶ ~18:39](https://youtu.be/-jHyDEXHr_U?t=1119) (a "splittable iterator", covered later) to walk the source and feed elements into the pipeline one by one. You never write the iteration yourself.
 
-### Pipeline architecture: source → intermediate → terminal [19:45]
+### Pipeline architecture: source → intermediate → terminal [▶ ~19:45](https://youtu.be/-jHyDEXHr_U?t=1185)
 - For `list.stream().filter(x -> x > 10).map(x -> x * 2).toList()`:
-  - **Source** [21:57]: `list.stream()` attaches the pipeline to the list.
+  - **Source** [▶ ~21:57](https://youtu.be/-jHyDEXHr_U?t=1317): `list.stream()` attaches the pipeline to the list.
   - **Intermediate operations**: `filter` and `map`, the "filters in the pipe".
-  - **Terminal operation** [23:02]: `toList()`. It decides what happens at the end (collect, print, count, …).
-- Without a terminal operation **nothing runs**, not even the filter [23:02].
+  - **Terminal operation** [▶ ~23:02](https://youtu.be/-jHyDEXHr_U?t=1382): `toList()`. It decides what happens at the end (collect, print, count, …).
+- Without a terminal operation **nothing runs**, not even the filter [▶ ~23:02](https://youtu.be/-jHyDEXHr_U?t=1382).
 
-### Sources [24:08]
+### Sources [▶ ~24:08](https://youtu.be/-jHyDEXHr_U?t=1448)
 - Any `Collection` (list, queue, set), arrays, the static `Stream.of(...)`, and infinite streams.
 
-### Intermediate operations ("transformations") [26:20]
+### Intermediate operations ("transformations") [▶ ~26:20](https://youtu.be/-jHyDEXHr_U?t=1580)
 - `filter(Predicate)` keeps elements that pass the test. `map(Function)` transforms each element. `sorted()`, `distinct()`, `limit(n)`, `skip(n)`: details in the next video.
-- `list.stream()` returns a `Stream<Integer>` that you can store: `Stream<Integer> s = list.stream();` [27:26].
-- **Every intermediate operation returns a `Stream`** [28:32]. That's what makes `.filter(...).map(...)` chaining possible: each call builds the pipeline one more step.
+- `list.stream()` returns a `Stream<Integer>` that you can store: `Stream<Integer> s = list.stream();` [▶ ~27:26](https://youtu.be/-jHyDEXHr_U?t=1646).
+- **Every intermediate operation returns a `Stream`** [▶ ~28:32](https://youtu.be/-jHyDEXHr_U?t=1712). That's what makes `.filter(...).map(...)` chaining possible: each call builds the pipeline one more step.
 
-### Terminal operations [29:38]
+### Terminal operations [▶ ~29:38](https://youtu.be/-jHyDEXHr_U?t=1778)
 - They trigger the pipeline and **don't return a `Stream`**. They produce a collection (`toList()`, `collect(...)`), a value (`count()` returns a number, `findFirst()`), or a side effect (`forEach(Consumer)`).
-- Key line: **no terminal operation → no stream execution** [31:49].
+- Key line: **no terminal operation → no stream execution** [▶ ~31:49](https://youtu.be/-jHyDEXHr_U?t=1909).
 
-### Walkthrough: vertical processing [32:55]
+### Walkthrough: vertical processing [▶ ~32:55](https://youtu.be/-jHyDEXHr_U?t=1975)
 - List `[5, 12, 7, 20]`, pipeline `filter(x > 10) → map(x * 2) → toList()`:
   - 5 fails the filter and is dropped right away.
   - 12 passes, is mapped to 24, and is added to the result.
   - 7 is dropped.
   - 20 passes, is mapped to 40, and is added. Result: `[24, 40]`.
-- Each element goes through **all** stages before the next one starts. That's **vertical** processing. Streams never do "all elements through stage 1, then stage 2" (horizontal) [35:07].
+- Each element goes through **all** stages before the next one starts. That's **vertical** processing. Streams never do "all elements through stage 1, then stage 2" (horizontal) [▶ ~35:07](https://youtu.be/-jHyDEXHr_U?t=2107).
 - *(Stateful operations such as `sorted()` are the exception: they have to see every element before passing any downstream, so they act as a barrier in the pipeline.)*
 
-### Lazy evaluation and short-circuiting [36:13]
+### Lazy evaluation and short-circuiting [▶ ~36:13](https://youtu.be/-jHyDEXHr_U?t=2173)
 - Streams are **lazy by design**: the pipeline is only a description until a terminal operation is called.
 - Benefit: **short-circuiting**, the same idea as `&&`/`||`. Replace `toList()` with `findFirst()`: 5 is dropped, 12 becomes 24 and is returned, and **7 and 20 are never processed**. It works like `break` in a loop.
 
-### A consumed stream is dead [38:24]
+### A consumed stream is dead [▶ ~38:24](https://youtu.be/-jHyDEXHr_U?t=2304)
 - After a terminal operation the stream is consumed. Calling another terminal operation on the same `Stream` object fails (it throws `IllegalStateException`). Create a new stream from the source instead.
 - You can build the pipeline step by step with a variable: `s = s.filter(...); s = s.map(...); s.forEach(...)`. That works because each step returns a new stream.
 
-### Code demo [39:30]
+### Code demo [▶ ~39:30](https://youtu.be/-jHyDEXHr_U?t=2370)
 - `List<Integer> list = new ArrayList<>(List.of(5, 12, 7, 14));`, `Stream<Integer> s = list.stream();` (needs `import java.util.stream.Stream;`).
 - `Stream` is an interface in `java.util.stream` that extends `BaseStream`, with methods like `filter`, `map`, `mapToInt`, `mapToLong`, …
 - `filter` takes a **Predicate**, `map` takes a **Function**, `forEach` takes a **Consumer** and returns `void`.
 - Output: `24` and `28`. *(The video briefly says 48, but 14 × 2 = 28.)* The single-chain version prints the same thing.
 
-### Creating streams: all the sources [43:54]
-- **From a collection**: `list.stream()`. This is the most common way. There's also `list.parallelStream()` [44:59]. Normal streams are **sequential**, while parallel streams can process elements on multiple threads (covered in #42).
-- **From an array** [46:05]: `Arrays.stream(arr)`. An array has no `stream()` method, so you use the `Arrays` helper. A `String[]` gives you a `Stream<String>`.
-- **`Stream.of(1, 2, 5, 7, 9)`** [47:11] creates a stream directly from values.
+### Creating streams: all the sources [▶ ~43:54](https://youtu.be/-jHyDEXHr_U?t=2634)
+- **From a collection**: `list.stream()`. This is the most common way. There's also `list.parallelStream()` [▶ ~44:59](https://youtu.be/-jHyDEXHr_U?t=2699). Normal streams are **sequential**, while parallel streams can process elements on multiple threads (covered in #42).
+- **From an array** [▶ ~46:05](https://youtu.be/-jHyDEXHr_U?t=2765): `Arrays.stream(arr)`. An array has no `stream()` method, so you use the `Arrays` helper. A `String[]` gives you a `Stream<String>`.
+- **`Stream.of(1, 2, 5, 7, 9)`** [▶ ~47:11](https://youtu.be/-jHyDEXHr_U?t=2831) creates a stream directly from values.
 - **`Stream.empty()`** gives an empty stream. It's useful for returning "nothing" without using `null`, like empty lists and maps.
 
-### Infinite streams: `iterate` and `generate` [47:11]
-- **`Stream.iterate(seed, next)`** [48:17]: starts at `seed` and applies `next` to the **previous value** each time. `Stream.iterate(1, x -> x + 1)` gives 1, 2, 3, … forever.
-- Stop it with **`limit(n)`** [49:23], an intermediate operation: `Stream.iterate(1, x -> x + 1).limit(10).forEach(System.out::println)` prints 1–10.
-- **`Stream.generate(supplier)`** [49:23]: each element comes from a `Supplier`, with **no dependence on the previous value**. `Stream.generate(Math::random).limit(10)` gives 10 random doubles (`Stream<Double>`).
-- Why have infinite streams at all [51:35]? For the same reason infinite loops exist: you use them **strategically** when you don't know in advance how much data there will be (dynamic data, e.g. a backend receiving requests), and you stop based on a condition or a limit.
-- Infinite streams only work **because streams are lazy** [53:46]. If `iterate` started producing values immediately, it would never finish.
+### Infinite streams: `iterate` and `generate` [▶ ~47:11](https://youtu.be/-jHyDEXHr_U?t=2831)
+- **`Stream.iterate(seed, next)`** [▶ ~48:17](https://youtu.be/-jHyDEXHr_U?t=2897): starts at `seed` and applies `next` to the **previous value** each time. `Stream.iterate(1, x -> x + 1)` gives 1, 2, 3, … forever.
+- Stop it with **`limit(n)`** [▶ ~49:23](https://youtu.be/-jHyDEXHr_U?t=2963), an intermediate operation: `Stream.iterate(1, x -> x + 1).limit(10).forEach(System.out::println)` prints 1–10.
+- **`Stream.generate(supplier)`** [▶ ~49:23](https://youtu.be/-jHyDEXHr_U?t=2963): each element comes from a `Supplier`, with **no dependence on the previous value**. `Stream.generate(Math::random).limit(10)` gives 10 random doubles (`Stream<Double>`).
+- Why have infinite streams at all [▶ ~51:35](https://youtu.be/-jHyDEXHr_U?t=3095)? For the same reason infinite loops exist: you use them **strategically** when you don't know in advance how much data there will be (dynamic data, e.g. a backend receiving requests), and you stop based on a condition or a limit.
+- Infinite streams only work **because streams are lazy** [▶ ~53:46](https://youtu.be/-jHyDEXHr_U?t=3226). If `iterate` started producing values immediately, it would never finish.
 
-### Primitive streams [54:52]
+### Primitive streams [▶ ~54:52](https://youtu.be/-jHyDEXHr_U?t=3292)
 - `list.stream().filter(x -> x > 10).map(x -> x * 2).toList()` on `Integer`s unboxes for every comparison and calculation, then boxes again for the list. That's slow for large data.
-- So Java provides **`IntStream`, `LongStream`, `DoubleStream`**. As with the primitive functional interfaces, there are none for `char`/`short`/`byte`/`float`, because `int`, `long` and `double` cover what we actually use [57:04].
+- So Java provides **`IntStream`, `LongStream`, `DoubleStream`**. As with the primitive functional interfaces, there are none for `char`/`short`/`byte`/`float`, because `int`, `long` and `double` cover what we actually use [▶ ~57:04](https://youtu.be/-jHyDEXHr_U?t=3424).
 - `IntStream s = IntStream.of(1, 2, 7);`. Primitive streams also add **type-specific operations** like `max`, `min`, `sum`, `average`, `count`.
 
-### Hierarchy [58:10]
+### Hierarchy [▶ ~58:10](https://youtu.be/-jHyDEXHr_U?t=3490)
 - `BaseStream` sits at the top, with `Stream<T>`, `IntStream`, `LongStream`, `DoubleStream` below it.
 - *(Correction: the video draws the three primitive streams under `Stream`. In the JDK they extend **`BaseStream` directly**, alongside `Stream<T>`. An `IntStream` is **not** a `Stream<Integer>`.)*
 
-### Converting between stream types [60:21]
+### Converting between stream types [▶ ~60:21](https://youtu.be/-jHyDEXHr_U?t=3621)
 - Object → primitive: `Stream<Integer> s = list.stream(); IntStream is = s.mapToInt(x -> x);`
 - Primitive → object: `is.boxed()` gives a `Stream<Integer>`.
 - Primitive → primitive: `intStream.mapToLong(x -> x)` gives a `LongStream`, `mapToDouble(...)` a `DoubleStream`. You can transform at the same time, e.g. `mapToLong(x -> (long) x * x)`. *(There are also the shortcuts `asLongStream()`/`asDoubleStream()`.)*

@@ -32,29 +32,29 @@
 
 ## Detailed Notes
 
-### Why a program needs memory [00:00]
+### Why a program needs memory [▶ ~00:00](https://youtu.be/kjETbH63Pco?t=0)
 - A program declares variables, creates objects (the object goes on the heap, its reference variable on the stack), and defines classes whose metadata and methods also have to live somewhere.
-- The JVM uses memory in three ways [01:00]:
+- The JVM uses memory in three ways [▶ ~01:00](https://youtu.be/kjETbH63Pco?t=60):
   1. **Allocate**: `int x = 4;` creates `x` and stores 4. `Student s1 = new Student();` puts the object on the heap and the reference `s1` on the stack.
   2. **Use/update**: `x = x + 1;` fetches 4, adds 1, stores 5.
-  3. **Deallocate/free** [02:50]: release an object you don't need so the space can be reused.
+  3. **Deallocate/free** [▶ ~02:50](https://youtu.be/kjETbH63Pco?t=170): release an object you don't need so the space can be reused.
 
-### Manual memory management and garbage collection [03:45]
+### Manual memory management and garbage collection [▶ ~03:45](https://youtu.be/kjETbH63Pco?t=225)
 - In C++ you free heap objects yourself (`delete ptr` / `free(ptr)`). Leaving that to developers is error-prone. They forget, they free too early, or large objects (say 1 MB each) pile up until the heap is full.
-- Java's answer [05:13]: the **garbage collector**, part of the JVM, decides which heap objects can be freed. You never free objects yourself.
+- Java's answer [▶ ~05:13](https://youtu.be/kjETbH63Pco?t=313): the **garbage collector**, part of the JVM, decides which heap objects can be freed. You never free objects yourself.
 
-### Why learn memory management anyway? [05:50]
+### Why learn memory management anyway? [▶ ~05:50](https://youtu.be/kjETbH63Pco?t=350)
 - Memory is finite, and writing memory-friendly code is still your job.
 - **The GC can only free unreferenced objects.** If any variable still points to a big (say 4 MB) object, the GC must keep it, because you could still call `s.name`.
-- **Memory leaks happen in Java** [07:30]. Example: a `List<Student>` declared in `main` that you keep adding to and never clear. It might grow to 100–200 MB, and since `main` lives as long as the program, it's never released. Eventually you get `OutOfMemoryError`.
-- **Performance** [08:42]: the GC is itself a program that needs CPU. The more garbage you create, the more often it runs, and the more your program slows down. (The "every 2 seconds" figure in the video is purely hypothetical. The real frequency depends on which part of the heap is being collected and on allocation pressure.)
-- **Errors** [10:27]: `OutOfMemoryError` when the heap is full, `StackOverflowError` when a thread's stack is full.
+- **Memory leaks happen in Java** [▶ ~07:30](https://youtu.be/kjETbH63Pco?t=450). Example: a `List<Student>` declared in `main` that you keep adding to and never clear. It might grow to 100–200 MB, and since `main` lives as long as the program, it's never released. Eventually you get `OutOfMemoryError`.
+- **Performance** [▶ ~08:42](https://youtu.be/kjETbH63Pco?t=522): the GC is itself a program that needs CPU. The more garbage you create, the more often it runs, and the more your program slows down. (The "every 2 seconds" figure in the video is purely hypothetical. The real frequency depends on which part of the heap is being collected and on allocation pressure.)
+- **Errors** [▶ ~10:27](https://youtu.be/kjETbH63Pco?t=627): `OutOfMemoryError` when the heap is full, `StackOverflowError` when a thread's stack is full.
 
-### Why split memory into areas? [10:50]
+### Why split memory into areas? [▶ ~10:50](https://youtu.be/kjETbH63Pco?t=650)
 - The JVM may be juggling thousands or millions of objects and many threads. Some data is **long-lived**, some very **temporary**.
 - If it were all in one area, the GC would have to scan everything often just to clear short-lived data. Long-lived data doesn't need frequent checks. Splitting memory by responsibility lets each area be managed in the way that suits it.
 
-### The four runtime areas [12:11]
+### The four runtime areas [▶ ~12:11](https://youtu.be/kjETbH63Pco?t=731)
 | Area | Stores | Shared? | Managed by |
 |---|---|---|---|
 | **Heap** | objects, arrays, instance fields, string pool | all threads | GC |
@@ -63,44 +63,44 @@
 | **PC register** | address of the current instruction | per thread | JVM |
 | *(Native method stack)* | frames for native (C/C++) methods | per thread | JVM |
 
-- *Correction:* around [13:56] the video says "local variables or instance variables are stored on the stack". Only **local** variables (and parameters) live on the stack. **Instance** variables live inside the object on the heap, as the video itself explains a few minutes later.
+- *Correction:* around [▶ ~13:56](https://youtu.be/kjETbH63Pco?t=836) the video says "local variables or instance variables are stored on the stack". Only **local** variables (and parameters) live on the stack. **Instance** variables live inside the object on the heap, as the video itself explains a few minutes later.
 - Shared areas need thread-safety (locks) for critical objects. Per-thread areas never have race conditions.
 
-### Heap overview [14:20]
+### Heap overview [▶ ~14:20](https://youtu.be/kjETbH63Pco?t=860)
 - One big region. Every `new` puts an object here. The **GC works only on the heap**, never on the stack, PC or Method Area.
 
-### Method Area [15:00]
+### Method Area [▶ ~15:00](https://youtu.be/kjETbH63Pco?t=900)
 - Stores each class's **blueprint/metadata**. For `class Student`: its name, its parent (`Object` by default), its interfaces, its methods `m1`/`m2` with their parameters, local variable information, return types and bytecode.
 - Why it's needed: when `main` does `new Student()`, the JVM must know what a `Student` looks like. The class is **loaded into the Method Area first**.
 - **Static variables** belong to the class, not to any object, so they're stored with the class data.
 - **All methods** (instance and static) are stored here once per class. Objects only contain their instance variables (`age`, `rollNo`), never methods.
 - *HotSpot details, beyond the video:* since Java 8 the Method Area is implemented as **Metaspace** in native memory. Static field *values* are actually stored with the class's `java.lang.Class` object on the heap. JIT-compiled machine code lives in a separate **code cache**. The video's model, which lumps these together, is the JVM-spec view and works fine for reasoning.
 
-### Stack overview [19:09]
+### Stack overview [▶ ~19:09](https://youtu.be/kjETbH63Pco?t=1149)
 - LIFO, like the stack data structure. Also called **execution memory**.
 - When `main` starts, a `main` frame is pushed, holding its locals (`a = 5`, `b = 7`). When `main` calls `m1`, an `m1` frame is pushed. When `m1` calls `m2`, an `m2` frame is pushed. When `m2` finishes it's popped and control returns to `m1`.
 
-### Program Counter [21:00]
+### Program Counter [▶ ~21:00](https://youtu.be/kjETbH63Pco?t=1260)
 - Holds the current instruction. The JVM interprets bytecode (and JIT-compiles hot code), instruction by instruction. The PC records where it is so that a paused thread can resume at the right point.
 - *Note:* the video uses line numbers as a simplification. The real PC holds a **bytecode** address, and it's undefined while a native method is running.
 
-### Walk-through: `int x = 5; Student s1 = new Student(); s1.name = "Aditya";` [23:20]
+### Walk-through: `int x = 5; Student s1 = new Student(); s1.name = "Aditya";` [▶ ~23:20](https://youtu.be/kjETbH63Pco?t=1400)
 1. `javac Demo.java` produces `Demo.class` (bytecode). `java Demo` runs it.
-2. **The JVM starts** [24:50].
+2. **The JVM starts** [▶ ~24:50](https://youtu.be/kjETbH63Pco?t=1490).
 3. **Class loading**: a class loader finds `Demo.class`, reads its bytecode, and creates a **Method Area entry** with the class name `Demo`, the parent `Object`, and the method `main(String[])` with its bytecode.
-4. **The main thread is created** [27:52], with its own **stack** and **PC**. (The heap already exists.)
-5. **`main` runs** [29:36]: a `main` frame is pushed with slots for `x` and `s1`, not yet assigned.
+4. **The main thread is created** [▶ ~27:52](https://youtu.be/kjETbH63Pco?t=1672), with its own **stack** and **PC**. (The heap already exists.)
+5. **`main` runs** [▶ ~29:36](https://youtu.be/kjETbH63Pco?t=1776): a `main` frame is pushed with slots for `x` and `s1`, not yet assigned.
 6. `int x = 5;` stores 5 in the `x` slot. The PC moves on (the video uses 1001, then 1002 as stand-in addresses).
-7. `new Student()` [31:21]: load the `Student` class into the Method Area if it isn't there already, create the object on the heap, run the constructor, and store its address in `s1`, so `s1` now points into the heap.
-8. `s1.name = "Aditya";` [33:05]: follow `s1` to the object and set its `name` field. Because `"Aditya"` is a **string literal**, the string itself sits in the **string pool** (part of the heap), and `name` holds a reference to it.
-9. `main` ends [34:50]: the `main` frame is popped, so `x` and `s1` disappear. The `Student` object is still on the heap, but nothing points to it. The next GC that scans it finds it **unreachable** and can free it.
+7. `new Student()` [▶ ~31:21](https://youtu.be/kjETbH63Pco?t=1881): load the `Student` class into the Method Area if it isn't there already, create the object on the heap, run the constructor, and store its address in `s1`, so `s1` now points into the heap.
+8. `s1.name = "Aditya";` [▶ ~33:05](https://youtu.be/kjETbH63Pco?t=1985): follow `s1` to the object and set its `name` field. Because `"Aditya"` is a **string literal**, the string itself sits in the **string pool** (part of the heap), and `name` holds a reference to it.
+9. `main` ends [▶ ~34:50](https://youtu.be/kjETbH63Pco?t=2090): the `main` frame is popped, so `x` and `s1` disappear. The `Student` object is still on the heap, but nothing points to it. The next GC that scans it finds it **unreachable** and can free it.
 
-### Stack in depth: frames and the return address [35:00]
+### Stack in depth: frames and the return address [▶ ~35:00](https://youtu.be/kjETbH63Pco?t=2100)
 - **One method call = one frame**: `m1` → `m2` → `m3` means three frames on top of each other.
 - A frame holds **local variables**, **method parameters** (which behave like locals), **reference variables**, and the **return address**.
-- Why store a return address when LIFO already tells you which method to go back to? [37:00] LIFO tells you *which method*, but not *which instruction in it*. If `main` calls `m1()` on line 1, prints on line 2, and calls `m1()` again on line 3, then after the first call returns, execution has to resume at **line 2**. The return address records that, and the PC is set back from it.
+- Why store a return address when LIFO already tells you which method to go back to? [▶ ~37:00](https://youtu.be/kjETbH63Pco?t=2220) LIFO tells you *which method*, but not *which instruction in it*. If `main` calls `m1()` on line 1, prints on line 2, and calls `m1()` again on line 3, then after the first call returns, execution has to resume at **line 2**. The return address records that, and the PC is set back from it.
 
-### Example: `add(a, 20)` on the stack [40:30]
+### Example: `add(a, 20)` on the stack [▶ ~40:30](https://youtu.be/kjETbH63Pco?t=2430)
 ```
 int a = 10;
 int result = add(a, 20);   // add(x, y) { int sum = x + y; return sum; }
@@ -109,50 +109,50 @@ int result = add(a, 20);   // add(x, y) { int sum = x + y; return sum; }
 - Call `add`: push a new frame with `x = 10` and `y = 20` (**copies**, because Java is always pass-by-value, so `x` is independent of `a`), `sum = ?`, and the return address.
 - `sum = 30`, then `return sum`. The `add` frame is **popped** and 30 goes into `result`.
 - `main` ends, its frame is popped, and the stack is empty.
-- Observations [45:17]:
+- Observations [▶ ~45:17](https://youtu.be/kjETbH63Pco?t=2717):
   - The stack **grows and shrinks automatically** with calls and returns.
   - It's **auto-cleaned**. Locals vanish with their frame, so no GC is needed.
   - Execution order is LIFO.
 - Why not keep locals on the heap? Method calls are extremely frequent, and stack push and pop are **O(1)** and very fast. Locals are short-lived and useless after their method ends, so putting them on the heap would only add GC work.
 
-### `StackOverflowError` [47:01]
+### `StackOverflowError` [▶ ~47:01](https://youtu.be/kjETbH63Pco?t=2821)
 - An `Error` (a `Throwable`, but not an `Exception`). The stack isn't infinitely flexible: each thread's stack has a **fixed maximum size**.
 - Classic cause: **recursion without a base case**. `f1()` calls `f1()` forever, frames pile up until the stack is full, and the JVM throws `StackOverflowError`.
 - *Tip not in the video:* the per-thread stack size can be tuned with `-Xss` (e.g. `-Xss2m`).
 
-### Heap in depth [48:46]
+### Heap in depth [▶ ~48:46](https://youtu.be/kjETbH63Pco?t=2926)
 - Objects have **unpredictable lifetimes**. Some live milliseconds, some minutes, some until the program ends. They can't simply be popped like locals, so they get their own area, overseen by the **garbage collector**.
-- What goes on the heap [49:50]:
+- What goes on the heap [▶ ~49:50](https://youtu.be/kjETbH63Pco?t=2990):
   - **every object** created with `new` (e.g. `new Student()`),
   - **instance variables** (`name`, `age`), stored inside their object,
   - **arrays** (the array is on the heap, while the `arr` reference is on the stack),
   - **strings**: `new String("...")` goes on the normal heap, while **literals** go in the **string pool**, a special region of the heap.
-- Properties [52:15]:
+- Properties [▶ ~52:15](https://youtu.be/kjETbH63Pco?t=3135):
   - **Shared across threads**, so critical shared objects need locking.
   - **Dynamic**: it can grow far more than the stack, within limits you set:
     - `-Xms2m` sets the **initial (minimum)** heap size.
     - `-Xmx4m` sets the **maximum** heap size. Exceed it and you get `OutOfMemoryError: Java heap space`.
-  - **Managed by the GC** [57:50].
+  - **Managed by the GC** [▶ ~57:50](https://youtu.be/kjETbH63Pco?t=3470).
   - **Slower than the stack**, because allocation and deallocation are more complex and there's GC overhead.
 
-### `OutOfMemoryError` demo [53:40]
+### `OutOfMemoryError` demo [▶ ~53:40](https://youtu.be/kjETbH63Pco?t=3220)
 - `List<int[]> list = new ArrayList<>();` then `while (true) { list.add(new int[250_000]); count++; print(count); }` run with `java -Xms2m -Xmx4m Demo`.
 - Each array is 250,000 × 4 bytes = 1,000,000 bytes, roughly 1 MB. *(The transcript says "250", but 250 ints is only 1,000 bytes. A 1 MB block needs 250,000.)*
 - It printed blocks 1–5 and then threw `OutOfMemoryError`. Why 5 and not 4? 1,000,000 bytes is a little less than 1 MiB (1,048,576 bytes), so slightly more blocks fit than the naive count suggests. *(Also, the exact count depends on JVM version, GC, and per-object overhead. When we re-ran it on JDK 21 with `javac` + `java -Xms2m -Xmx4m` it also reached 5, but don't rely on the number. Using the single-file launcher `java Demo.java` needs a bigger heap, since the in-memory compiler itself uses heap space.)*
 
-### Object creation step by step [58:00]
+### Object creation step by step [▶ ~58:00](https://youtu.be/kjETbH63Pco?t=3480)
 - `Student s1 = new Student("Aditya", 28);`
   1. Memory for the object is allocated on the heap. Fields get **default values** (`name = null`, `age = 0`).
   2. The **constructor** runs and assigns `name = "Aditya"` and `age = 28`.
   3. The address is stored in the reference `s1` on the stack.
-- `Student s2 = s1;` [60:40] creates **no new object**. It's a second reference to the same one. Only `new` creates objects.
+- `Student s2 = s1;` [▶ ~60:40](https://youtu.be/kjETbH63Pco?t=3640) creates **no new object**. It's a second reference to the same one. Only `new` creates objects.
 
-### When does an object become unreachable? [61:20]
+### When does an object become unreachable? [▶ ~61:20](https://youtu.be/kjETbH63Pco?t=3680)
 1. **Reassign the reference**: `s1 = null;`. Nothing points to the object now, so it's **eligible for GC**.
 2. **The method ends**: its frame is popped, so the references in it are gone.
 - *Eligible* ≠ *deleted immediately*. The GC frees it whenever it next runs and decides to reclaim that region.
 
-### The heap is a graph [62:42]
+### The heap is a graph [▶ ~62:42](https://youtu.be/kjETbH63Pco?t=3762)
 - Objects reference other objects (an `A` holds a `B`, which holds a `C`). A heap object may be reachable only through another heap object, not directly from the stack. So the heap looks like a **graph**, and the GC follows references from the roots to find out what's still alive.
 - Next video: how the heap is divided (young and old generations) and the GC algorithms.
 

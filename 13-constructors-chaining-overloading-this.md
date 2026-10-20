@@ -32,28 +32,28 @@
 
 ## Detailed Notes
 
-### Printing an object you never filled in [00:00]
+### Printing an object you never filled in [▶ ~00:00](https://youtu.be/RADpqk79IzQ?t=0)
 - `Student s1 = new Student();` followed by printing `s1.name`, `s1.age`, `s1.rollNumber`, `s1.college` gives no error. It prints `null 0 0 null`. These are the **default values**.
 
-### Instance variables, instance methods, local variables [03:20]
+### Instance variables, instance methods, local variables [▶ ~03:20](https://youtu.be/RADpqk79IzQ?t=200)
 - Fields in a class (data/characteristics) are **instance variables**. Methods in a class (behaviors) are **instance methods**, or just methods.
-- `int x = 4;` inside `main` (or any method) is a **local variable** [04:01]. Its scope ends with the method, and it lives on the **stack**.
+- `int x = 4;` inside `main` (or any method) is a **local variable** [▶ ~04:01](https://youtu.be/RADpqk79IzQ?t=241). Its scope ends with the method, and it lives on the **stack**.
 - Instance variables live inside the object on the **heap**.
 
-### Default values [05:20]
+### Default values [▶ ~05:20](https://youtu.be/RADpqk79IzQ?t=320)
 - The defaults are listed above (integers `0`, floating-point `0.0`, `boolean` `false`, references `null`).
 - `String` is a non-primitive. A `String` field is a reference variable, so its default is `null` ("nothing"), not `""`.
 
-### Local variables have no default [07:40]
+### Local variables have no default [▶ ~07:40](https://youtu.be/RADpqk79IzQ?t=460)
 - `int x; System.out.println(x);` gives the compile error *"The local variable x may not have been initialized"*.
 - Why the difference? The video's reasoning is that Java skips defaults for short-lived locals as an optimization and forces you to assign them.
 - *More precisely:* the compiler's **definite assignment** rule forces locals to be assigned before they're read. This catches bugs at compile time. Heap objects are zero-filled when allocated, so fields always start with a well-defined default.
 
-### Why constructors? [11:25]
+### Why constructors? [▶ ~11:25](https://youtu.be/RADpqk79IzQ?t=685)
 - Setting `s1.name`, `s1.age`, … one line at a time is tedious, and it's easy to forget a field (say, a `grades` field someone else added), which would then silently keep its default.
 - A **constructor** puts values into the object *while* it's being constructed.
 
-### Rules of a constructor [13:05]
+### Rules of a constructor [▶ ~13:05](https://youtu.be/RADpqk79IzQ?t=785)
 1. Same name as the class.
 2. No return type, **not even `void`**.
 3. Called during object creation.
@@ -61,51 +61,51 @@
 5. Can be overloaded.
 - Syntax: `Student() { name = "Aditya"; age = 28; rollNumber = 1001; college = "IIT Guwahati"; }`. Now every `new Student()` starts with those values.
 
-### `new Student()` is a constructor call [17:03]
+### `new Student()` is a constructor call [▶ ~17:03](https://youtu.be/RADpqk79IzQ?t=1023)
 - "Called automatically" is really "called by your own syntax": the `Student()` after `new` *is* the call.
 - So in `Student s1 = new Student();`: `Student` is the type, `s1` is the reference variable, `new` allocates heap memory, and `Student()` runs the constructor to fill the fields. Then the reference is stored in `s1` on the stack.
 
-### The default constructor [19:46]
+### The default constructor [▶ ~19:46](https://youtu.be/RADpqk79IzQ?t=1186)
 - When you didn't write a constructor, `new Student()` still worked. Java requires every class to have a constructor, so the compiler inserts an empty `Student() {}`. The fields then keep their default values.
 - *Terminology:* strictly, "default constructor" means only the compiler-generated one. A no-arg constructor you write yourself (even an empty one) is called a **no-arg constructor**. The video uses "default constructor" for both.
 
-### Parameterized constructor [23:19]
+### Parameterized constructor [▶ ~23:19](https://youtu.be/RADpqk79IzQ?t=1399)
 - Hard-coding "Aditya" in the constructor isn't useful. You want the caller to decide, and to be *forced* to supply the values.
 - `Student(String n, int a, int rn, String c) { name = n; age = a; rollNumber = rn; college = c; }`, called as `new Student("Aditya", 28, 1001, "IIT Guwahati")`.
 - (The whiteboard has `int c` for the college. That's a slip. It's a `String`.)
 - Now `new Student()` fails with *"The constructor Student() is undefined"*, because **the compiler adds the default constructor only when you've written none**.
 
-### Constructor overloading [27:22]
+### Constructor overloading [▶ ~27:22](https://youtu.be/RADpqk79IzQ?t=1642)
 - Fix it by also declaring `Student() {}`. Now both `new Student()` and `new Student("Rohit", 28, 102, "IIT Guwahati")` compile, just like method overloading.
-- Code demo [28:23]: a hand-written no-arg constructor with hard-coded values, then an empty one (equivalent to the compiler's), then the parameterized one printing Rohit's details.
+- Code demo [▶ ~28:23](https://youtu.be/RADpqk79IzQ?t=1703): a hand-written no-arg constructor with hard-coded values, then an empty one (equivalent to the compiler's), then the parameterized one printing Rohit's details.
 
-### The `this` keyword [32:13]
+### The `this` keyword [▶ ~32:13](https://youtu.be/RADpqk79IzQ?t=1933)
 - `this` refers to the **current object**, the one being constructed or the one the method was called on.
 - With parameters named like the fields (`String name, int age, …`), plain `name = name;` assigns the parameter to itself. The IDE warns *"The assignment to variable name has no effect"*.
 - `this.name = name;` means "the field `name` of this object = the parameter `name`". It works just like `s1.name`, but from inside the object.
 - `this.` is optional when the names differ (`name = n`), but the convention is to use the same names with `this.`, because it reads clearly.
 
-### Constructor overloading, at scale [36:14]
-- New file `Demo3` [36:48]: five constructors taking 0, 1 (`name`), 2 (`name, age`), 3 (`+ rollNumber`) and 4 (`+ college`) arguments.
+### Constructor overloading, at scale [▶ ~36:14](https://youtu.be/RADpqk79IzQ?t=2174)
+- New file `Demo3` [▶ ~36:48](https://youtu.be/RADpqk79IzQ?t=2208): five constructors taking 0, 1 (`name`), 2 (`name, age`), 3 (`+ rollNumber`) and 4 (`+ college`) arguments.
 - Objects `s1` to `s5` each use a different one. Any field not passed keeps its default (`null`/`0`).
 
-### Constructor chaining with `this(...)` [42:51]
+### Constructor chaining with `this(...)` [▶ ~42:51](https://youtu.be/RADpqk79IzQ?t=2571)
 - Every constructor repeats assignments. Instead, let each one **call the full constructor** with `this(...)` and pass defaults for the missing pieces:
   - `Student(String name) { this(name, 0, 0, "Unknown"); }`, and so on.
 - The no-arg one becomes `this("Unknown", 0, 0, "Unknown")`. Using `"Unknown"` instead of `null` avoids a later `NullPointerException`.
 - In an IDE, Cmd/Ctrl + click on `this(...)` jumps to the constructor it resolves to.
 
-### Chaining step by step [48:06]
+### Chaining step by step [▶ ~48:06](https://youtu.be/RADpqk79IzQ?t=2886)
 - Alternative style: each constructor calls the **next larger** one. 0-arg → `this("Unknown")` → `this(name, 0)` → `this(name, age, 0)` → `this(name, age, rollNumber, "Unknown")` → the 4-arg one assigns everything.
 - Print statements show the flow: `new Student()` prints **fifth, fourth, third, second, first**. Each constructor jumps to the next before running its own print, much like recursion unwinding.
 
-### `this(...)` must be the first statement [51:13]
+### `this(...)` must be the first statement [▶ ~51:13](https://youtu.be/RADpqk79IzQ?t=3073)
 - Putting the print above `this(...)` is a compile error. The call to another constructor must be the first line of the constructor body.
 - *Version note:* this holds up to Java 24 (and on the Java 21 used to test these notes). Java 25 finalized "flexible constructor bodies" (JEP 513), which allows statements before `this(...)`/`super(...)` as long as they don't touch the object being built.
 
-### Interview questions [55:30]
+### Interview questions [▶ ~55:30](https://youtu.be/RADpqk79IzQ?t=3330)
 - **Can you call a constructor manually, like a method?** No. A constructor runs only when an object is created with `new`, or from another constructor through `this(...)` (or `super(...)` for a parent class).
-- **Can `new` fail?** Yes [57:10]. Allocation happens at runtime, and if the heap has no room the JVM throws an error.
+- **Can `new` fail?** Yes [▶ ~57:10](https://youtu.be/RADpqk79IzQ?t=3430). Allocation happens at runtime, and if the heap has no room the JVM throws an error.
   - *Correction:* the video calls this a "runtime exception". It's actually `java.lang.OutOfMemoryError`, an `Error` and not a `RuntimeException`, and normally you don't catch it.
 
 ## Code Examples

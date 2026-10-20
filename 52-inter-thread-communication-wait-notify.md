@@ -28,70 +28,70 @@
 
 ## Detailed Notes
 
-### Why `synchronized` isn't enough [00:00]
+### Why `synchronized` isn't enough [▶ ~00:00](https://youtu.be/EZS19NLnsvc?t=0)
 - Recap: threads can interfere through a shared resource, so we lock the critical section with `synchronized`.
 - But some problems are about **coordination**, not just exclusion. For those, Java has three `Object` methods: `wait()`, `notify()`, `notifyAll()`.
 
-### The producer-consumer problem [01:27]
+### The producer-consumer problem [▶ ~01:27](https://youtu.be/EZS19NLnsvc?t=87)
 - A producer puts a value into a box; a consumer takes it out, leaving the box empty again. Each runs on its own thread (T1, T2).
 - Multithreaded code is **non-deterministic**, so two bad cases are possible:
   1. The consumer runs first and "consumes" `null`.
   2. The producer runs twice in a row and overwrites `5` with `10` before it was consumed, so data is lost.
 
-### Code: the broken version [04:17]
+### Code: the broken version [▶ ~04:17](https://youtu.be/EZS19NLnsvc?t=257)
 - `Box` with an `Integer item` (wrapper type so it can hold `null`) and a `boolean flag` meaning "item present".
 - `produce(int value)`: set `item`, set `flag = true`, print. `consume()`: print `item`, set it back to `null`, set `flag = false`.
-- With one call each, it's a 50/50 race. With a loop of 20 iterations [08:46] and different sleeps (producer 100 ms, consumer 70 ms), the output shows the consumer reading `null` many times.
+- With one call each, it's a 50/50 race. With a loop of 20 iterations [▶ ~08:46](https://youtu.be/EZS19NLnsvc?t=526) and different sleeps (producer 100 ms, consumer 70 ms), the output shows the consumer reading `null` many times.
 
-### Why adding `synchronized` alone doesn't fix it [10:49]
+### Why adding `synchronized` alone doesn't fix it [▶ ~10:49](https://youtu.be/EZS19NLnsvc?t=649)
 - Making both methods `synchronized` only guarantees that **one of them runs at a time**. It doesn't say *which one goes first*. The consumer can still enter first and read `null`.
 - The problem isn't locking, it's **communication**: "don't consume if nothing is there; don't produce if something is already there".
 
-### The naive fix: busy waiting [13:06]
+### The naive fix: busy waiting [▶ ~13:06](https://youtu.be/EZS19NLnsvc?t=786)
 - Producer: `while (flag) { /* do nothing */ }` before producing. Consumer: `while (!flag) { }` before consuming.
 - The flag must be `volatile`, or a thread may keep reading a stale cached value forever (the visibility problem from the earlier video).
-- The cost [16:32]: a spinning thread keeps getting CPU time. If the producer is a slow external server taking 2 s, the consumer spins for 2 s asking "is it there yet?". That's **busy waiting**.
+- The cost [▶ ~16:32](https://youtu.be/EZS19NLnsvc?t=992): a spinning thread keeps getting CPU time. If the producer is a slow external server taking 2 s, the consumer spins for 2 s asking "is it there yet?". That's **busy waiting**.
 
-### Busy waiting in practice [17:00]
-- It produces the right sequence, but sometimes the **print order** is wrong [18:49]: "consumed 1" before "produced 1". The producer set the flag, got context-switched *before* its `println`, and the consumer ran in between.
-- The usual race-condition fix is to make both methods `synchronized`, and that **deadlocks** [20:36]. If the consumer enters first (flag `false`), it holds the box's lock and spins forever. The producer can never enter to set the flag. Nothing prints. At any moment the consumer is first, it's stuck.
+### Busy waiting in practice [▶ ~17:00](https://youtu.be/EZS19NLnsvc?t=1020)
+- It produces the right sequence, but sometimes the **print order** is wrong [▶ ~18:49](https://youtu.be/EZS19NLnsvc?t=1129): "consumed 1" before "produced 1". The producer set the flag, got context-switched *before* its `println`, and the consumer ran in between.
+- The usual race-condition fix is to make both methods `synchronized`, and that **deadlocks** [▶ ~20:36](https://youtu.be/EZS19NLnsvc?t=1236). If the consumer enters first (flag `false`), it holds the box's lock and spins forever. The producer can never enter to set the flag. Nothing prints. At any moment the consumer is first, it's stuck.
 
-### Waiting properly: shared resource, condition, waiting [22:08]
+### Waiting properly: shared resource, condition, waiting [▶ ~22:08](https://youtu.be/EZS19NLnsvc?t=1328)
 - Java's thread lifecycle has a **WAITING** state (different from TIMED_WAITING, which you get from `Thread.sleep(ms)`). `wait()` enters it; `notify()`/`notifyAll()` get a thread out.
-- Every coordination problem has three pieces [24:10]:
+- Every coordination problem has three pieces [▶ ~24:10](https://youtu.be/EZS19NLnsvc?t=1450):
   - **Shared resource:** the box/item.
   - **Condition:** does the box have an item?
   - **Who waits:** the consumer waits while it's empty; the producer waits while it's full.
 
-### What `wait()` does [25:21]
+### What `wait()` does [▶ ~25:21](https://youtu.be/EZS19NLnsvc?t=1521)
 1. **Releases the monitor lock(s)** the thread holds on that object.
 2. Moves the thread to the **WAITING** state.
 3. Stays there **until another thread wakes it** (not after a fixed time, unlike `sleep`).
 - Releasing the lock is the crucial step. Without it, the waiting consumer would still hold the lock, the producer could never enter to call `notify()`, and you'd have the deadlock again.
 - Flow: the consumer sees an empty box and waits (releasing the lock). The producer enters, fills the box, sets the flag, and calls `notify()` on the way out. The consumer wakes, re-checks the loop condition (now false), consumes, and calls `notify()` in case a producer is waiting.
 
-### Rule: only inside `synchronized` [30:16]
+### Rule: only inside `synchronized` [▶ ~30:16](https://youtu.be/EZS19NLnsvc?t=1816)
 - `wait()` and `notify()` must be called by a thread that **owns the object's monitor**, otherwise you get `IllegalMonitorStateException`. Reason: `wait()` has to release a lock, and it can't release one you don't hold. `notify()` operates on that object's wait set, which belongs to the lock you must hold.
 - `wait()` throws the checked `InterruptedException`, so declare or catch it.
 
-### Internals: monitor, owner, wait set [35:00]
+### Internals: monitor, owner, wait set [▶ ~35:00](https://youtu.be/EZS19NLnsvc?t=2100)
 - Each object's intrinsic (monitor) lock records the **owner thread**, plus a queue of BLOCKED threads trying to enter (seen in the previous video) and a **waiting queue** (wait set).
 - Consumer T2 takes the box's lock (owner = T2), finds it empty, calls `wait()`: T2 goes into the wait set and owner becomes empty. Producer T1, which was BLOCKED waiting for the lock, can now get it.
 
-### What `notify()` does [38:45]
-1. Picks **one random** thread from the wait set (which one depends on the JVM/OS, so it's non-deterministic) [42:53].
+### What `notify()` does [▶ ~38:45](https://youtu.be/EZS19NLnsvc?t=2325)
+1. Picks **one random** thread from the wait set (which one depends on the JVM/OS, so it's non-deterministic) [▶ ~42:53](https://youtu.be/EZS19NLnsvc?t=2573).
 2. Moves it to the **BLOCKED** state, *not* straight to RUNNABLE. It gave up the lock when it waited, so it has to compete for the lock again.
 3. Once it gets the lock it becomes RUNNABLE/RUNNING and continues from **the line after `wait()`** (not from the top of the method). Since `wait()` sits in a loop, it re-checks the condition first.
 - `notify()` also has to be called inside `synchronized`. Note that the notifier keeps the lock until it leaves its synchronized block, so the woken thread only proceeds after that.
 
-### Code: the working version [44:11]
+### Code: the working version [▶ ~44:11](https://youtu.be/EZS19NLnsvc?t=2651)
 - Replace "do nothing" with `wait()` in both loops, add `notify()` after producing and after consuming, and handle `InterruptedException`.
 - Output now strictly alternates "produced n / consumed n", even when both sleeps are set to 100 ms. No CPU is wasted while waiting.
 - *(Side note: the video keeps `volatile` on the fields. It's harmless but not needed once every access happens inside `synchronized`, because the lock already guarantees visibility.)*
 
-### `notifyAll()` and why `notify()` can be dangerous [48:19]
+### `notifyAll()` and why `notify()` can be dangerous [▶ ~48:19](https://youtu.be/EZS19NLnsvc?t=2899)
 - `notifyAll()`: every thread in the wait set moves to BLOCKED; they all compete; only one gets the lock at a time. It has more overhead than `notify()` but is **safer**, and is generally preferred.
-- Scenario with **2 producers (P1, P2) and 2 consumers (C1, C2)** and one box [49:26]:
+- Scenario with **2 producers (P1, P2) and 2 consumers (C1, C2)** and one box [▶ ~49:26](https://youtu.be/EZS19NLnsvc?t=2966):
   1. Box empty. C1 enters and waits. C2 enters and waits. (Wait set: C1, C2.)
   2. P1 produces 10, `notify()` wakes C1, and P1 finishes.
   3. P2 gets the lock before C1, sees the box full, and waits. (Wait set: C2, P2.)
@@ -100,20 +100,20 @@
 - With `notifyAll()`, step 4 wakes both C2 and P2. If C2 runs first it just goes back to waiting, and P2 still gets to produce. Someone can always make progress.
 - Rule of thumb: `notify()` is fine only when there's exactly one thread of each kind (or all waiters are interchangeable). Otherwise use `notifyAll()`.
 
-### Interview question: why are they in `Object`, not `Thread`? [57:50]
+### Interview question: why are they in `Object`, not `Thread`? [▶ ~57:50](https://youtu.be/EZS19NLnsvc?t=3470)
 - A thread waits on and notifies an **object's monitor**. The lock and its wait set belong to the object, so the methods that put threads into that wait set and take them out live on `Object` too.
 
-### `sleep()` vs `wait()` [58:40]
+### `sleep()` vs `wait()` [▶ ~58:40](https://youtu.be/EZS19NLnsvc?t=3520)
 - `Thread.sleep(ms)`: TIMED_WAITING for a fixed time, **keeps any locks it holds**, can be called anywhere.
 - `obj.wait()`: WAITING until notified, **releases `obj`'s lock**, and must be called while holding that lock. *(There is also a timed `wait(ms)` overload, which gives TIMED_WAITING.)*
 
-### Spurious wake-ups and guarded blocks [59:30]
+### Spurious wake-ups and guarded blocks [▶ ~59:30](https://youtu.be/EZS19NLnsvc?t=3570)
 - A waiting thread can occasionally wake up **without** any `notify()`. This is a *spurious wake-up*: rare, caused by OS/CPU-level behavior that Java doesn't fully control.
 - That's why we always wrote `while (flag == false) wait();` and never `if`. After waking, the loop re-checks the condition and goes back to waiting if it's still not satisfied. With `if`, the thread would fall through and, for example, consume `null`.
-- `while` + `wait()` is called a **guarded block** [62:31].
+- `while` + `wait()` is called a **guarded block** [▶ ~62:31](https://youtu.be/EZS19NLnsvc?t=3751).
 - *(The same `while` also protects against the `notifyAll()` case where several threads wake and an earlier one already took the item. The code examples below show that one, since it can be reproduced reliably.)*
 
-### Real-world view [62:50]
+### Real-world view [▶ ~62:50](https://youtu.be/EZS19NLnsvc?t=3770)
 - A document creator (producer) and a printer (consumer) is the textbook example. Anything that produces values on one side and consumes them on the other is a producer-consumer problem.
 
 ## Code Examples

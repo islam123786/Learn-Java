@@ -37,7 +37,7 @@
 
 ## Detailed Notes
 
-### Recap and writing your own functional interface [00:00]
+### Recap and writing your own functional interface [▶ ~00:00](https://youtu.be/IsC0Ms2iFi8?t=0)
 - From the previous video: lambdas work only with functional interfaces, and `@FunctionalInterface` gives a compile-time check.
 - You'll almost never need your own functional interface: the JDK's cover roughly 95–99% of cases. One reason to write one is to wrap an existing interface with a more meaningful name.
 - Demo: `interface Calculator { int calculate(int a, int b); }`.
@@ -45,98 +45,98 @@
   - A helper `print(int a, int b, Calculator c)` prints `c.calculate(a, b)`. This is the same pattern as `Collections.sort(list, comparator)`.
   - Delete the `Addition` class and pass `(a, b) -> a + b` instead. Now you can also pass `(a, b) -> a * b` (→ 20) without writing a new class.
 
-### Storing a lambda in a variable [07:34]
+### Storing a lambda in a variable [▶ ~07:34](https://youtu.be/IsC0Ms2iFi8?t=454)
 - `Calculator c = (a, b) -> a + b;` compiles. Passing a lambda to a parameter was already doing this, because the parameter is a variable of type `Calculator`.
 - This matters a lot for what follows: the core interfaces are almost always used as `Function<…> f = …;` and so on.
 
-### The four core interfaces in `java.util.function` [08:39]
-- **`Function<T,R>`** [08:39]: takes an input and returns an output, like the mathematical f(x). Single method `R apply(T t)`.
+### The four core interfaces in `java.util.function` [▶ ~08:39](https://youtu.be/IsC0Ms2iFi8?t=519)
+- **`Function<T,R>`** [▶ ~08:39](https://youtu.be/IsC0Ms2iFi8?t=519): takes an input and returns an output, like the mathematical f(x). Single method `R apply(T t)`.
   - `Function<Integer,Integer> square = x -> x * x; square.apply(5)` → 25.
-- **`Consumer<T>`** [14:04]: takes an input and returns nothing. It "consumes" the value. Single method `void accept(T t)`. *(The video first calls this method `apply`, then corrects it to `accept` in the code.)*
+- **`Consumer<T>`** [▶ ~14:04](https://youtu.be/IsC0Ms2iFi8?t=844): takes an input and returns nothing. It "consumes" the value. Single method `void accept(T t)`. *(The video first calls this method `apply`, then corrects it to `accept` in the code.)*
   - `Consumer<Integer> print = x -> System.out.println(x); print.accept(7)` prints 7. Typical uses: printing, writing to a log or file.
-- **`Supplier<T>`** [18:24]: takes nothing and returns a value. Single method `T get()`.
+- **`Supplier<T>`** [▶ ~18:24](https://youtu.be/IsC0Ms2iFi8?t=1104): takes nothing and returns a value. Single method `T get()`.
   - `Supplier<Double> rnd = () -> Math.random(); rnd.get()` returns a random double. It has to be `Supplier<Double>`, because `Math.random()` returns `double`.
-- **`Predicate<T>`** [21:39]: takes an input and returns `true`/`false`. Single method `boolean test(T t)`.
+- **`Predicate<T>`** [▶ ~21:39](https://youtu.be/IsC0Ms2iFi8?t=1299): takes an input and returns `true`/`false`. Single method `boolean test(T t)`.
   - `Predicate<Integer> isEven = x -> x % 2 == 0; isEven.test(8)` → true, `isEven.test(7)` → false.
-- Summary [24:54]: Function = **transform**, Consumer = **consume**, Supplier = **supply**, Predicate = **test**. The shapes T→R, T→void, void→T and T→boolean cover almost every scenario.
+- Summary [▶ ~24:54](https://youtu.be/IsC0Ms2iFi8?t=1494): Function = **transform**, Consumer = **consume**, Supplier = **supply**, Predicate = **test**. The shapes T→R, T→void, void→T and T→boolean cover almost every scenario.
 
-### `Iterable.forEach` takes a `Consumer` [25:59]
+### `Iterable.forEach` takes a `Consumer` [▶ ~25:59](https://youtu.be/IsC0Ms2iFi8?t=1559)
 - `import java.util.*` doesn't bring in `java.util.function`; import it separately.
 - `List<Integer> list = List.of(1, 2, …, 0);` can be printed with an index loop, an enhanced for loop, or **`list.forEach(x -> System.out.println(x))`**.
 - `forEach` is a **default method on `Iterable`** with the signature `forEach(Consumer<? super T> action)`. Internally it runs an enhanced for loop over `this` and calls `action.accept(t)` for each element.
 - You could also pass an object of a class that implements `Consumer<Integer>`. The lambda is just shorter.
 
-### Primitive functional interfaces [30:19]
-- The problem [31:24]: in `Function<Integer,Integer> square = x -> x * x`, Java **unboxes** `x` to `int`, multiplies, then **autoboxes** the result back to `Integer`. Run that millions of times in a loop and it gets slow.
-- The fix: primitive variants for **`int`, `long` and `double` only**. These are the types used in loops and arithmetic. `byte`/`short` get promoted to `int`, `float` gets replaced by `double`, and `char` is rarely used in hot loops [34:39].
-- **Function family** [35:44]:
+### Primitive functional interfaces [▶ ~30:19](https://youtu.be/IsC0Ms2iFi8?t=1819)
+- The problem [▶ ~31:24](https://youtu.be/IsC0Ms2iFi8?t=1884): in `Function<Integer,Integer> square = x -> x * x`, Java **unboxes** `x` to `int`, multiplies, then **autoboxes** the result back to `Integer`. Run that millions of times in a loop and it gets slow.
+- The fix: primitive variants for **`int`, `long` and `double` only**. These are the types used in loops and arithmetic. `byte`/`short` get promoted to `int`, `float` gets replaced by `double`, and `char` is rarely used in hot loops [▶ ~34:39](https://youtu.be/IsC0Ms2iFi8?t=2079).
+- **Function family** [▶ ~35:44](https://youtu.be/IsC0Ms2iFi8?t=2144):
   - `IntFunction<R>`, `LongFunction<R>`, `DoubleFunction<R>`: primitive in, object out (`R apply(int value)`).
-  - `ToIntFunction<T>`, `ToLongFunction<T>`, `ToDoubleFunction<T>` [37:54]: object in, primitive out (`int applyAsInt(T value)`).
-- **Consumer family** [38:59]:
+  - `ToIntFunction<T>`, `ToLongFunction<T>`, `ToDoubleFunction<T>` [▶ ~37:54](https://youtu.be/IsC0Ms2iFi8?t=2274): object in, primitive out (`int applyAsInt(T value)`).
+- **Consumer family** [▶ ~38:59](https://youtu.be/IsC0Ms2iFi8?t=2339):
   - `IntConsumer`, `LongConsumer`, `DoubleConsumer`: primitive → void.
-  - `ObjIntConsumer<T>`, `ObjLongConsumer<T>`, `ObjDoubleConsumer<T>` [40:04]: (object, primitive) → void. *(The video says `ObjLongConsumer` takes "T and int". It takes `T` and `long`.)*
-- **Supplier family** [41:08]: `IntSupplier`, `LongSupplier`, `DoubleSupplier` (`getAsInt()` etc.). There's only one variant, since a supplier takes no input and a method can't return two values.
-- **Predicate family** [42:13]: `IntPredicate`, `LongPredicate`, `DoublePredicate`: primitive → boolean.
-- **Operator family** [43:18]: primitive in *and* primitive out.
+  - `ObjIntConsumer<T>`, `ObjLongConsumer<T>`, `ObjDoubleConsumer<T>` [▶ ~40:04](https://youtu.be/IsC0Ms2iFi8?t=2404): (object, primitive) → void. *(The video says `ObjLongConsumer` takes "T and int". It takes `T` and `long`.)*
+- **Supplier family** [▶ ~41:08](https://youtu.be/IsC0Ms2iFi8?t=2468): `IntSupplier`, `LongSupplier`, `DoubleSupplier` (`getAsInt()` etc.). There's only one variant, since a supplier takes no input and a method can't return two values.
+- **Predicate family** [▶ ~42:13](https://youtu.be/IsC0Ms2iFi8?t=2533): `IntPredicate`, `LongPredicate`, `DoublePredicate`: primitive → boolean.
+- **Operator family** [▶ ~43:18](https://youtu.be/IsC0Ms2iFi8?t=2598): primitive in *and* primitive out.
   - `IntUnaryOperator`, `LongUnaryOperator`, `DoubleUnaryOperator`: one input, e.g. int → int (`applyAsInt`).
   - `IntBinaryOperator`, `LongBinaryOperator`, `DoubleBinaryOperator`: two inputs, e.g. (int, int) → int.
 - You don't need to memorize these. Remember the four core interfaces and their methods; your IDE will autocomplete the rest. Prefer the primitive versions in performance-sensitive code.
 - *(Also worth knowing, though the video doesn't name them: the generic `UnaryOperator<T>` (T → T) and `BinaryOperator<T>` ((T, T) → T) are the object versions of the operators.)*
 
-### Method references [45:28]
+### Method references [▶ ~45:28](https://youtu.be/IsC0Ms2iFi8?t=2728)
 - If a lambda only forwards its parameter to a method that already exists, you can replace it with a method reference.
   - `x -> System.out.println(x)` is a `Consumer` lambda. `System.out` is a static `PrintStream` field of `System`, and `println` is a method on it.
   - `list.forEach(System.out::println)` means "use this method when needed". There are no parentheses because you aren't calling `println` here. `forEach` calls `accept` on the resulting `Consumer`, which calls `println(element)` for each element.
 - `::` is the **method reference operator**. (It looks like C++'s scope resolution operator, but in Java it means this.)
-- **When you can't use one** [57:23]: `x -> x + 5`. No existing method does "add 5", so it has to stay a lambda. The same goes for `x -> Math.abs(x * x)`: the argument isn't passed unchanged.
+- **When you can't use one** [▶ ~57:23](https://youtu.be/IsC0Ms2iFi8?t=3443): `x -> x + 5`. No existing method does "add 5", so it has to stay a lambda. The same goes for `x -> Math.abs(x * x)`: the argument isn't passed unchanged.
 
-### Kinds of method references [58:28]
+### Kinds of method references [▶ ~58:28](https://youtu.be/IsC0Ms2iFi8?t=3508)
 - **Static method**: `x -> Math.abs(x)` → `Math::abs` (`ClassName::staticMethod`).
-- **Instance method of a particular object** [59:33]: `x -> System.out.println(x)` → `System.out::println`. `out` is an object, so this refers to a method through an instance.
-- **Instance method of an arbitrary object of a type** [60:38]: `str -> str.isEmpty()` → `String::isEmpty`. The first lambda parameter becomes the object the method is called on. `Predicate<String> p = String::isEmpty; p.test("hello")` → false, `p.test("")` → true.
-- **Constructor reference** [61:43]: `() -> new ArrayList<Integer>()` → `ArrayList::new`. `Supplier<List<Integer>> s = ArrayList::new; List<Integer> list = s.get();`
-- Readability first [63:53]: `System.out::println` reads well, but something like `ArrayList::new` can be less clear to some readers. If a method reference makes the code harder to follow, write the lambda.
+- **Instance method of a particular object** [▶ ~59:33](https://youtu.be/IsC0Ms2iFi8?t=3573): `x -> System.out.println(x)` → `System.out::println`. `out` is an object, so this refers to a method through an instance.
+- **Instance method of an arbitrary object of a type** [▶ ~60:38](https://youtu.be/IsC0Ms2iFi8?t=3638): `str -> str.isEmpty()` → `String::isEmpty`. The first lambda parameter becomes the object the method is called on. `Predicate<String> p = String::isEmpty; p.test("hello")` → false, `p.test("")` → true.
+- **Constructor reference** [▶ ~61:43](https://youtu.be/IsC0Ms2iFi8?t=3703): `() -> new ArrayList<Integer>()` → `ArrayList::new`. `Supplier<List<Integer>> s = ArrayList::new; List<Integer> list = s.get();`
+- Readability first [▶ ~63:53](https://youtu.be/IsC0Ms2iFi8?t=3833): `System.out::println` reads well, but something like `ArrayList::new` can be less clear to some readers. If a method reference makes the code harder to follow, write the lambda.
 
-### Function composition: `andThen` [64:58]
+### Function composition: `andThen` [▶ ~64:58](https://youtu.be/IsC0Ms2iFi8?t=3898)
 - Idea: `result = (x + 2) * 3` can be split into f(x) = x + 2 and g(x) = x * 3, so result = g(f(x)).
-- In code [68:13], with `Function<Integer,Integer> add2 = x -> x + 2` and `multiply3 = x -> x * 3`:
+- In code [▶ ~68:13](https://youtu.be/IsC0Ms2iFi8?t=4093), with `Function<Integer,Integer> add2 = x -> x + 2` and `multiply3 = x -> x * 3`:
   - Step by step: `int a = add2.apply(2); int b = multiply3.apply(a);` → 12.
   - Nested: `multiply3.apply(add2.apply(2))` → 12, which is correct but hard to read.
   - **`add2.andThen(multiply3).apply(2)`** → 12. It reads left to right: add 2, *and then* multiply by 3.
   - You can keep chaining: `add2.andThen(multiply3).andThen(divide2).apply(2)` → 6.
-- How it works inside [75:48]: `andThen` takes a `Function` and **returns a `Function`**, which is why you can chain it again before calling `apply`. The JDK source is essentially `Objects.requireNonNull(after); return (T t) -> after.apply(apply(t));`.
-- **Type rule** [80:08]: for `f.andThen(g)`, the output type of `f` must be the input type of `g`. With `f: Function<T,R>` and `g: Function<R,V>`, the result is `Function<T,V>`. Example: `f: Integer → String` and `g: String → String`. Then `f.andThen(g)` works, but `g.andThen(f)` doesn't compile, because `f` can't accept a `String`.
+- How it works inside [▶ ~75:48](https://youtu.be/IsC0Ms2iFi8?t=4548): `andThen` takes a `Function` and **returns a `Function`**, which is why you can chain it again before calling `apply`. The JDK source is essentially `Objects.requireNonNull(after); return (T t) -> after.apply(apply(t));`.
+- **Type rule** [▶ ~80:08](https://youtu.be/IsC0Ms2iFi8?t=4808): for `f.andThen(g)`, the output type of `f` must be the input type of `g`. With `f: Function<T,R>` and `g: Function<R,V>`, the result is `Function<T,V>`. Example: `f: Integer → String` and `g: String → String`. Then `f.andThen(g)` works, but `g.andThen(f)` doesn't compile, because `f` can't accept a `String`.
 
-### `compose` (the reverse order) [85:32]
+### `compose` (the reverse order) [▶ ~85:32](https://youtu.be/IsC0Ms2iFi8?t=5132)
 - `f.compose(g)` = f(g(x)): it runs the **argument first**, then `f` (right to left).
   - With `f = x -> x + 2` and `g = x -> x * 2`: `f.andThen(g)` = (x + 2) * 2, but `f.compose(g)` = (x * 2) + 2.
 - Types: with `g: Function<V,T>` and `f: Function<T,R>`, `f.compose(g)` is a `Function<V,R>`.
 - Both build a "method pipeline". Most people prefer `andThen` because left to right is more intuitive.
 
-### Method references inside compositions [89:52]
+### Method references inside compositions [▶ ~89:52](https://youtu.be/IsC0Ms2iFi8?t=5392)
 - `Function<String,String> toUpper = String::toUpperCase; Function<String,Integer> length = String::length;` then `toUpper.andThen(length)` is a `Function<String,Integer>`.
-- A real use [92:02]: clean up user input with `trim.andThen(toUpper).apply("   hello   ")` → `"HELLO"`. You can keep appending steps (reverse, substring, …). The code describes *what* happens, step by step.
+- A real use [▶ ~92:02](https://youtu.be/IsC0Ms2iFi8?t=5522): clean up user input with `trim.andThen(toUpper).apply("   hello   ")` → `"HELLO"`. You can keep appending steps (reverse, substring, …). The code describes *what* happens, step by step.
 
-### Predicate chaining: `and`, `or`, `negate` [94:12]
+### Predicate chaining: `and`, `or`, `negate` [▶ ~94:12](https://youtu.be/IsC0Ms2iFi8?t=5652)
 - Instead of writing `if (x > 100 && x % 2 == 0)` everywhere, build named predicates and combine them.
-- **`and`** [96:22]: `isGreater.and(isEven).test(102)` → true. Internally it's `t -> test(t) && other.test(t)`, returned as a new `Predicate`, so you can keep chaining.
-- **`or`** [99:37]: `isGreater.or(isEven).test(56)` → true (56 is not > 100, but it is even).
-- **`negate`** [100:42]: `Predicate<Integer> isOdd = isEven.negate(); isOdd.test(55)` → true. It takes no argument and works like `!`. Negating twice gives the original back.
-- Real-life example [101:47]: a `Student(marks, age)`. With `passed = s -> s.marks >= 40` and `isAdult = s -> s.age >= 18`, define `isEligible = passed.and(isAdult)`. Then `isEligible.test(new Student(50, 19))` → true, and with age 17 → false. No if/else needed.
+- **`and`** [▶ ~96:22](https://youtu.be/IsC0Ms2iFi8?t=5782): `isGreater.and(isEven).test(102)` → true. Internally it's `t -> test(t) && other.test(t)`, returned as a new `Predicate`, so you can keep chaining.
+- **`or`** [▶ ~99:37](https://youtu.be/IsC0Ms2iFi8?t=5977): `isGreater.or(isEven).test(56)` → true (56 is not > 100, but it is even).
+- **`negate`** [▶ ~100:42](https://youtu.be/IsC0Ms2iFi8?t=6042): `Predicate<Integer> isOdd = isEven.negate(); isOdd.test(55)` → true. It takes no argument and works like `!`. Negating twice gives the original back.
+- Real-life example [▶ ~101:47](https://youtu.be/IsC0Ms2iFi8?t=6107): a `Student(marks, age)`. With `passed = s -> s.marks >= 40` and `isAdult = s -> s.age >= 18`, define `isEligible = passed.and(isAdult)`. Then `isEligible.test(new Student(50, 19))` → true, and with age 17 → false. No if/else needed.
 
-### Consumer chaining: `andThen` [105:02]
+### Consumer chaining: `andThen` [▶ ~105:02](https://youtu.be/IsC0Ms2iFi8?t=6302)
 - A consumer returns nothing, so its `andThen` just runs **both consumers on the same input**, one after the other. Use it to print to the console, write a log line, save to a file, and so on for one value.
 - `Consumer<String> printName = System.out::println; Consumer<String> printUpper = s -> System.out.println(s.toUpperCase());`
   `printName.andThen(printUpper).accept("Aditya")` prints `Aditya`, then `ADITYA`.
 - `printUpper` has to stay a lambda: no existing method prints a string in upper case.
 
-### Two-argument ("Bi") interfaces [110:27]
+### Two-argument ("Bi") interfaces [▶ ~110:27](https://youtu.be/IsC0Ms2iFi8?t=6627)
 - **`BiFunction<T,U,R>`**: `R apply(T t, U u)`.
 - **`BiConsumer<T,U>`**: `void accept(T t, U u)`. `Map.forEach` uses it.
 - **`BiPredicate<T,U>`**: `boolean test(T t, U u)`.
 - There's **no `BiSupplier`**. A supplier takes no input, so there's nothing to make "bi", and a method can only return one value.
 
-### Imperative vs declarative, and what's next [111:32]
+### Imperative vs declarative, and what's next [▶ ~111:32](https://youtu.be/IsC0Ms2iFi8?t=6692)
 - OOP-style loops are **imperative**: `for (int i = 0; i < n; i++) …` spells out *how* to do the work.
 - Functional code is **declarative**: `doThis.andThen(doThat)`, `list.forEach(System.out::println)` state *what* to do and hide the how.
 - Lambdas are central to modern Java. The next lectures on **Streams** use them heavily.

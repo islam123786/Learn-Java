@@ -22,7 +22,7 @@ Study notes for all 57 videos (about 62 h 45 min). There's one notes file per vi
 ---
 
 ### How to use these notes
-- Timestamps are estimates. The transcripts had no timing data, so each timestamp was worked out from where that part falls in the transcript. They're usually within 1–2 minutes.
+- Each section has a **▶ jump link** that opens the video at roughly that moment. The timestamps are estimates: the transcripts had no timing data, so each one was worked out from where that part falls in the transcript. They're usually within 1–2 minutes.
 - Most videos are in Hindi/Hinglish. The notes were written in English from the Hindi transcript, and each file's header says which transcript was used.
 - Every `java` block is a single-file program. Copy it to `ClassName.java` and run `java ClassName.java` (JDK 21+). All of them were compiled and run. Blocks whose first line is `// does not compile` or `// throws` are meant to fail, to show an error.
 - Where a video simplifies something or gets it slightly wrong, the notes add a short correction.

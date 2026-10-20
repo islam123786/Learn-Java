@@ -34,74 +34,74 @@
 
 ## Detailed Notes
 
-### Two warnings about the series [00:00]
+### Two warnings about the series [▶ ~00:00](https://youtu.be/LBqE4YOvhyc?t=0)
 - The series is about understanding Java's internals and the "why" behind each feature, not memorizing syntax. The instructor argues that in the AI era you can always look up or generate syntax, but strong fundamentals are what pay off when you build Spring Boot or Android apps later.
 - You can't learn passively. Watch one video a day, implement what was covered, and solve the practice questions.
 - The course is meant to be beginner-friendly and to go from absolute basics to advanced topics.
 
-### The world before Java: C and C++ [02:51]
-- In the 1980s and 1990s C and its successor C++ dominated [03:29]. They were fast, simpler than older languages, used English-like syntax, and were **low-level** (close to the hardware, with few abstraction layers).
+### The world before Java: C and C++ [▶ ~02:51](https://youtu.be/LBqE4YOvhyc?t=171)
+- In the 1980s and 1990s C and its successor C++ dominated [▶ ~03:29](https://youtu.be/LBqE4YOvhyc?t=209). They were fast, simpler than older languages, used English-like syntax, and were **low-level** (close to the hardware, with few abstraction layers).
 - Before C came assembly (still hardware-oriented, with a few English mnemonics like MOV), and before that raw machine code. Languages evolved so that programmers could write something close to English and let a compiler produce the 0s and 1s.
 - So why did anyone need a new language? Three problems: portability, simplicity and security.
 
-### Problem 1: Portability [06:03]
+### Problem 1: Portability [▶ ~06:03](https://youtu.be/LBqE4YOvhyc?t=363)
 - You write `hello.cpp` and compile it. The compiler produces machine code for one platform, P1. Copy that binary to platform P2 and it won't run. You have to compile again for P2, and again for every new platform.
 - That makes C/C++ **platform dependent**.
 
-### What a platform is [10:43]
+### What a platform is [▶ ~10:43](https://youtu.be/LBqE4YOvhyc?t=643)
 - Platform = processor + operating system. Example: P1 = Intel x86 + Windows, P2 = ARM + macOS.
 - The same source code produces different binaries on P1 and P2. The next two sections explain why.
 
-### Why the OS changes the binary [15:38]
+### Why the OS changes the binary [▶ ~15:38](https://youtu.be/LBqE4YOvhyc?t=938)
 - Printing to the console, reading or writing files, and allocating memory for a variable are all things your program can't do alone. It asks the OS to do them.
 - When you compile, the program is linked against the OS's **system libraries**. Windows and macOS provide different routines for the same task (the video's made-up names are `writeToConsole` and `writeThere`), so the machine code that comes out is different.
 
-### Why the processor changes the binary [21:06]
+### Why the processor changes the binary [▶ ~21:06](https://youtu.be/LBqE4YOvhyc?t=1266)
 - A CPU is a physical chip with billions of transistors. Each transistor is either on (1) or off (0).
 - Intel and ARM lay out their chips differently, so talking to them at the hardware level ("add two numbers") requires different bit patterns.
-- **ISA (Instruction Set Architecture)** [24:25] is the interface between programs and the processor. It defines how basic operations (add, load, store, jump) are encoded. Think of it as the processor's **grammar**. Different processors have different ISAs, so the same source code compiles to different machine code.
+- **ISA (Instruction Set Architecture)** [▶ ~24:25](https://youtu.be/LBqE4YOvhyc?t=1465) is the interface between programs and the processor. It defines how basic operations (add, load, store, jump) are encoded. Think of it as the processor's **grammar**. Different processors have different ISAs, so the same source code compiles to different machine code.
 - Conclusion: OS differences plus ISA differences mean that every pre-Java language that compiled to native code was platform dependent.
 
-### Problems 2 and 3: Simplicity and security [27:14]
+### Problems 2 and 3: Simplicity and security [▶ ~27:14](https://youtu.be/LBqE4YOvhyc?t=1634)
 - C++ was simple compared with what came before it, but it still had complex parts. Java wanted to remove or hide them.
 - C++ was also less secure, and Java aimed to be more secure.
-- The three features to remember from this video are **portable, simple and secure** [28:27].
+- The three features to remember from this video are **portable, simple and secure** [▶ ~28:27](https://youtu.be/LBqE4YOvhyc?t=1707).
 
-### How Java solved portability: bytecode [29:48]
-- **Analogy** [30:14]: you (who speak Hindi/English) visit China and then Spain. The C/C++ approach is "learn Mandarin, then learn Spanish", which means compiling separately for each platform. The Java approach is "bring a translator friend who speaks every language". You speak one language, and the translator handles the local one.
+### How Java solved portability: bytecode [▶ ~29:48](https://youtu.be/LBqE4YOvhyc?t=1788)
+- **Analogy** [▶ ~30:14](https://youtu.be/LBqE4YOvhyc?t=1814): you (who speak Hindi/English) visit China and then Spain. The C/C++ approach is "learn Mandarin, then learn Spanish", which means compiling separately for each platform. The Java approach is "bring a translator friend who speaks every language". You speak one language, and the translator handles the local one.
 - In Java:
   - `javac` compiles `Hello.java` into **bytecode**, `Hello.class`. That's an intermediate code, not 0s and 1s.
-  - The same `Hello.class` goes to P1 and to P2. On each platform the **JVM** [33:41] (the translator) reads the bytecode and turns it into that platform's machine instructions.
+  - The same `Hello.class` goes to P1 and to P2. On each platform the **JVM** [▶ ~33:41](https://youtu.be/LBqE4YOvhyc?t=2021) (the translator) reads the bytecode and turns it into that platform's machine instructions.
   - You compile once, and the bytecode runs on P1, P2, or a future P3. The only condition is that the platform has a JVM.
 
-### Correction: there is a JVM per platform [38:15]
+### Correction: there is a JVM per platform [▶ ~38:15](https://youtu.be/LBqE4YOvhyc?t=2295)
 - The analogy suggests one translator travelling with you. In reality the **JVM itself is not portable**. There's a JVM built for x86 + Windows, another for ARM + macOS, and so on.
 - The JVM has to know the platform's OS system libraries and its processor's ISA. So the JVM is platform-specific, and only the bytecode is independent.
 - Java's trade-off: write a JVM for each platform once, and from then on every program is portable. A better version of the analogy is a local translator stationed in each country.
-- This is **platform independence** or **WORA, Write Once, Run Anywhere** [41:07].
+- This is **platform independence** or **WORA, Write Once, Run Anywhere** [▶ ~41:07](https://youtu.be/LBqE4YOvhyc?t=2467).
 
-### Why portability mattered so much [41:29]
+### Why portability mattered so much [▶ ~41:29](https://youtu.be/LBqE4YOvhyc?t=2489)
 - Lots of new devices were appearing around 1990: embedded systems, set-top boxes, TVs (and later smart devices). Java's creators wanted one application to run on any Java-enabled device.
 - Raw speed mattered less than before because hardware was getting fast. They wanted a **general-purpose** language. (The video notes that even slower languages like Python run fine on modern hardware.)
-- The **internet** [43:49] was taking off. A backend may be deployed on many servers with different platforms, and without portability you'd recompile for each one.
+- The **internet** [▶ ~43:49](https://youtu.be/LBqE4YOvhyc?t=2629) was taking off. A backend may be deployed on many servers with different platforms, and without portability you'd recompile for each one.
 
-### How Java became simpler [46:02]
+### How Java became simpler [▶ ~46:02](https://youtu.be/LBqE4YOvhyc?t=2762)
 Java removed three sources of complexity in C/C++:
 - **Pointers**
 - **Multiple inheritance** of classes
 - **Manual memory deallocation**, which Java handles automatically (garbage collection, covered later)
 
-### How Java became secure [47:07]
-- Java spread very quickly. On the backend it was used through **servlets** [48:08], Java programs that act like APIs (fetching data, writing to a database).
-- Java also arrived before JavaScript. **Fun fact** [48:38]: JavaScript was named after Java to ride on its popularity. The two languages are otherwise unrelated.
-- On the frontend there were **applets** [50:10]: lightweight Java code sent over the internet that ran inside the user's browser (simple forms, a loan calculator, and so on).
+### How Java became secure [▶ ~47:07](https://youtu.be/LBqE4YOvhyc?t=2827)
+- Java spread very quickly. On the backend it was used through **servlets** [▶ ~48:08](https://youtu.be/LBqE4YOvhyc?t=2888), Java programs that act like APIs (fetching data, writing to a database).
+- Java also arrived before JavaScript. **Fun fact** [▶ ~48:38](https://youtu.be/LBqE4YOvhyc?t=2918): JavaScript was named after Java to ride on its popularity. The two languages are otherwise unrelated.
+- On the frontend there were **applets** [▶ ~50:10](https://youtu.be/LBqE4YOvhyc?t=3010): lightweight Java code sent over the internet that ran inside the user's browser (simple forms, a loan calculator, and so on).
 - The risk was that a malicious applet could ask for dangerous permissions, crash your system or steal data.
-- The answer was again the JVM. Bytecode doesn't run directly on the OS. It runs inside the JVM, which can refuse unnecessary permissions. This restricted "safe mode" is the **sandbox model** [53:16].
+- The answer was again the JVM. Bytecode doesn't run directly on the OS. It runs inside the JVM, which can refuse unnecessary permissions. This restricted "safe mode" is the **sandbox model** [▶ ~53:16](https://youtu.be/LBqE4YOvhyc?t=3196).
 - So the JVM solves both portability and security. Simplicity comes from the language design itself.
 - Applets have since been dropped from the JDK. The instructor isn't sure of the exact version and guesses JDK 10 or 11.
 
-### Why didn't C++ just add a VM? [55:46]
-- In theory you could give C++ an intermediate code plus a "CVM" and make it portable. Microsoft explored this idea with **C#** [56:30], a C-family language that runs on a virtual machine and became Java's main alternative, though it never got as popular as Java.
+### Why didn't C++ just add a VM? [▶ ~55:46](https://youtu.be/LBqE4YOvhyc?t=3346)
+- In theory you could give C++ an intermediate code plus a "CVM" and make it portable. Microsoft explored this idea with **C#** [▶ ~56:30](https://youtu.be/LBqE4YOvhyc?t=3390), a C-family language that runs on a virtual machine and became Java's main alternative, though it never got as popular as Java.
 - C++ itself was never meant to be platform independent. Its purpose is to be fast and close to the hardware, so nobody wanted to change it that much.
 - Languages that came after Java, such as C# and Python, carry the same VM/bytecode idea forward in their own ways.
 - Next lecture: JVM/JRE/JDK internals and the first Java program.

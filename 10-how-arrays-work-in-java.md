@@ -32,81 +32,81 @@
 
 ## Detailed Notes
 
-### Recap: what random access means [00:00]
+### Recap: what random access means [▶ ~00:00](https://youtu.be/Qg73uiG9b6A?t=0)
 - `int[] arr = new int[5];` gives 5 contiguous slots, indexes 0–4.
 - `System.out.println(arr[2]);` goes **directly** to slot 2 (say it holds 6), with no loop over 0 and 1. That's random access.
 - The question for this video: *how* does the JVM know where slot 2 is?
 
-### Primitives vs non-primitives [02:17]
+### Primitives vs non-primitives [▶ ~02:17](https://youtu.be/Qg73uiG9b6A?t=137)
 - Primitives: `byte`, `short`, `int`, `long`, `float`, `double`, `boolean`, `char`. Non-primitives: arrays, `String`, objects.
-- `int x = 4;` [03:25] creates a container named `x` that directly holds 4. Printing `x` reads that container. Primitives "go to the **stack** memory".
+- `int x = 4;` [▶ ~03:25](https://youtu.be/Qg73uiG9b6A?t=205) creates a container named `x` that directly holds 4. Printing `x` reads that container. Primitives "go to the **stack** memory".
 - *Nuance:* that's true for local variables. A primitive **field** inside an object lives on the heap with that object.
 
-### Arrays live on the heap; the variable is a reference [05:42]
+### Arrays live on the heap; the variable is a reference [▶ ~05:42](https://youtu.be/Qg73uiG9b6A?t=342)
 - `int[] arr = new int[5];`
   - `new int[5]` creates a 5-slot array in the **heap**.
-  - `arr` is created on the **stack** as a **reference variable** that *points to* the heap array, like an arrow [07:59].
+  - `arr` is created on the **stack** as a **reference variable** that *points to* the heap array, like an arrow [▶ ~07:59](https://youtu.be/Qg73uiG9b6A?t=479).
 - Rule of thumb: anything made with `new` goes on the heap; plain local variables go on the stack.
-- So `x` *holds* 4, but `arr` *does not hold* the array; it holds a reference to it [09:08].
+- So `x` *holds* 4, but `arr` *does not hold* the array; it holds a reference to it [▶ ~09:08](https://youtu.be/Qg73uiG9b6A?t=548).
 
-### Reading a value by address [09:08]
+### Reading a value by address [▶ ~09:08](https://youtu.be/Qg73uiG9b6A?t=548)
 - An `int` takes 4 bytes. If `x` starts at address 100, it occupies 100–103 (the video says "100 to 104"). To print `x`, the JVM goes to 100 and reads 4 bytes, because it knows both the start and the type's size.
 
-### Array elements and their addresses [12:33]
+### Array elements and their addresses [▶ ~12:33](https://youtu.be/Qg73uiG9b6A?t=753)
 - Fill the array: `arr[0] = 10; arr[1] = 20; arr[2] = 30; arr[3] = 40; arr[4] = 50;`.
 - Each slot is 4 bytes, so with a base of 100 the slots start at **100, 104, 108, 112, 116**. Element 2 is read from 108 (4 bytes).
 - They're contiguous: element 1 is right after element 0, never somewhere far away.
 
-### The random-access formula [14:50]
+### The random-access formula [▶ ~14:50](https://youtu.be/Qg73uiG9b6A?t=890)
 - `arr[3]`: 100 + 4 × 3 = **112**, then read 4 bytes, which gives 40.
 - `arr[4]`: 100 + 4 × 4 = **116**, which gives 50.
-- General formula [16:00]: **`address of arr[i] = base address + (size of data type × i)`**.
+- General formula [▶ ~16:00](https://youtu.be/Qg73uiG9b6A?t=960): **`address of arr[i] = base address + (size of data type × i)`**.
 - The JVM computes this directly, which is why access is O(1).
 
-### Where does the base address come from? [17:08]
+### Where does the base address come from? [▶ ~17:08](https://youtu.be/Qg73uiG9b6A?t=1028)
 - From the reference. `arr` "points to" the array, meaning it **stores the address of the first element** (the base address, e.g. 100).
 - *Simplification:* a real JVM array object starts with a small **header** (object metadata plus the `length` field), so the first element sits a fixed offset after the object's address. The formula becomes `objectAddress + headerSize + i × elementSize`, which is still O(1). Java also never exposes raw addresses to your code; this is a mental model.
 
-### Other element types; the curious case of `boolean` [19:25]
+### Other element types; the curious case of `boolean` [▶ ~19:25](https://youtu.be/Qg73uiG9b6A?t=1165)
 - `long[]` and `double[]` use a stride of 8, `float[]` 4, `char[]` 2; the formula is otherwise the same.
-- `boolean` [20:33]: the earlier data-types video never gave its size, because **the Java specification doesn't fix one**. Each JVM decides.
+- `boolean` [▶ ~20:33](https://youtu.be/Qg73uiG9b6A?t=1233): the earlier data-types video never gave its size, because **the Java specification doesn't fix one**. Each JVM decides.
   - In principle 1 **bit** would be enough (0 = false, 1 = true).
   - But CPUs fetch memory in **bytes**, not bits, so HotSpot (Oracle) and OpenJDK use **1 byte** per `boolean` (for `boolean[]` elements and fields).
   - Java leaves it to each JVM so it can choose what suits its platform.
-- `boolean[] arr = new boolean[5];` [25:07] with base 100 has elements at 100, 101, 102, 103, 104. `arr[2]` is at 100 + 1 × 2 = 102.
+- `boolean[] arr = new boolean[5];` [▶ ~25:07](https://youtu.be/Qg73uiG9b6A?t=1507) with base 100 has elements at 100, 101, 102, 103, 104. `arr[2]` is at 100 + 1 × 2 = 102.
 - *Nuance:* a `boolean` **local variable** occupies a full 32-bit slot in the JVM (it's treated as an `int`); the 1-byte figure applies to array elements and fields.
 
-### Bounds checking [27:24]
+### Bounds checking [▶ ~27:24](https://youtu.be/Qg73uiG9b6A?t=1644)
 - `arr[100]` on a 5-element array: blindly applying the formula would give 100 + 4 × 100 = 500 (the video's arithmetic says 204), an address that might belong to something else entirely.
 - So before the formula, Java effectively does: if `index < 0 || index >= arr.length`, throw `ArrayIndexOutOfBoundsException`.
 - *Corrections:* the video writes the condition as `index > length`, but `index == length` is also out of range, so it must be `>=`. It also says the "compiler" fails here; the check happens at **runtime** in the JVM.
 
-### 2D arrays in memory [30:50]
-- `int[][] arr = new int[3][4];` is pictured as a 3 × 4 matrix, but Java has no real 2D array. It's an **array of arrays** [33:07]: an outer array of size 3 whose every element is itself an array of size 4.
+### 2D arrays in memory [▶ ~30:50](https://youtu.be/Qg73uiG9b6A?t=1850)
+- `int[][] arr = new int[3][4];` is pictured as a 3 × 4 matrix, but Java has no real 2D array. It's an **array of arrays** [▶ ~33:07](https://youtu.be/Qg73uiG9b6A?t=1987): an outer array of size 3 whose every element is itself an array of size 4.
 - Memory layout:
   - Stack: `arr`, which references the outer array on the heap.
   - Heap: the outer array, holding 3 **references** (`arr[0]`, `arr[1]`, `arr[2]`).
   - Heap: three separate `int[4]` arrays, one per reference, each at its own location.
 - Example matrix: row 0 = `4 3 5 7`, row 1 = `1 10 6 3`, row 2 = `0 5 9 3`.
 
-### Finding `arr[1][2]` with the formula twice [36:33]
+### Finding `arr[1][2]` with the formula twice [▶ ~36:33](https://youtu.be/Qg73uiG9b6A?t=2193)
 - A reference takes 4 bytes (see the correction below). If the outer array is at 100, its slots are at 100, 104, 108.
 - **Step 1, row:** 100 + 4 × 1 = 104. Read 4 bytes there to get the reference to row 1, e.g. address 200.
 - **Step 2, column:** row 1's elements are `int`s at 200, 204, 208, 212. Then 200 + 4 × 2 = 208, which gives **6**.
-- The outer array's slots literally contain addresses [42:15]. Picture them holding 200, 300, 400. Those numbers are references, not `int` values.
+- The outer array's slots literally contain addresses [▶ ~42:15](https://youtu.be/Qg73uiG9b6A?t=2535). Picture them holding 200, 300, 400. Those numbers are references, not `int` values.
 - So `arr[i][j]` is found by applying the formula once to get row `i`'s reference and again inside that row to get column `j`.
-- The same idea extends to 3D, 4D, … [44:32]: references to arrays of references to arrays, and so on.
+- The same idea extends to 3D, 4D, … [▶ ~44:32](https://youtu.be/Qg73uiG9b6A?t=2672): references to arrays of references to arrays, and so on.
 - For `boolean[][]`, each row stores 1-byte elements; for `double[][]`, 8-byte elements. The outer array always stores references.
 - *Correction/nuance:* "a reference is 4 bytes" holds on 64-bit HotSpot with **compressed oops**, the default for heaps under about 32 GB. On 32-bit JVMs it's also 4, but without compressed oops on 64-bit it's 8. Also, the row arrays are independent objects, so row 1 isn't guaranteed to sit right after row 0.
 
-### `String` arrays [45:41]
+### `String` arrays [▶ ~45:41](https://youtu.be/Qg73uiG9b6A?t=2741)
 - `String[] names = new String[3];` with "Aditya", "Abhay", "Rohit". Strings have varying lengths, so how can the formula work?
 - Because `String` is non-primitive, the array stores **references** (fixed size), and each points to a `String` object elsewhere on the heap (e.g. at 100, 200, 300).
 - `names[1]` with array base 400: 400 + 4 × 1 = 404. Read the reference there, follow it, and you get "Abhay".
-- Strings vs `char[]` [49:06]: you can think of a string as a character array (`char[] name = {'A','d','i','t','y','a'}`), and internally it used to be one.
+- Strings vs `char[]` [▶ ~49:06](https://youtu.be/Qg73uiG9b6A?t=2946): you can think of a string as a character array (`char[] name = {'A','d','i','t','y','a'}`), and internally it used to be one.
 - *Correction:* the video says strings were `char[]` "up to JDK 9". In fact they were `char[]` **up to JDK 8**. **Compact Strings** (JDK 9+) store a `byte[]` plus an encoding flag (Latin-1 or UTF-16). Details come in the strings deep-dive.
 
-### Why random access is great: caching [51:24]
+### Why random access is great: caching [▶ ~51:24](https://youtu.be/Qg73uiG9b6A?t=3084)
 - The CPU fetches memory in multi-byte chunks. In the video's example, the CPU fetches 8 bytes at a time: reading `arr[3]` (4 bytes) also brings in `arr[4]`.
 - If you then read `arr[4]`, it's already close to the CPU, so there's no trip back to RAM.
 - *Correction:* the video says the data is kept in **registers**. It's actually the CPU **caches** (L1/L2/L3), which load whole **cache lines** (typically 64 bytes). The principle (spatial locality) is right, and it's why looping over an array in order is so fast.

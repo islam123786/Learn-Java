@@ -28,106 +28,106 @@
 
 ## Detailed Notes
 
-### Recap [00:00]
+### Recap [▶ ~00:00](https://youtu.be/xqfOH5EA8xo?t=0)
 - A stream is a pipeline: a **source** (`list.stream()`), **intermediate operations** (`filter(x -> x > 10)`, `map(x -> x * 2)`), and a **terminal** operation (`toList()`).
 - You don't need to memorize every method. Type `.` after a stream in the IDE to see them. Knowing roughly what each one does is enough.
 
-### Intermediate operations [03:08]
+### Intermediate operations [▶ ~03:08](https://youtu.be/xqfOH5EA8xo?t=188)
 - Setup: `List<Integer> list = new ArrayList<>(List.of(1, 4, 11, 13, 34));`, ending with `forEach(System.out::println)` so the result is printed. Put each operation on a new line.
-- **`filter(Predicate)`** [04:11]: `filter(x -> x > 10)` keeps 11, 13, 34. Chain `filter(x -> x % 2 == 0)` and only 34 is left. `filter` returns a `Stream`. `forEach` takes a `Consumer` and returns `void`.
-- **`map(Function)`** [06:16]: `map(x -> x * 2)` after the first filter prints 22, 26, 68. `map` transforms T → R.
+- **`filter(Predicate)`** [▶ ~04:11](https://youtu.be/xqfOH5EA8xo?t=251): `filter(x -> x > 10)` keeps 11, 13, 34. Chain `filter(x -> x % 2 == 0)` and only 34 is left. `filter` returns a `Stream`. `forEach` takes a `Consumer` and returns `void`.
+- **`map(Function)`** [▶ ~06:16](https://youtu.be/xqfOH5EA8xo?t=376): `map(x -> x * 2)` after the first filter prints 22, 26, 68. `map` transforms T → R.
 
-### `flatMap`: flattening nested lists [07:19]
+### `flatMap`: flattening nested lists [▶ ~07:19](https://youtu.be/xqfOH5EA8xo?t=439)
 - `List<List<Integer>> list2 = List.of(List.of(1, 2), List.of(3, 4));`
 - `list2.stream().map(x -> x * 2)` **doesn't compile** ("cannot infer type arguments"), because each element `x` is a whole `List`, not a number.
-- `list2.stream().map(x -> x.stream())…forEach(System.out::println)` compiles but prints two lines like `java.util.stream.ReferencePipeline$Head@…`. `map` **keeps the nested structure**, so you get a stream *of streams* [10:28].
-- **`flatMap(x -> x.stream())`** [11:31] flattens everything into a single level: 1, 2, 3, 4. Add `.map(x -> x * 2)` after it and you get 2, 4, 6, 8.
+- `list2.stream().map(x -> x.stream())…forEach(System.out::println)` compiles but prints two lines like `java.util.stream.ReferencePipeline$Head@…`. `map` **keeps the nested structure**, so you get a stream *of streams* [▶ ~10:28](https://youtu.be/xqfOH5EA8xo?t=628).
+- **`flatMap(x -> x.stream())`** [▶ ~11:31](https://youtu.be/xqfOH5EA8xo?t=691) flattens everything into a single level: 1, 2, 3, 4. Add `.map(x -> x * 2)` after it and you get 2, 4, 6, 8.
 
-### `sorted`: a stateful operation [12:33]
+### `sorted`: a stateful operation [▶ ~12:33](https://youtu.be/xqfOH5EA8xo?t=753)
 - With the list rearranged to `[11, 34, 1, 13, 4]`: `filter(x > 10) → map(x * 2) → sorted()` prints 22, 26, 68.
-- **Stateful** [13:36]: 22 (from 11) gets through the filter and the map, then **waits** at `sorted`. So do 68 and 26. Only after every element has arrived does `sorted` sort them and pass them on to `forEach`. `filter` and `map` are **stateless**: they don't care what they've seen before.
-- **Descending order** [14:39]: `sorted` is overloaded with a `Comparator` version, e.g. `sorted((a, b) -> b - a)`. *(Tip: prefer `Comparator.reverseOrder()`. `b - a` can overflow for very large or very negative ints.)*
+- **Stateful** [▶ ~13:36](https://youtu.be/xqfOH5EA8xo?t=816): 22 (from 11) gets through the filter and the map, then **waits** at `sorted`. So do 68 and 26. Only after every element has arrived does `sorted` sort them and pass them on to `forEach`. `filter` and `map` are **stateless**: they don't care what they've seen before.
+- **Descending order** [▶ ~14:39](https://youtu.be/xqfOH5EA8xo?t=879): `sorted` is overloaded with a `Comparator` version, e.g. `sorted((a, b) -> b - a)`. *(Tip: prefer `Comparator.reverseOrder()`. `b - a` can overflow for very large or very negative ints.)*
 
-### `distinct` [15:42]
+### `distinct` [▶ ~15:42](https://youtu.be/xqfOH5EA8xo?t=942)
 - Keeps only unique values. Internally it tracks the elements it has already seen, using hashing (set-like behavior, based on `equals`/`hashCode`).
 - It's **stateful** too: it has to remember the earlier elements.
-- With duplicates added (13 and 34 twice), `… sorted(desc).distinct()` prints 68, 26, 22 only once each [16:45].
+- With duplicates added (13 and 34 twice), `… sorted(desc).distinct()` prints 68, 26, 22 only once each [▶ ~16:45](https://youtu.be/xqfOH5EA8xo?t=1005).
 - Compare that with writing the same logic by hand: if-conditions, a sort, a `Set` for uniqueness, then a loop to print.
 
-### `limit` and `skip` [17:48]
+### `limit` and `skip` [▶ ~17:48](https://youtu.be/xqfOH5EA8xo?t=1068)
 - `Stream.iterate(1, x -> x + 1).forEach(...)` never stops. **`limit(10)`** caps it at the first 10 elements (1..10). `limit` sets a **maximum size**.
-- **`skip(5)`** [18:50] drops the first 5 elements: `iterate(1, x -> x + 1).limit(10).skip(5)` prints 6..10.
-- `skip` works on any stream, e.g. `skip(1)` at the end of the distinct pipeline drops 68 and leaves 26, 22 [19:53].
+- **`skip(5)`** [▶ ~18:50](https://youtu.be/xqfOH5EA8xo?t=1130) drops the first 5 elements: `iterate(1, x -> x + 1).limit(10).skip(5)` prints 6..10.
+- `skip` works on any stream, e.g. `skip(1)` at the end of the distinct pipeline drops 68 and leaves 26, 22 [▶ ~19:53](https://youtu.be/xqfOH5EA8xo?t=1193).
 
-### `peek`: looking inside the pipeline [19:53]
-- `… map(x -> x * 2).peek(System.out::println).sorted().distinct().forEach(System.out::println)` first prints 22, 68, 26 (the order before sorting, from `peek`), then 22, 26, 68 (sorted, from `forEach`) [21:59].
-- Why it exists: a debugger treats the stream pipeline as one statement and can't easily show what's in between. `peek` shows the state after a particular stage. Use it for debugging only [23:02].
+### `peek`: looking inside the pipeline [▶ ~19:53](https://youtu.be/xqfOH5EA8xo?t=1193)
+- `… map(x -> x * 2).peek(System.out::println).sorted().distinct().forEach(System.out::println)` first prints 22, 68, 26 (the order before sorting, from `peek`), then 22, 26, 68 (sorted, from `forEach`) [▶ ~21:59](https://youtu.be/xqfOH5EA8xo?t=1319).
+- Why it exists: a debugger treats the stream pipeline as one statement and can't easily show what's in between. `peek` shows the state after a particular stage. Use it for debugging only [▶ ~23:02](https://youtu.be/xqfOH5EA8xo?t=1382).
 - `mapToInt` / `mapToDouble` / `mapToLong` (from the last video) convert to primitive streams to avoid boxing.
 
-### Terminal operations: the four groups [23:02]
+### Terminal operations: the four groups [▶ ~23:02](https://youtu.be/xqfOH5EA8xo?t=1382)
 - Streams are lazy, so the terminal operation is the **trigger**.
 - **Collecting results**: `toList()`, `collect(...)`.
-- **Reducing results** [24:05]: `reduce`, and the special reductions `sum`, `max`, `min`, `average`, `count`. Most of the special ones exist only on primitive streams, so convert first.
-- **Searching / matching** [25:07]: `findFirst`, `findAny`, `anyMatch`, `allMatch`, `noneMatch`. The `…Match` methods return `boolean`.
-- **Iterating** [25:07]: `forEach`, and `forEachOrdered` [26:10], which keeps the encounter order even in **parallel** streams, where several threads can process elements at the same time.
+- **Reducing results** [▶ ~24:05](https://youtu.be/xqfOH5EA8xo?t=1445): `reduce`, and the special reductions `sum`, `max`, `min`, `average`, `count`. Most of the special ones exist only on primitive streams, so convert first.
+- **Searching / matching** [▶ ~25:07](https://youtu.be/xqfOH5EA8xo?t=1507): `findFirst`, `findAny`, `anyMatch`, `allMatch`, `noneMatch`. The `…Match` methods return `boolean`.
+- **Iterating** [▶ ~25:07](https://youtu.be/xqfOH5EA8xo?t=1507): `forEach`, and `forEachOrdered` [▶ ~26:10](https://youtu.be/xqfOH5EA8xo?t=1570), which keeps the encounter order even in **parallel** streams, where several threads can process elements at the same time.
 
-### `forEach`, `forEachOrdered`, `toList` [27:13]
+### `forEach`, `forEachOrdered`, `toList` [▶ ~27:13](https://youtu.be/xqfOH5EA8xo?t=1633)
 - With `List.of(1, 13, 11, 9)`: `map(x -> x + 1).forEach(System.out::println)` prints 2, 14, 12, 10. `forEachOrdered` prints the same thing on a sequential stream. The difference only shows with parallel streams.
-- **`toList()`** [28:16] returns a `List<T>`. It's **unmodifiable**: `list2.add(4)` compiles but throws `UnsupportedOperationException` at runtime [29:19]. *(The video calls it an "unsorted" operation exception.)*
+- **`toList()`** [▶ ~28:16](https://youtu.be/xqfOH5EA8xo?t=1696) returns a `List<T>`. It's **unmodifiable**: `list2.add(4)` compiles but throws `UnsupportedOperationException` at runtime [▶ ~29:19](https://youtu.be/xqfOH5EA8xo?t=1759). *(The video calls it an "unsorted" operation exception.)*
 
-### `collect` + `Collectors` [30:22]
+### `collect` + `Collectors` [▶ ~30:22](https://youtu.be/xqfOH5EA8xo?t=1822)
 - `collect(Collector)` can gather results into many structures in many ways. `Collector` is the interface and `Collectors` is the utility class (compare `Collection` vs `Collections`).
-- **`collect(Collectors.toList())`** [31:24] gives a list you **can** modify: `add(4)` works. *(Strictly speaking the Javadoc doesn't guarantee mutability, though in practice you get an `ArrayList`. If you need a mutable list, `Collectors.toCollection(ArrayList::new)` makes that explicit.)*
+- **`collect(Collectors.toList())`** [▶ ~31:24](https://youtu.be/xqfOH5EA8xo?t=1884) gives a list you **can** modify: `add(4)` works. *(Strictly speaking the Javadoc doesn't guarantee mutability, though in practice you get an `ArrayList`. If you need a mutable list, `Collectors.toCollection(ArrayList::new)` makes that explicit.)*
 - **`Collectors.toSet()`** collects into a `Set`. `toMap` and the other collectors are covered below.
 
-### `reduce` [32:27]
+### `reduce` [▶ ~32:27](https://youtu.be/xqfOH5EA8xo?t=1947)
 - It combines stream elements into **one value**. It takes a `BinaryOperator<T>` (which extends `BiFunction<T,T,T>`), e.g. `(a, b) -> a + b`.
 - For `[1, 13, 11, 9]`: 1 + 13 = 14, 14 + 11 = 25, 25 + 9 = 34.
-- `reduce(op)` returns **`Optional<Integer>`** [33:30]. Read it with `sum.get()`; `Optional` protects you from `null` when the stream is empty (it gets its own video next).
-- `reduce(identity, op)` [34:33] returns a plain value: `reduce(0, (a, b) -> a + b)` → 34. The **identity** is the starting value. It's also what you get back for an empty stream.
+- `reduce(op)` returns **`Optional<Integer>`** [▶ ~33:30](https://youtu.be/xqfOH5EA8xo?t=2010). Read it with `sum.get()`; `Optional` protects you from `null` when the stream is empty (it gets its own video next).
+- `reduce(identity, op)` [▶ ~34:33](https://youtu.be/xqfOH5EA8xo?t=2073) returns a plain value: `reduce(0, (a, b) -> a + b)` → 34. The **identity** is the starting value. It's also what you get back for an empty stream.
   - With identity 1 for a sum you'd get 35. For a product use identity 1 (identity 0 makes everything 0): `reduce(1, (a, b) -> a * b)` → 1287.
   - *(Strictly, the identity must be a true neutral element, 0 for `+` and 1 for `*`. Using 1 as the "start" of a sum gives a wrong result on parallel streams, because the identity may be applied once per chunk.)*
 
-### `count` [36:39]
+### `count` [▶ ~36:39](https://youtu.be/xqfOH5EA8xo?t=2199)
 - `filter(x -> x > 10).count()` → 2. `count` returns **`long`**, so assigning it to an `int` doesn't compile.
 
-### `findFirst` and `findAny` [37:41]
+### `findFirst` and `findAny` [▶ ~37:41](https://youtu.be/xqfOH5EA8xo?t=2261)
 - `filter(x -> x > 10).findFirst()` returns `Optional<Integer>` → 13. It **short-circuits**: once it has 13, nothing else is processed.
-- `findAny` [38:44] also returns any matching element and stops. On a sequential stream it usually gives the same as `findFirst` (13). On a **parallel** stream it can return whichever match a thread finds first, which is faster because it doesn't have to respect order.
+- `findAny` [▶ ~38:44](https://youtu.be/xqfOH5EA8xo?t=2324) also returns any matching element and stops. On a sequential stream it usually gives the same as `findFirst` (13). On a **parallel** stream it can return whichever match a thread finds first, which is faster because it doesn't have to respect order.
 
-### `anyMatch`, `allMatch`, `noneMatch` [39:47]
+### `anyMatch`, `allMatch`, `noneMatch` [▶ ~39:47](https://youtu.be/xqfOH5EA8xo?t=2387)
 - They take a `Predicate` and return `boolean`.
 - After `filter(x > 10)` (13, 11 are left): `anyMatch(x -> x % 2 == 0)` → false, since both are odd. Change 13 to 12 and it's true.
-- `allMatch` [40:50] is true only if **every** element matches: false with 13 in the list, true if 12 and 14 are the ones left.
-- `noneMatch` [41:53] is true only if **no** element matches: false if any even number gets through, true with 13 and 11.
+- `allMatch` [▶ ~40:50](https://youtu.be/xqfOH5EA8xo?t=2450) is true only if **every** element matches: false with 13 in the list, true if 12 and 14 are the ones left.
+- `noneMatch` [▶ ~41:53](https://youtu.be/xqfOH5EA8xo?t=2513) is true only if **no** element matches: false if any even number gets through, true with 13 and 11.
 
-### `sum`, `max`, `average`: primitive streams only [41:53]
-- `Stream<Integer>.sum()` → compile error "The method sum() is undefined for the type Stream". Convert first: **`mapToInt(x -> x)`** returns an `IntStream` and takes a `ToIntFunction` [42:56].
-- `filter(x > 10).mapToInt(x -> x).sum()` → 24 (13 + 11) [43:58].
+### `sum`, `max`, `average`: primitive streams only [▶ ~41:53](https://youtu.be/xqfOH5EA8xo?t=2513)
+- `Stream<Integer>.sum()` → compile error "The method sum() is undefined for the type Stream". Convert first: **`mapToInt(x -> x)`** returns an `IntStream` and takes a `ToIntFunction` [▶ ~42:56](https://youtu.be/xqfOH5EA8xo?t=2576).
+- `filter(x > 10).mapToInt(x -> x).sum()` → 24 (13 + 11) [▶ ~43:58](https://youtu.be/xqfOH5EA8xo?t=2638).
 - `max()` returns **`OptionalInt`**. Read it with `getAsInt()` → 13.
-- `average()` returns **`OptionalDouble`**. Read it with `getAsDouble()` → 12.0 [45:01].
+- `average()` returns **`OptionalDouble`**. Read it with `getAsDouble()` → 12.0 [▶ ~45:01](https://youtu.be/xqfOH5EA8xo?t=2701).
 
-### `Collector` in depth: the basic collections [45:01]
-- `collect` expects a `Collector`, which is a **strategy** for gathering the elements (as a list, set or map, grouped, joined, …). The `Collectors` utility class lives in `java.util.stream` [46:04].
-- **`toList`, `toSet`** [47:07]: `map(x -> x + 1).collect(Collectors.toList())` → `[2, 14, 12, 10]`. `toSet()` gives the same values in a `Set`, in no guaranteed order.
-- **`toMap(keyMapper, valueMapper)`** [48:10]: both arguments are `Function`s. With `List.of("AA", "BBB", "CCCC")`, `collect(Collectors.toMap(x -> x.length(), x -> x))` → `{2=AA, 3=BBB, 4=CCCC}` [51:18].
+### `Collector` in depth: the basic collections [▶ ~45:01](https://youtu.be/xqfOH5EA8xo?t=2701)
+- `collect` expects a `Collector`, which is a **strategy** for gathering the elements (as a list, set or map, grouped, joined, …). The `Collectors` utility class lives in `java.util.stream` [▶ ~46:04](https://youtu.be/xqfOH5EA8xo?t=2764).
+- **`toList`, `toSet`** [▶ ~47:07](https://youtu.be/xqfOH5EA8xo?t=2827): `map(x -> x + 1).collect(Collectors.toList())` → `[2, 14, 12, 10]`. `toSet()` gives the same values in a `Set`, in no guaranteed order.
+- **`toMap(keyMapper, valueMapper)`** [▶ ~48:10](https://youtu.be/xqfOH5EA8xo?t=2890): both arguments are `Function`s. With `List.of("AA", "BBB", "CCCC")`, `collect(Collectors.toMap(x -> x.length(), x -> x))` → `{2=AA, 3=BBB, 4=CCCC}` [▶ ~51:18](https://youtu.be/xqfOH5EA8xo?t=3078).
   - *(Watch out: if two elements produce the same key, the 2-argument `toMap` throws `IllegalStateException: Duplicate key`. Pass a third merge-function argument, or use `groupingBy`.)*
 
-### `groupingBy` [51:18]
+### `groupingBy` [▶ ~51:18](https://youtu.be/xqfOH5EA8xo?t=3078)
 - It groups elements by a key. With `["AA", "BBB", "CCCC", "DD", "EEE"]`, `collect(Collectors.groupingBy(x -> x.length()))` → `{2=[AA, DD], 3=[BBB, EEE], 4=[CCCC]}`.
-- The values are lists, so the type is **`Map<Integer, List<String>>`**, not `Map<Integer, String>` [52:21].
-- Real-world use [53:24]: `employees.stream().collect(Collectors.groupingBy(Employee::getDepartment))` gives HR → [...], Tech → [...].
+- The values are lists, so the type is **`Map<Integer, List<String>>`**, not `Map<Integer, String>` [▶ ~52:21](https://youtu.be/xqfOH5EA8xo?t=3141).
+- Real-world use [▶ ~53:24](https://youtu.be/xqfOH5EA8xo?t=3204): `employees.stream().collect(Collectors.groupingBy(Employee::getDepartment))` gives HR → [...], Tech → [...].
 
-### `partitioningBy` [54:27]
+### `partitioningBy` [▶ ~54:27](https://youtu.be/xqfOH5EA8xo?t=3267)
 - A special case of grouping with **only two groups**, `true` and `false`. It takes a `Predicate`.
 - `List.of(1, 13, 11, 9)` with `partitioningBy(x -> x % 2 == 0)` → `{false=[1, 13, 11, 9], true=[]}`. Change 13 to 14 and you get `{false=[1, 11, 9], true=[14]}`. The type is `Map<Boolean, List<Integer>>`.
 
-### `groupingBy` with a downstream `mapping` collector [55:30]
+### `groupingBy` with a downstream `mapping` collector [▶ ~55:30](https://youtu.be/xqfOH5EA8xo?t=3330)
 - The overload `groupingBy(classifier, downstream)` controls what goes into each group.
-- `groupingBy(x -> x.length(), Collectors.mapping(x -> x.toLowerCase(), Collectors.toList()))` → `{2=[aa, dd], 3=[bbb, eee], 4=[cccc]}` [57:35].
+- `groupingBy(x -> x.length(), Collectors.mapping(x -> x.toLowerCase(), Collectors.toList()))` → `{2=[aa, dd], 3=[bbb, eee], 4=[cccc]}` [▶ ~57:35](https://youtu.be/xqfOH5EA8xo?t=3455).
 - `mapping(mapper, downstream)` takes a `Function` plus *another collector*, which is where the name "downstream" comes from.
 
-### `joining` [58:38]
+### `joining` [▶ ~58:38](https://youtu.be/xqfOH5EA8xo?t=3518)
 - `collect(Collectors.joining("-"))` concatenates the strings with a delimiter → `"AA-BBB-CCCC-DD-EEE"`, and returns a `String`.
 - Next video: the `Optional` class and parallel streams.
 

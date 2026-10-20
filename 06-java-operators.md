@@ -38,45 +38,45 @@
 
 ## Detailed Notes
 
-### What operators are [01:09]
+### What operators are [▶ ~01:09](https://youtu.be/Tdq4fmDCJH8?t=69)
 - Same idea as maths operators: as soon as you go one step beyond declaring variables you need them.
 - Plan for the video: arithmetic first, then relational, bitwise (with shifts in depth), logical, assignment, a teaser for the ternary operator, and precedence.
 
-### Arithmetic operators [02:19]
+### Arithmetic operators [▶ ~02:19](https://youtu.be/Tdq4fmDCJH8?t=139)
 - The basic five: `+`, `-`, `*`, `/`, `%`. Modulus gives the **remainder** of a division.
-- Demo [03:29] with `a = 5, b = 10`: `a + b = 15`, `a - b = -5`, `a * b = 50`, `b / a = 2`, `b % a = 0`.
+- Demo [▶ ~03:29](https://youtu.be/Tdq4fmDCJH8?t=209) with `a = 5, b = 10`: `a + b = 15`, `a - b = -5`, `a * b = 50`, `b / a = 2`, `b % a = 0`.
 
-### `=` as assignment, and compound operators [06:58]
+### `=` as assignment, and compound operators [▶ ~06:58](https://youtu.be/Tdq4fmDCJH8?t=418)
 - `h = h + 2` is nonsense in maths but normal in code: evaluate the right side, then store the result in the left variable.
 - Because this pattern is so common, Java (like C/C++) offers shortcuts: `h += 2`, `h -= 2`, `h *= 3`, `h /= 5`, `h %= 5`.
 - The video says these are "a bit faster". *Correction:* the compiler produces the same code; the real benefits are brevity and an implicit cast (see Pitfalls).
 
-### Increment and decrement [11:38]
+### Increment and decrement [▶ ~11:38](https://youtu.be/Tdq4fmDCJH8?t=698)
 - `i++` is shorthand for `i += 1`, which is shorthand for `i = i + 1`. `i--` is the opposite.
 - There is no `**` or `//` operator: adding or subtracting 1 (moving to the next/previous index) is so common in loops and arrays that only those two got special operators.
 
-### Prefix vs postfix [15:07]
+### Prefix vs postfix [▶ ~15:07](https://youtu.be/Tdq4fmDCJH8?t=907)
 - `++j` is **prefix** (operator first), `j++` is **postfix** (operator after). Standing alone on a line, both just add 1.
-- The difference shows up when the value is used [17:27]:
+- The difference shows up when the value is used [▶ ~17:27](https://youtu.be/Tdq4fmDCJH8?t=1047):
   - `k = j++;` behaves like `k = j; j = j + 1;`. With `j = 9`: `j` becomes 10, `k` gets **9**.
   - `l = ++j;` behaves like `j = j + 1; l = j;`. With `j = 10`: `j` becomes 11, `l` gets **11**.
 - The same rules apply to `--`. This matters later in loops.
 
-### Relational operators [23:16]
+### Relational operators [▶ ~23:16](https://youtu.be/Tdq4fmDCJH8?t=1396)
 - `==`, `!=`, `<`, `>`, `<=`, `>=`. Each one asks the compiler a yes/no question ("is a equal to b?") and gives back a `boolean`.
 - `a == b` compares; `a = b` copies b into a (afterwards printing `a` shows 10).
 - Things like `a < b` or `a * b` are called **expressions**: they compute a result that you can store, e.g. `boolean c = (a == b);`.
-- Demo [29:05] (the video also shows the VS Code shortcut `psvm` + Tab for `public static void main`):
+- Demo [▶ ~29:05](https://youtu.be/Tdq4fmDCJH8?t=1745) (the video also shows the VS Code shortcut `psvm` + Tab for `public static void main`):
   - `a = 5, b = 10`: `a == b` is `false`, `a != b` is `true`.
   - With `a = b = 10`: `a <= b` is `true`, `a < b` is `false`, `a != b` is `false`, `a == b` is `true`. `<=` is true when **either** part holds; `<` is strict.
 
-### Bitwise operators: the list [33:44]
+### Bitwise operators: the list [▶ ~33:44](https://youtu.be/Tdq4fmDCJH8?t=2024)
 - `&` (AND), `|` (OR), `^` (XOR), `~` (NOT), `<<` (left shift), `>>` (right shift), `>>>` (right shift with zero fill).
 - Each binary one also has a compound form: `&=`, `|=`, `^=`, `<<=`, `>>=`, `>>>=`.
 - An operation on two integers gives an **integer** result (not a `boolean`): it works on their bits, not on their decimal value.
 - Example: 2 is `0000 0010`, 3 is `0000 0011` (shown with 8 bits for readability; an `int` really has 32).
 
-### Truth tables for `& | ^ ~` [39:33]
+### Truth tables for `& | ^ ~` [▶ ~39:33](https://youtu.be/Tdq4fmDCJH8?t=2373)
 | a | b | a & b | a \| b | a ^ b | ~a |
 |---|---|---|---|---|---|
 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -86,13 +86,13 @@
 - AND: 1 only if both are 1. OR: 1 if at least one is 1. XOR: 1 if there is an **odd** number of 1s (i.e. the bits differ). NOT is unary and flips the bit.
 - These are the same rules as logic gates in the processor; the operators let you use them from code.
 
-### Left shift `<<` [45:23]
+### Left shift `<<` [▶ ~45:23](https://youtu.be/Tdq4fmDCJH8?t=2723)
 - `b << 1` moves every bit one place left; the leftmost bit falls off and a 0 enters on the right (LSB).
 - 8 → 16 → 32 → 64: each shift doubles the number, because every 1 moves into a position worth twice as much. 10 (`1010`) becomes 20 (`10100`). In general `x << n` equals `x * 2^n` (until bits overflow).
 - `b << 2` shifts two places at once and brings in two zeros.
 - With 8 bits, shifting 64 once more puts the 1 in the MSB, the sign bit, so the byte reads as **-128** (two's complement). Byte range is -128 to 127. One more shift and the 8-bit view becomes 0, and stays 0 however much you shift.
 
-### The full story: promotion to `int` [59:20]
+### The full story: promotion to `int` [▶ ~59:20](https://youtu.be/Tdq4fmDCJH8?t=3560)
 - Recall type promotion: `byte b = 5; b = b * 5;` doesn't compile because `b * 5` is an `int`. You need `b = (byte)(b * 5);`.
 - Shift operators work **only on `int` and `long`**. A `byte` or `short` operand is promoted to `int` first, and you must cast the result back: `b = (byte)(b << 7);`.
 - Walk-through with `byte b = 1`:
@@ -100,56 +100,56 @@
   - Now `b << 1` again: promoting -128 to `int` **sign-extends** it (24 leading 1s, so the value stays -128). Shifting gives `0xFFFFFF00`, which is **-256** as an `int`. Cast back to `byte`, the low 8 bits are all 0, so you see **0**.
   - So the bits weren't "lost"; storing in a `byte` truncated them. `int i = b << 1;` shows -256.
 
-### Shifting an `int`, `Integer.MIN_VALUE`, and the mod-32 rule [77:58]
+### Shifting an `int`, `Integer.MIN_VALUE`, and the mod-32 rule [▶ ~77:58](https://youtu.be/Tdq4fmDCJH8?t=4678)
 - `1 << 30` sets bit 30 (a large positive number, 1073741824). `1 << 31` sets the sign bit: **-2147483648**, which is `Integer.MIN_VALUE`, the smallest `int`. (The video calls it "negative infinity" informally; it is just the minimum value.)
-- Shifting a bit past position 31 would make no sense, so Java uses only the low 5 bits of the shift distance: effectively `n % 32` [82:37]. `i << 32` equals `i << 0` (unchanged) and `i << 33` equals `i << 1`.
+- Shifting a bit past position 31 would make no sense, so Java uses only the low 5 bits of the shift distance: effectively `n % 32` [▶ ~82:37](https://youtu.be/Tdq4fmDCJH8?t=4957). `i << 32` equals `i << 0` (unchanged) and `i << 33` equals `i << 1`.
 - *Correction:* the video says the same mod-32 rule applies to `long`. For `long` the distance is taken mod **64**.
 
-### Right shift `>>` [86:06]
+### Right shift `>>` [▶ ~86:06](https://youtu.be/Tdq4fmDCJH8?t=5166)
 - Moves bits right; the LSB falls off. The new MSB copies the **old sign bit**, so negative numbers stay negative.
 - 8 → 4 → 2 → 1: each step halves the number. -128 → -64 → -32 → … → -1.
 - Because the LSB is what falls off, using `>>` on a byte (with a cast back) still gives the result you expect, unlike `<<`. The mod-32 rule applies here too.
 
-### Unsigned right shift `>>>` [91:55]
+### Unsigned right shift `>>>` [▶ ~91:55](https://youtu.be/Tdq4fmDCJH8?t=5515)
 - Always shifts in a **0**, whatever the sign was. The video calls `>>` "smart" and `>>>` "dumb".
 - On a 32-bit `int`, `-128 >>> 1` becomes a large positive number, because the sign bit is replaced by 0.
 - Use case: values where negatives make no sense, e.g. treating pixel data or hash codes as unsigned.
 - *Correction:* the video shows `byte -128 >>> 1` as +64 in an 8-bit picture. Because of promotion, Java actually computes this on the 32-bit `int` (`0xFFFFFF80 >>> 1 = 0x7FFFFFC0`), and casting back to `byte` keeps `0xC0`, which is **-64**. `>>>` only behaves "unsigned" at full `int`/`long` width.
 
-### Bitwise demo [94:15]
+### Bitwise demo [▶ ~94:15](https://youtu.be/Tdq4fmDCJH8?t=5655)
 - `a = 2, b = 3` gives `a & b = 2`, `a | b = 3`, `a ^ b = 1`, `~a = -3`.
 - Why `~2` is -3: all 32 bits flip, the leading zeros become ones, so the number becomes negative. In general `~x == -x - 1`.
-- Shifts [98:54]: `g = 1; g << 1` is 2; `1 << 30` is 1073741824; `1 << 31` is negative; `1 << 32` is 1 again; `1 << 33` is 2.
+- Shifts [▶ ~98:54](https://youtu.be/Tdq4fmDCJH8?t=5934): `g = 1; g << 1` is 2; `1 << 30` is 1073741824; `1 << 31` is negative; `1 << 32` is 1 again; `1 << 33` is 2.
 - `byte h = 1; h = h << 1;` gives "Type mismatch: cannot convert from int to byte". `h = (byte)(h << 1);` fixes it and gives 2.
 
-### Logical operators `&&` `||` `!` [104:44]
+### Logical operators `&&` `||` `!` [▶ ~104:44](https://youtu.be/Tdq4fmDCJH8?t=6284)
 - They work on **boolean expressions**, not on bits: `boolean d = a < b && a < c;`.
 - Same truth table as `&`/`|`, with true/false in place of 1/0.
 - `!` (logical NOT) was already seen with `!=`.
 
-### Short-circuit evaluation [109:23]
+### Short-circuit evaluation [▶ ~109:23](https://youtu.be/Tdq4fmDCJH8?t=6563)
 - `A && B`: if A is false the result must be false, so B is **never evaluated**.
 - `A || B`: if A is true the result must be true, so B is skipped.
 - Used for guards such as null checks and in loop conditions where the second check must not run if the first one fails.
 
-### `&` and `|` on booleans: no short-circuit [112:52]
+### `&` and `|` on booleans: no short-circuit [▶ ~112:52](https://youtu.be/Tdq4fmDCJH8?t=6772)
 - In Java, `&` and `|` also accept boolean operands. The result is the same as `&&`/`||`, but **both sides are always evaluated**.
 - You almost never want this in practice (the video says 99% of code uses `&&`/`||`), but it's a classic interview question, and it matters when the right side has a side effect such as `i++`.
-- Demo [115:12] with `a = 5, b = 10, c = 15`: `a < b && b < c` is `true`; with `a = 25` it is `false` and `b < c` is skipped. With `&`, the result is still `false`, but both comparisons run.
+- Demo [▶ ~115:12](https://youtu.be/Tdq4fmDCJH8?t=6912) with `a = 5, b = 10, c = 15`: `a < b && b < c` is `true`; with `a = 25` it is `false` and `b < c` is skipped. With `&`, the result is still `false`, but both comparisons run.
 
-### Assignment operator and chaining [117:32]
+### Assignment operator and chaining [▶ ~117:32](https://youtu.be/Tdq4fmDCJH8?t=7052)
 - `=` stores the right-hand value into the left-hand variable. It is the last thing to happen in a statement.
 - Chaining: `int a, b, c; a = b = c = 10;` evaluates right to left: 10 goes into c, then c into b, then b into a.
 - *Correction:* the video writes `int a = b = c = 10;`. That doesn't compile unless b and c were declared earlier. Declare them first, as above.
 
-### Ternary operator (preview) [121:01]
+### Ternary operator (preview) [▶ ~121:01](https://youtu.be/Tdq4fmDCJH8?t=7261)
 - The only operator with three operands (`cond ? x : y`). It's covered with if/else in the next video.
 
-### Operator precedence [122:11]
+### Operator precedence [▶ ~122:11](https://youtu.be/Tdq4fmDCJH8?t=7331)
 - Like BODMAS in maths, Java has a precedence table (highest first, simplified): postfix `x++ x--` → unary/prefix `++x --x + - ! ~` and casts → `* / %` → `+ -` → `<< >> >>>` → `< > <= >= instanceof` → `== !=` → `&` → `^` → `|` → `&&` → `||` → `?:` → assignment `= += …`.
 - Operators in the same row are evaluated **left to right**, except assignment (and the ternary), which go **right to left**.
 - *Correction:* the video's BODMAS remark ("division first, then multiplication") doesn't apply to Java. `*`, `/` and `%` have equal precedence and go left to right, e.g. `8 / 2 * 4 == 16`.
-- Practical advice [124:31]: nobody memorises the table. Use **parentheses**: `(b + c) * d` instead of relying on the rules.
+- Practical advice [▶ ~124:31](https://youtu.be/Tdq4fmDCJH8?t=7471): nobody memorises the table. Use **parentheses**: `(b + c) * d` instead of relying on the rules.
 
 ## Code Examples
 

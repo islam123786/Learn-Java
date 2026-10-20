@@ -32,36 +32,36 @@
 
 ## Detailed Notes
 
-### Why manual threads are a bad approach [00:00]
+### Why manual threads are a bad approach [▶ ~00:00](https://youtu.be/VPtaTUSaBOM?t=0)
 - Until now the course created threads by hand: `Thread t1 = new Thread(() -> ...); t1.start();`. That sends a request to the OS to create a real thread.
-- **Memory allocation** [01:22]: each Java thread gets its own stack, program counter, etc. The video quotes 512 KB–1 MB per thread, so 1000 threads ≈ 0.5–1 GB.
-- **OS scheduling** [02:35]: 1000 threads on 4 cores means each core juggles hundreds of threads. Most of the time goes into context switching instead of real work. The video calls this "thrashing". *(The term usually refers to paging; "context-switch overhead" is the more precise name, but the idea is the same.)*
-- **Thread creation time** [03:30]: every creation is a system call that sets up stack space and the like. And we used each thread only **once**: one task, then it dies.
-- **Restaurant analogy** [04:54]: hiring a chef for one dish, then firing them, then hiring a new chef for the next dish. That's absurd. You keep a team of chefs.
+- **Memory allocation** [▶ ~01:22](https://youtu.be/VPtaTUSaBOM?t=82): each Java thread gets its own stack, program counter, etc. The video quotes 512 KB–1 MB per thread, so 1000 threads ≈ 0.5–1 GB.
+- **OS scheduling** [▶ ~02:35](https://youtu.be/VPtaTUSaBOM?t=155): 1000 threads on 4 cores means each core juggles hundreds of threads. Most of the time goes into context switching instead of real work. The video calls this "thrashing". *(The term usually refers to paging; "context-switch overhead" is the more precise name, but the idea is the same.)*
+- **Thread creation time** [▶ ~03:30](https://youtu.be/VPtaTUSaBOM?t=210): every creation is a system call that sets up stack space and the like. And we used each thread only **once**: one task, then it dies.
+- **Restaurant analogy** [▶ ~04:54](https://youtu.be/VPtaTUSaBOM?t=294): hiring a chef for one dish, then firing them, then hiring a new chef for the next dish. That's absurd. You keep a team of chefs.
 
-### What the Executor framework promises [05:46]
+### What the Executor framework promises [▶ ~05:46](https://youtu.be/VPtaTUSaBOM?t=346)
 - So far we told Java both *what* to do (the task) and *how* to do it (create the thread, pass the `Runnable`, start it).
 - The Executor framework, like the Collection framework, is a ready-made library. You only say *what* to do and submit the task. It runs the task **asynchronously** on a thread that it creates *or reuses*.
 - The mechanism behind that promise is the **thread pool**.
 
-### How a thread pool works [08:34]
+### How a thread pool works [▶ ~08:34](https://youtu.be/VPtaTUSaBOM?t=514)
 - Picture a pool with 5 pre-created threads T1–T5, called **worker threads**.
 - Task 1 arrives → assigned to T1, which leaves the pool to do the work. Task 2 → T2, and so on.
 - When T1 finishes, it **is not terminated**. It returns to the pool and waits for the next task. Tasks 6 and 7 can then reuse T1 and T2. The pool manages the worker life cycle.
-- **The queue** [13:18]: when all workers are busy, a new task (task 8) goes into a FIFO queue. A worker that becomes free checks the queue first and picks up the oldest waiting task.
+- **The queue** [▶ ~13:18](https://youtu.be/VPtaTUSaBOM?t=798): when all workers are busy, a new task (task 8) goes into a FIFO queue. A worker that becomes free checks the queue first and picks up the oldest waiting task.
 - When the workers are all busy **and** the queue is full (task 12), there are two possibilities, depending on the pool's rules: create an extra worker, or **reject/discard** the task.
 - There are several pool types (fixed, cached, fork-join, scheduled). They all share this general shape (some have no real queue) but follow different rules.
 - A "task" is just a `Runnable` (or `Callable`) object. Flow: task → executor → thread pool → a worker runs it.
 
-### First demo: fixed pool, 5 tasks, 2 workers [17:56]
+### First demo: fixed pool, 5 tasks, 2 workers [▶ ~17:56](https://youtu.be/VPtaTUSaBOM?t=1076)
 - `ExecutorService executor = Executors.newFixedThreadPool(2);`. `ExecutorService` is an interface, and `Executors` is a utility class with factory methods.
 - A loop submits 5 tasks with `executor.execute(() -> ...)`, each printing `Task i is performed by <Thread.currentThread().getName()>`.
 - The lambda can't capture the loop variable `i` because it isn't effectively final. Copy it first: `int taskId = i;` (see the nested classes / lambdas video).
 - Always call `executor.shutdown()` at the end. Otherwise the worker threads stay alive and the JVM doesn't exit.
 - Output: only `pool-1-thread-1` and `pool-1-thread-2` appear. Two threads run all five tasks, and the other three wait in the queue.
-- **Real-world use** [24:59]: web servers keep a bounded pool of request-handling threads. Creating one thread per client would let thousands of simultaneous clients overwhelm the machine. Extra requests wait in the queue, so concurrency is limited on purpose.
+- **Real-world use** [▶ ~24:59](https://youtu.be/VPtaTUSaBOM?t=1499): web servers keep a bounded pool of request-handling threads. Creating one thread per client would let thousands of simultaneous clients overwhelm the machine. Extra requests wait in the queue, so concurrency is limited on purpose.
 
-### The hierarchy [26:09]
+### The hierarchy [▶ ~26:09](https://youtu.be/VPtaTUSaBOM?t=1569)
 ```
 Executor                       (interface: execute(Runnable))
 └── ExecutorService            (interface: submit, invokeAll, invokeAny, shutdown, ...)
@@ -72,77 +72,77 @@ Executor                       (interface: execute(Runnable))
 ```
 *(Simplified. In the JDK, `ThreadPoolExecutor` and `ForkJoinPool` extend `AbstractExecutorService`, and `ScheduledThreadPoolExecutor` extends `ThreadPoolExecutor` while implementing `ScheduledExecutorService`.)*
 
-### `Executor` interface [28:10]
+### `Executor` interface [▶ ~28:10](https://youtu.be/VPtaTUSaBOM?t=1690)
 - A single abstract method, `void execute(Runnable command)`. You hand over a task; which pool runs it is the implementation's business.
 
-### `ExecutorService`: `submit`, `Callable` and `Future` [29:02]
+### `ExecutorService`: `submit`, `Callable` and `Future` [▶ ~29:02](https://youtu.be/VPtaTUSaBOM?t=1742)
 - `ExecutorService` adds the methods that **manage** the pool. It still has `execute`.
-- **`submit`** [29:37] also runs a task asynchronously, but it accepts a **`Callable`**, a task that *returns a value*. Its method is `call()` instead of `run()`.
+- **`submit`** [▶ ~29:37](https://youtu.be/VPtaTUSaBOM?t=1777) also runs a task asynchronously, but it accepts a **`Callable`**, a task that *returns a value*. Its method is `call()` instead of `run()`.
   - `() -> System.out.println("hello")` fits `Runnable` (no input, no result).
   - `() -> 10 + 20` fits `Callable<Integer>` (no input, returns 30).
   - *(The video calls the Runnable shape a "consumer". `java.util.function.Consumer` takes an argument, so `Runnable` is really "no input, no output".)*
-- Why `Integer i = executor.submit(() -> 10);` can't work [34:26]: `submit` returns immediately, but the task might run now, in a few milliseconds, or after waiting in the queue. A plain variable needs the value right away.
+- Why `Integer i = executor.submit(() -> 10);` can't work [▶ ~34:26](https://youtu.be/VPtaTUSaBOM?t=2066): `submit` returns immediately, but the task might run now, in a few milliseconds, or after waiting in the queue. A plain variable needs the value right away.
 - So Java provides **`Future<V>`**: `Future<Integer> f1 = executor.submit(() -> 10);`. Flow: task submitted → runs on a background thread → result stored in the future.
 - **`f1.get()`** blocks the *current* thread (e.g. `main`) until the result is there, then returns it.
-- **Demo 2** [37:01]: `get()` must be wrapped in try/catch (it throws the checked `InterruptedException` and `ExecutionException`). It prints `10`. Adding `Thread.sleep(3000)` inside the callable makes `main` visibly wait about 3 seconds before printing `10`. A multi-line lambda needs an explicit `return`.
+- **Demo 2** [▶ ~37:01](https://youtu.be/VPtaTUSaBOM?t=2221): `get()` must be wrapped in try/catch (it throws the checked `InterruptedException` and `ExecutionException`). It prints `10`. Adding `Thread.sleep(3000)` inside the callable makes `main` visibly wait about 3 seconds before printing `10`. A multi-line lambda needs an explicit `return`.
 
-### `shutdown`, `shutdownNow`, `invokeAll`, `invokeAny` [40:15]
+### `shutdown`, `shutdownNow`, `invokeAll`, `invokeAny` [▶ ~40:15](https://youtu.be/VPtaTUSaBOM?t=2415)
 - **`shutdown()`**: stop accepting new tasks (later submissions are rejected), let the running *and queued* tasks finish, then terminate the pool.
-- **`shutdownNow()`** [41:30]: stop accepting tasks and *try* to stop the running ones. It's best-effort: Java can't force-kill a thread, so a running task may still finish normally. *(Concretely, it interrupts the workers and returns the `List<Runnable>` of queued tasks that never started. A task stops only if it reacts to interruption, e.g. via `sleep` throwing `InterruptedException` or checking `isInterrupted()`.)*
-- **`invokeAll(tasks)`** [42:28]: takes a collection of `Callable`s (e.g. `List.of(() -> 10, () -> 20, () -> 30)`), runs them all, and returns a `List<Future<T>>`. Loop over the futures and call `get()` on each. *(It blocks until all tasks are done.)*
+- **`shutdownNow()`** [▶ ~41:30](https://youtu.be/VPtaTUSaBOM?t=2490): stop accepting tasks and *try* to stop the running ones. It's best-effort: Java can't force-kill a thread, so a running task may still finish normally. *(Concretely, it interrupts the workers and returns the `List<Runnable>` of queued tasks that never started. A task stops only if it reacts to interruption, e.g. via `sleep` throwing `InterruptedException` or checking `isInterrupted()`.)*
+- **`invokeAll(tasks)`** [▶ ~42:28](https://youtu.be/VPtaTUSaBOM?t=2548): takes a collection of `Callable`s (e.g. `List.of(() -> 10, () -> 20, () -> 30)`), runs them all, and returns a `List<Future<T>>`. Loop over the futures and call `get()` on each. *(It blocks until all tasks are done.)*
 - **`invokeAny(tasks)`**: mentioned but not explained. *(It returns the result of one task that completes successfully and cancels the rest.)*
 - The video calls `execute` and `submit` the two methods you'll use most.
 
-### Exceptions: `execute` vs `submit` [44:56]
-- With `execute`, the exception is "lost" from the caller's point of view. **Demo 3** [45:05]: `executor.execute(() -> { int x = 10 / 0; })` inside a `try/catch` in `main`. The catch block **never runs**, because the exception happens on a worker thread, not on `main`.
+### Exceptions: `execute` vs `submit` [▶ ~44:56](https://youtu.be/VPtaTUSaBOM?t=2696)
+- With `execute`, the exception is "lost" from the caller's point of view. **Demo 3** [▶ ~45:05](https://youtu.be/VPtaTUSaBOM?t=2705): `executor.execute(() -> { int x = 10 / 0; })` inside a `try/catch` in `main`. The catch block **never runs**, because the exception happens on a worker thread, not on `main`.
 - With `submit(() -> 10 / 0)`, wrapping `f1.get()` in try/catch **does** catch it. It prints "Caught submit exception".
 - The video mentions `ThreadFactory` as a way to handle `execute` exceptions, without going into it.
 - *(More precisely: with `execute`, the default uncaught-exception handler prints the stack trace to stderr and the worker thread dies; the pool replaces it. With `submit`, the exception is stored in the `Future` and rethrown by `get()` wrapped in an `ExecutionException` (`e.getCause()` is the `ArithmeticException`). The flip side: if you never call `get()`, a failed `submit` task is silently swallowed.)*
 
-### `ThreadPoolExecutor` internals [48:33]
+### `ThreadPoolExecutor` internals [▶ ~48:33](https://youtu.be/VPtaTUSaBOM?t=2913)
 - A configurable engine: limited worker threads + a queue for extra tasks + rules for the overload case.
-- The **`Executors`** utility class [49:52] gives you pre-configured pools, so you don't have to call the complicated constructor yourself. `newFixedThreadPool(n)` internally does `new ThreadPoolExecutor(...)`. You build one by hand only when you need fine control (and for interviews).
-- **Constructor** [51:37]: `new ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue)`. *(The video says "current pool size"; the parameter is `corePoolSize`. There are also overloads that add a `ThreadFactory` and a `RejectedExecutionHandler`.)*
+- The **`Executors`** utility class [▶ ~49:52](https://youtu.be/VPtaTUSaBOM?t=2992) gives you pre-configured pools, so you don't have to call the complicated constructor yourself. `newFixedThreadPool(n)` internally does `new ThreadPoolExecutor(...)`. You build one by hand only when you need fine control (and for interviews).
+- **Constructor** [▶ ~51:37](https://youtu.be/VPtaTUSaBOM?t=3097): `new ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue)`. *(The video says "current pool size"; the parameter is `corePoolSize`. There are also overloads that add a `ThreadFactory` and a `RejectedExecutionHandler`.)*
   - **Core pool size**: the number of workers kept alive even when idle (e.g. 2).
-  - **Max pool size** [52:44]: the upper limit of workers (e.g. 5). It caps how many tasks can run at once.
+  - **Max pool size** [▶ ~52:44](https://youtu.be/VPtaTUSaBOM?t=3164): the upper limit of workers (e.g. 5). It caps how many tasks can run at once.
   - **Work queue**: bounded or unbounded (see below).
-  - **Keep-alive time + unit** [53:59]: how long the *extra* (non-core) workers T3–T5 may sit idle before they're removed, bringing the pool back down to the core size. E.g. `10, TimeUnit.SECONDS`.
+  - **Keep-alive time + unit** [▶ ~53:59](https://youtu.be/VPtaTUSaBOM?t=3239): how long the *extra* (non-core) workers T3–T5 may sit idle before they're removed, bringing the pool back down to the core size. E.g. `10, TimeUnit.SECONDS`.
 
-### The submission rules [55:20]
+### The submission rules [▶ ~55:20](https://youtu.be/VPtaTUSaBOM?t=3320)
 With core = 2, max = 5 and a bounded queue (threads are created lazily, so the pool starts empty):
-1. **If running workers < core size** [56:14], create a new worker for the task, even if other workers are idle.
+1. **If running workers < core size** [▶ ~56:14](https://youtu.be/VPtaTUSaBOM?t=3374), create a new worker for the task, even if other workers are idle.
 2. **Else, if the queue has space**, put the task in the queue.
 3. **Else, if workers < max size**, create an extra worker.
 4. **Else, reject the task** (rejection policy).
 - So the pool fills the core first, then the **queue**, and only then grows toward max. Maximum concurrency is 5, and excess load is queued or rejected instead of overwhelming the machine. In practice a worker usually frees up before the extreme case is reached.
 - *(The video's walkthrough has the new extra worker T3 take the task at the head of the queue (task 3). That isn't what happens: an extra worker created in step 3 runs **the task that just arrived**, and queued tasks keep waiting. The video's own demo output shows this, with task 5 run by thread-3 while task 3 is still queued.)*
 
-### Demo 4: building your own `ThreadPoolExecutor` [61:22]
+### Demo 4: building your own `ThreadPoolExecutor` [▶ ~61:22](https://youtu.be/VPtaTUSaBOM?t=3682)
 - `new ThreadPoolExecutor(2, 5, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<>(2))`, then 5 tasks that each print and sleep 2 s, then `shutdown()`.
 - Output: task 1 → thread-1, task 2 → thread-2, **task 5 → thread-3**, then tasks 3 and 4 picked up by thread-1 and thread-3 when they free up. Three threads handled all five tasks.
 - In practice you rarely do this. `Executors.newFixedThreadPool(2)` configures everything for you.
 
-### Queue types [67:39]
+### Queue types [▶ ~67:39](https://youtu.be/VPtaTUSaBOM?t=4059)
 - **`ArrayBlockingQueue`**: array-backed, **fixed capacity** given in the constructor.
 - **`LinkedBlockingQueue`**: linked-list-backed and can be **unbounded** (capacity `Integer.MAX_VALUE` by default), so tasks are never rejected for lack of space.
 
-### Ready-made pools in `Executors` [69:27]
+### Ready-made pools in `Executors` [▶ ~69:27](https://youtu.be/VPtaTUSaBOM?t=4167)
 - **`newFixedThreadPool(n)`**: fixed number of threads (core = max = n) + an **unbounded** `LinkedBlockingQueue`. Risk: a flood of tasks can pile up in the queue until you run **out of memory**. *(Because the queue never fills, a fixed pool never reaches the rejection step except after shutdown.)*
-- **`newCachedThreadPool()`** [69:49]: the opposite, with "unlimited threads + no queue". Threads are **created on demand** (idle ones are reused) and die after **60 s** idle. Good for bursts of short tasks, dangerous under heavy load because the thread count can explode. *(Technically it uses a `SynchronousQueue`, a zero-capacity hand-off, rather than no queue at all.)*
-- **`newSingleThreadExecutor()`** [70:54]: one worker + a queue. All tasks run **one after another**, which serializes the work. Useful for something like a logging system where every entry must be written in order. *(The video says "serializable", meaning sequential execution. This has nothing to do with the `Serializable` interface.)*
-- **`newScheduledThreadPool(n)`** [72:18]: runs tasks in the future.
+- **`newCachedThreadPool()`** [▶ ~69:49](https://youtu.be/VPtaTUSaBOM?t=4189): the opposite, with "unlimited threads + no queue". Threads are **created on demand** (idle ones are reused) and die after **60 s** idle. Good for bursts of short tasks, dangerous under heavy load because the thread count can explode. *(Technically it uses a `SynchronousQueue`, a zero-capacity hand-off, rather than no queue at all.)*
+- **`newSingleThreadExecutor()`** [▶ ~70:54](https://youtu.be/VPtaTUSaBOM?t=4254): one worker + a queue. All tasks run **one after another**, which serializes the work. Useful for something like a logging system where every entry must be written in order. *(The video says "serializable", meaning sequential execution. This has nothing to do with the `Serializable` interface.)*
+- **`newScheduledThreadPool(n)`** [▶ ~72:18](https://youtu.be/VPtaTUSaBOM?t=4338): runs tasks in the future.
   - `scheduler.schedule(() -> System.out.println("hello"), 2, TimeUnit.SECONDS)` runs once, 2 s from now.
-  - `scheduler.scheduleAtFixedRate(task, 0, 2, TimeUnit.SECONDS)` [73:49]: first run after an initial delay of 0, then every 2 s. *(There's also `scheduleWithFixedDelay`, which waits 2 s after each run **ends**.)*
+  - `scheduler.scheduleAtFixedRate(task, 0, 2, TimeUnit.SECONDS)` [▶ ~73:49](https://youtu.be/VPtaTUSaBOM?t=4429): first run after an initial delay of 0, then every 2 s. *(There's also `scheduleWithFixedDelay`, which waits 2 s after each run **ends**.)*
 - `ForkJoinPool` is covered in the next video.
 
-### Rejection policies [75:43]
+### Rejection policies [▶ ~75:43](https://youtu.be/VPtaTUSaBOM?t=4543)
 When max threads are busy and the queue is full:
 - **`AbortPolicy`** (the default): throw `RejectedExecutionException`.
 - **`DiscardPolicy`**: silently drop the new task. It's dangerous because you never find out, so data is lost.
-- **`DiscardOldestPolicy`** [76:34]: drop the oldest task in the queue and enqueue the new one. The video calls this the most used in real systems.
+- **`DiscardOldestPolicy`** [▶ ~76:34](https://youtu.be/VPtaTUSaBOM?t=4594): drop the oldest task in the queue and enqueue the new one. The video calls this the most used in real systems.
 - *(Correction/addition: `DiscardOldestPolicy` also loses data (the oldest task). The policy most often recommended when you can't lose work is **`CallerRunsPolicy`**, which the video doesn't mention: the submitting thread runs the task itself, which naturally slows producers down (back-pressure). You can also implement your own `RejectedExecutionHandler`.)*
 
-### Homework and what's next [78:52]
+### Homework and what's next [▶ ~78:52](https://youtu.be/VPtaTUSaBOM?t=4732)
 - Write programs for the cached, single-thread and scheduled pools yourself. A cached pool runs all tasks in parallel (each gets a thread). A single-thread pool runs 100 tasks one at a time, never two at once. A scheduled pool can run something 3 s later.
 - *(The video suggests a single-thread pool might run task 4 before task 3. It won't: `newSingleThreadExecutor` runs tasks in submission order.)*
 - Next (last Java lecture): `CompletableFuture`, `ForkJoinPool`, virtual threads.

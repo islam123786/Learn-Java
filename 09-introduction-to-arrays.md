@@ -36,50 +36,50 @@
 
 ## Detailed Notes
 
-### Why arrays? [00:00]
+### Why arrays? [▶ ~00:00](https://youtu.be/ajNs-dylWIM?t=0)
 - Storing 4 roll numbers as `int roll1 = 1, roll2 = 2, …` needs one variable each. With 100 students that's 100 variables, which isn't workable.
-- The idea [02:23]: instead of many separate allocations, reserve one **big contiguous chunk** of memory, split into sections (index 0, 1, 2, …), and store each student's roll number in its own section.
+- The idea [▶ ~02:23](https://youtu.be/ajNs-dylWIM?t=143): instead of many separate allocations, reserve one **big contiguous chunk** of memory, split into sections (index 0, 1, 2, …), and store each student's roll number in its own section.
 
-### Declaring an array [03:35]
+### Declaring an array [▶ ~03:35](https://youtu.be/ajNs-dylWIM?t=215)
 - `int[] rollNumbers;` declares it: the data type, `[]` to mark it as an array, then the name.
-- Why the type is needed [04:47]: an `int` variable gets a 32-bit container. For an array of 3 ints the compiler/JVM must know it needs **3 × 32-bit** slots.
+- Why the type is needed [▶ ~04:47](https://youtu.be/ajNs-dylWIM?t=287): an `int` variable gets a 32-bit container. For an array of 3 ints the compiler/JVM must know it needs **3 × 32-bit** slots.
 - Definition: arrays are collections of values of one data type.
 
-### Defining with `new` [08:22]
+### Defining with `new` [▶ ~08:22](https://youtu.be/ajNs-dylWIM?t=502)
 - `int[] rollNumbers = new int[3];`
   - `int[]`: the element type.
   - `rollNumbers`: the identifier (the array's name).
   - `new`: a special keyword that allocates memory on the **heap**. The heap is explained later with classes and objects; for now treat it as a black box.
   - `[3]`: the size of the array.
-- It's just like `int x = 4;` (one 32-bit container named `x`), except here you get three 32-bit containers together under the name `rollNumbers` [11:57].
+- It's just like `int x = 4;` (one 32-bit container named `x`), except here you get three 32-bit containers together under the name `rollNumbers` [▶ ~11:57](https://youtu.be/ajNs-dylWIM?t=717).
 - The slots are **contiguous**: one directly after another in memory.
 - *Correction:* the video's example addresses go 1001, 1002, 1003, and it then mentions skipping 32 bits. Addresses count **bytes**, so consecutive `int` slots differ by **4** (e.g. 1000, 1004, 1008).
 
-### Indexing, storing and reading [13:09]
+### Indexing, storing and reading [▶ ~13:09](https://youtu.be/ajNs-dylWIM?t=789)
 - Each slot gets an index starting at **0**: `rollNumbers[0] = 1001; rollNumbers[1] = 1002; rollNumbers[2] = 1003;`.
-- Read the same way [16:45]: `System.out.println(rollNumbers[2]);` prints 1003.
+- Read the same way [▶ ~16:45](https://youtu.be/ajNs-dylWIM?t=1005): `System.out.println(rollNumbers[2]);` prints 1003.
 
-### Use loops, not copy-paste [17:56]
+### Use loops, not copy-paste [▶ ~17:56](https://youtu.be/ajNs-dylWIM?t=1076)
 - Filling 100 slots one statement at a time defeats the purpose. Loops are heavily used with arrays.
 - Fill: `int x = 1001; for (int i = 0; i < 3; i++) { rollNumbers[i] = x; x++; }` gives 1001, 1002, 1003.
 - Print: `for (int i = 0; i < 3; i++) System.out.println(rollNumbers[i]);`.
 
-### `length` instead of hard-coding [22:43]
+### `length` instead of hard-coding [▶ ~22:43](https://youtu.be/ajNs-dylWIM?t=1363)
 - Writing `i < 3` hard-codes the size. In a large codebase you may not know the size, or it may change later.
 - `rollNumbers.length` gives the size (3 here), so write `for (int i = 0; i < rollNumbers.length; i++)`.
 - *Correction:* the video calls `length` a "special method". For arrays it's a final **field** (`arr.length`, no parentheses). `String` has a `length()` method, with parentheses.
 
-### Out-of-bounds access [26:19]
+### Out-of-bounds access [▶ ~26:19](https://youtu.be/ajNs-dylWIM?t=1579)
 - `rollNumbers[3]` or `rollNumbers[4]` on a 3-element array throws `ArrayIndexOutOfBoundsException` (the video says "IndexOutOfBoundsException"; the array version is a subclass of it).
 - An exception is Java signalling "something went wrong while running this; fix it". It's raised at **runtime** by the JVM, not by the compiler.
 
-### Coding it [27:31]
+### Coding it [▶ ~27:31](https://youtu.be/ajNs-dylWIM?t=1651)
 - Demo of all of the above: assign by index, print by index, print `length` (3), then fill and print with loops.
-- Alternative syntax [31:06]: `int rollNumbers[] = new int[3];` also works. Java prefers `int[] name`; the C/C++ style `name[]` is supported for legacy reasons.
+- Alternative syntax [▶ ~31:06](https://youtu.be/ajNs-dylWIM?t=1866): `int rollNumbers[] = new int[3];` also works. Java prefers `int[] name`; the C/C++ style `name[]` is supported for legacy reasons.
 
-### Multidimensional arrays: 2D [32:18]
+### Multidimensional arrays: 2D [▶ ~32:18](https://youtu.be/ajNs-dylWIM?t=1938)
 - A 1D array is an *array of ints*. A 2D array is an **array of arrays**: each slot of the outer array is itself an array.
-- Example [35:53]: 3 students × 3 subjects (Hindi, English, CS).
+- Example [▶ ~35:53](https://youtu.be/ajNs-dylWIM?t=2153): 3 students × 3 subjects (Hindi, English, CS).
 
   | | Hindi | English | CS |
   |---|---|---|---|
@@ -88,48 +88,48 @@
   | S3 | 70 | 50 | 70 |
 
   - Separate variables would need 9 of them (`s1Hindi`, `s1English`, …). A 1D array can't hold 3 marks in one slot unless that slot is itself an array.
-- Declaration [40:40]: `int[][] marks = new int[3][3];`. The first size is the **number of rows** and the second is the **number of columns**.
+- Declaration [▶ ~40:40](https://youtu.be/ajNs-dylWIM?t=2440): `int[][] marks = new int[3][3];`. The first size is the **number of rows** and the second is the **number of columns**.
 
-### The conceptual (matrix) view [41:52]
+### The conceptual (matrix) view [▶ ~41:52](https://youtu.be/ajNs-dylWIM?t=2512)
 - Picture a 3 × 3 matrix. Rows are horizontal (R1–R3) and columns vertical (C1–C3), each indexed from 0.
 - Each cell is addressed `[row][col]`: `[0][0]`, `[0][1]`, …, `[2][2]`.
-- Filling [47:51]: the values here have no pattern, so assign each one: `marks[0][0] = 50; marks[0][1] = 30; marks[0][2] = 90; marks[1][0] = 60; …`.
-- Printing [52:38]: **nested loops**. The outer loop walks the rows and the inner loop walks the columns. Use `print` inside and `println()` after each row, the same technique as pattern printing.
+- Filling [▶ ~47:51](https://youtu.be/ajNs-dylWIM?t=2871): the values here have no pattern, so assign each one: `marks[0][0] = 50; marks[0][1] = 30; marks[0][2] = 90; marks[1][0] = 60; …`.
+- Printing [▶ ~52:38](https://youtu.be/ajNs-dylWIM?t=3158): **nested loops**. The outer loop walks the rows and the inner loop walks the columns. Use `print` inside and `println()` after each row, the same technique as pattern printing.
 
-### The logical (physical) view [56:13]
+### The logical (physical) view [▶ ~56:13](https://youtu.be/ajNs-dylWIM?t=3373)
 - The computer has no notion of rows and columns; tables are a human visualisation (like tables in SQL).
 - `new int[3][3]` actually creates an **outer array of 3 slots**. Each slot refers to its **own inner `int[3]` array**.
 - `marks[0][1] = 30` means: go to slot 0 of the outer array, follow it to that inner array, and store 30 at its index 1.
 - The video says the details (references and objects) come after OOP.
 
-### `length` in 2D [62:12]
+### `length` in 2D [▶ ~62:12](https://youtu.be/ajNs-dylWIM?t=3732)
 - `marks.length` is the number of rows (the outer array's size).
 - `marks[0].length`, `marks[1].length`, … are the sizes of each inner array.
 - So the general loop is `for (r = 0; r < marks.length; r++) for (c = 0; c < marks[r].length; c++)`.
 - Using `marks.length` for the inner loop only works when every row has the same length as the number of rows.
 
-### Jagged arrays: rows of different lengths [69:23]
+### Jagged arrays: rows of different lengths [▶ ~69:23](https://youtu.be/ajNs-dylWIM?t=4163)
 - The row count is **mandatory**, the column count is **optional**: `int[][] marks = new int[3][];`.
 - Then size each row separately: `marks[0] = new int[2]; marks[1] = new int[3]; marks[2] = new int[4];`.
 - Conceptually it's a matrix whose rows have 2, 3 and 4 columns. Physically it's an outer array pointing to inner arrays of sizes 2, 3 and 4. Example use: students taking different numbers of subjects.
 - `int marks[][]` also works as declaration syntax.
 
-### 3D and beyond [78:57]
+### 3D and beyond [▶ ~78:57](https://youtu.be/ajNs-dylWIM?t=4737)
 - `int[][][] arr = new int[3][3][3];` is an array of arrays of arrays: `arr` → `arr[i]` → `arr[i][j]` → `int` values at `arr[i][j][k]`.
 - Conceptually, a stack of 2D matrices, like squares stacked into a cube (rows, columns, **depth**).
 - You can go to any number of dimensions, but in practice it's mostly 2D, occasionally 3D.
 
-### Initializer syntax [84:56]
+### Initializer syntax [▶ ~84:56](https://youtu.be/ajNs-dylWIM?t=5096)
 - If you already know the values: `int[] rollNumbers = {4, 5, 6};`. The size (3) is inferred, and no `new` is needed.
 - 2D: `int[][] marks = {{4, 5, 6}, {7, 8, 9}, {23, 34, 93}};`, one inner `{…}` per row.
-- Coding demos [87:20]: 3 × 3 assignment and printing, the jagged array (rows of 1, 2 and 3 elements → `23` / `24 90` / `12 78 45`) [90:55], and initializer syntax [96:54]. Accessing `marks[0][1]` on a 1-element row would throw `ArrayIndexOutOfBoundsException`.
+- Coding demos [▶ ~87:20](https://youtu.be/ajNs-dylWIM?t=5240): 3 × 3 assignment and printing, the jagged array (rows of 1, 2 and 3 elements → `23` / `24 90` / `12 78 45`) [▶ ~90:55](https://youtu.be/ajNs-dylWIM?t=5455), and initializer syntax [▶ ~96:54](https://youtu.be/ajNs-dylWIM?t=5814). Accessing `marks[0][1]` on a 1-element row would throw `ArrayIndexOutOfBoundsException`.
 
-### Strings (intro) [98:06]
+### Strings (intro) [▶ ~98:06](https://youtu.be/ajNs-dylWIM?t=5886)
 - Recap of data types: **primitive** (`byte`, `short`, `int`, `long`, `float`, `double`, `boolean`, `char`) and **non-primitive** (arrays, `String`, objects). Strings get a deep dive after OOP.
 - `String fName = "Aditya";` (capital `S`). String literals use **double quotes**, while a `char` uses single quotes (`'a'`).
 - Everything inside `println("Hello")` is already a string literal.
-- Concatenation [102:53]: `fName + lName` gives `"AdityaTandon"`, with no automatic space. Use `fName + " " + lName` for `"Aditya Tandon"`. `" "` (a space) and `""` (empty) are valid strings too.
-- You can store the result: `String fullName = fName + " " + lName;` [104:05].
+- Concatenation [▶ ~102:53](https://youtu.be/ajNs-dylWIM?t=6173): `fName + lName` gives `"AdityaTandon"`, with no automatic space. Use `fName + " " + lName` for `"Aditya Tandon"`. `" "` (a space) and `""` (empty) are valid strings too.
+- You can store the result: `String fullName = fName + " " + lName;` [▶ ~104:05](https://youtu.be/ajNs-dylWIM?t=6245).
 
 ## Code Examples
 

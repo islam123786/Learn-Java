@@ -32,40 +32,40 @@
 
 ## Detailed Notes
 
-### What a variable is [00:33]
+### What a variable is [▶ ~00:33](https://youtu.be/NtmULLvsABc?t=33)
 - We write programs to *do* something: print to the screen, perform calculations, build an app.
-- Printing "Hello World" doesn't store anything. A calculator that adds two numbers [01:47] has to keep both inputs (say 2 and 3) in memory before it can add them.
+- Printing "Hello World" doesn't store anything. A calculator that adds two numbers [▶ ~01:47](https://youtu.be/NtmULLvsABc?t=107) has to keep both inputs (say 2 and 3) in memory before it can add them.
 - Memory (RAM) is pictured as a set of boxes. Heap and stack come later in the series. Each value is stored in binary, so 2 is stored as `10`.
-- We refer to those locations by name: `x` holds 2 and `y` holds 3, so `x + y` means 2 + 3. A variable is a **container with a name that holds a value** [04:42].
-- Use **descriptive names** [05:24]: `firstNumber` and `secondNumber` are better than `x` and `y`.
-- The name is called an **identifier** [07:08] because it identifies the container. Variables, identifiers, keywords and literals are concepts common to every programming language.
+- We refer to those locations by name: `x` holds 2 and `y` holds 3, so `x + y` means 2 + 3. A variable is a **container with a name that holds a value** [▶ ~04:42](https://youtu.be/NtmULLvsABc?t=282).
+- Use **descriptive names** [▶ ~05:24](https://youtu.be/NtmULLvsABc?t=324): `firstNumber` and `secondNumber` are better than `x` and `y`.
+- The name is called an **identifier** [▶ ~07:08](https://youtu.be/NtmULLvsABc?t=428) because it identifies the container. Variables, identifiers, keywords and literals are concepts common to every programming language.
 
-### Treat boilerplate as a black box [07:56]
+### Treat boilerplate as a black box [▶ ~07:56](https://youtu.be/NtmULLvsABc?t=476)
 - Early on, some syntax (`class`, `public static void main(String[] args)`) won't make sense yet. Treat it as a **black box** and focus only on the code between the curly braces of `main`. Learning a language isn't linear, and these pieces get explained later.
 
-### Declaration syntax [10:16]
+### Declaration syntax [▶ ~10:16](https://youtu.be/NtmULLvsABc?t=616)
 ```
 dataType identifier = value;
 int      firstNumber = 10;
 ```
-- The **data type** says what kind of value the container holds: integer, real number, boolean, and so on. Java needs it up front because Java is **statically typed** [10:55].
-- Every statement ends with a **semicolon** [11:28], just as in C++.
+- The **data type** says what kind of value the container holds: integer, real number, boolean, and so on. Java needs it up front because Java is **statically typed** [▶ ~10:55](https://youtu.be/NtmULLvsABc?t=655).
+- Every statement ends with a **semicolon** [▶ ~11:28](https://youtu.be/NtmULLvsABc?t=688), just as in C++.
 
-### Primitive vs non-primitive [12:03]
+### Primitive vs non-primitive [▶ ~12:03](https://youtu.be/NtmULLvsABc?t=723)
 - Primitive types are covered now. Non-primitive types come with OOP.
 - There are four groups of primitives (like number categories in maths): **integers** (`byte`, `short`, `int`, `long`), **real numbers** (`float`, `double`), **characters** (`char`) and **booleans** (`boolean`).
 
-### Integer types and ranges [13:42]
+### Integer types and ranges [▶ ~13:42](https://youtu.be/NtmULLvsABc?t=822)
 - All four store whole numbers. They differ in **range**, i.e. how big a number they can hold: `byte` < `short` < `int` < `long`.
 - `10` fits in all four, so any of them works. A value that's too big for the type doesn't compile.
 
-### Binary number system crash course [16:25]
+### Binary number system crash course [▶ ~16:25](https://youtu.be/NtmULLvsABc?t=985)
 - Decimal is **base 10**: ten symbols (0 to 9). After 9 you reuse them by adding a digit (10, 11, ...), and the places are 1s, 10s, 100s.
-- Binary is **base 2** [18:30]: two symbols (0 = off/no current, 1 = on/current). The places are powers of 2: 1, 2, 4, 8, 16, ...
+- Binary is **base 2** [▶ ~18:30](https://youtu.be/NtmULLvsABc?t=1110): two symbols (0 = off/no current, 1 = on/current). The places are powers of 2: 1, 2, 4, 8, 16, ...
   - 0 → `0`, 1 → `1`, 2 → `10`, 3 → `11`, 4 → `100`, 10 → `1010`.
 - Leading zeros don't change the value, so in an 8-bit slot 2 is `00000010`.
 
-### Bit widths [20:40]
+### Bit widths [▶ ~20:40](https://youtu.be/NtmULLvsABc?t=1240)
 
 | Type | Bits | Range |
 |---|---|---|
@@ -74,14 +74,14 @@ int      firstNumber = 10;
 | `int` | 32 | −2,147,483,648 to 2,147,483,647 (about ±2.1 billion) |
 | `long` | 64 | about ±9.22 × 10¹⁸ (quintillions) |
 
-- In Java the integer types are **signed** [22:39]: they hold negative and positive values.
-- **Counting combinations** [23:54]: 2 bits give 00, 01, 10, 11, which is 4 = 2² values. In general n bits give 2ⁿ unique combinations.
-- **Largest unsigned value** [25:44]: 2ⁿ − 1. With 2 bits that's 3 (`11`), with 3 bits 7 (`111`), and with 8 bits 255 (`11111111` = 128+64+32+16+8+4+2+1).
-- So why does a `byte` stop at 127? Because the 256 combinations are split between negatives and non-negatives: −128 to −1 and 0 to 127. To store 255 you need a `short` [27:48].
+- In Java the integer types are **signed** [▶ ~22:39](https://youtu.be/NtmULLvsABc?t=1359): they hold negative and positive values.
+- **Counting combinations** [▶ ~23:54](https://youtu.be/NtmULLvsABc?t=1434): 2 bits give 00, 01, 10, 11, which is 4 = 2² values. In general n bits give 2ⁿ unique combinations.
+- **Largest unsigned value** [▶ ~25:44](https://youtu.be/NtmULLvsABc?t=1544): 2ⁿ − 1. With 2 bits that's 3 (`11`), with 3 bits 7 (`111`), and with 8 bits 255 (`11111111` = 128+64+32+16+8+4+2+1).
+- So why does a `byte` stop at 127? Because the 256 combinations are split between negatives and non-negatives: −128 to −1 and 0 to 127. To store 255 you need a `short` [▶ ~27:48](https://youtu.be/NtmULLvsABc?t=1668).
 - For numbers bigger than `long` Java has a special class. The video leaves it as a teaser; it's `BigInteger`.
 - How negative numbers are actually stored is the topic of the next video.
 
-### Real numbers: `float` and `double` [30:59]
+### Real numbers: `float` and `double` [▶ ~30:59](https://youtu.be/NtmULLvsABc?t=1859)
 - Decimal values such as 5.23 or 10.02 are called **floating-point numbers**.
 
 | Type | Bits | Approximate range | Precision |
@@ -89,30 +89,30 @@ int      firstNumber = 10;
 | `float` | 32 | ±1.4 × 10⁻⁴⁵ to ±3.4 × 10³⁸ | single, about 6 to 7 significant digits |
 | `double` | 64 | ±4.9 × 10⁻³²⁴ to ±1.8 × 10³⁰⁸ | double, about 15 to 16 significant digits |
 
-- The ranges are in **scientific notation** [32:30]: `4.9e-324` means 4.9 × 10⁻³²⁴.
-- `float` is **single precision** and `double` is **double precision** [32:56].
-- **Prefer `double`** [33:17]. `float` dates from when hardware was optimized for it, and its precision is low. Modern hardware is optimized for `double`, it has twice the range and much better precision, and standard library methods (`Math.sin`, `Math.cos`, and so on) return `double`. `float` is rarely used in production code.
+- The ranges are in **scientific notation** [▶ ~32:30](https://youtu.be/NtmULLvsABc?t=1950): `4.9e-324` means 4.9 × 10⁻³²⁴.
+- `float` is **single precision** and `double` is **double precision** [▶ ~32:56](https://youtu.be/NtmULLvsABc?t=1976).
+- **Prefer `double`** [▶ ~33:17](https://youtu.be/NtmULLvsABc?t=1997). `float` dates from when hardware was optimized for it, and its precision is low. Modern hardware is optimized for `double`, it has twice the range and much better precision, and standard library methods (`Math.sin`, `Math.cos`, and so on) return `double`. `float` is rarely used in production code.
 
-### Characters: `char`, ASCII and Unicode [35:36]
-- `char` holds a single character. Write character literals in **single quotes** [37:02], e.g. `char alphabet = 'a';`. Without the quotes, `a` would be read as an identifier.
-- **ASCII** [35:50] was the older standard used by C/C++. It covers English letters, digits and symbols, with codes 0 to 127.
+### Characters: `char`, ASCII and Unicode [▶ ~35:36](https://youtu.be/NtmULLvsABc?t=2136)
+- `char` holds a single character. Write character literals in **single quotes** [▶ ~37:02](https://youtu.be/NtmULLvsABc?t=2222), e.g. `char alphabet = 'a';`. Without the quotes, `a` would be read as an identifier.
+- **ASCII** [▶ ~35:50](https://youtu.be/NtmULLvsABc?t=2150) was the older standard used by C/C++. It covers English letters, digits and symbols, with codes 0 to 127.
 - Characters are stored as **numbers**. The character is mapped to an integer code, and that integer is stored in binary. When you read the variable back, its **data type** tells Java whether to show the number or the character. Declared as `char`, the stored code is shown as a character. Declared as `int`, the same bits are shown as a number.
-- ASCII can't represent Hindi, Tamil, Chinese and so on. Java wanted worldwide use, so it adopted **Unicode** [40:56] and made `char` **16 bits**. Every character in every script gets an integer code.
+- ASCII can't represent Hindi, Tamil, Chinese and so on. Java wanted worldwide use, so it adopted **Unicode** [▶ ~40:56](https://youtu.be/NtmULLvsABc?t=2456) and made `char` **16 bits**. Every character in every script gets an integer code.
 
-### Booleans [42:05]
+### Booleans [▶ ~42:05](https://youtu.be/NtmULLvsABc?t=2525)
 - `boolean` has exactly two values, `true` and `false`. Example: `boolean b = false;`
-- **Not like C/C++** [43:24]: there, any non-zero number counts as true and 0 as false. In Java `boolean b = 0;` or `b = 1` **doesn't compile**. Only `true` and `false` are allowed.
+- **Not like C/C++** [▶ ~43:24](https://youtu.be/NtmULLvsABc?t=2604): there, any non-zero number counts as true and 0 as false. In Java `boolean b = 0;` or `b = 1` **doesn't compile**. Only `true` and `false` are allowed.
 
-### Variable, identifier, literal [44:38]
+### Variable, identifier, literal [▶ ~44:38](https://youtu.be/NtmULLvsABc?t=2678)
 - In `int b = 12;`, the container is the **variable**, `b` is the **identifier**, and `12` is the **literal** (literally the value that's stored).
 
-### Code demo: printing all types [45:01]
-- **Comments** [45:21]: `// single line` and `/* multi-line */`. The compiler ignores them, so they're notes for humans.
+### Code demo: printing all types [▶ ~45:01](https://youtu.be/NtmULLvsABc?t=2701)
+- **Comments** [▶ ~45:21](https://youtu.be/NtmULLvsABc?t=2721): `// single line` and `/* multi-line */`. The compiler ignores them, so they're notes for humans.
 - The demo declares `byte b = 5; short s = 10; int i = 4000; long l = 10000;` and prints them. Running the file with VS Code's **Run** button prints `5, 10, 4000, 10000`.
-- `float f = 10.54;` is an **error** [49:17]: *"Type mismatch: cannot convert from double to float"*. A decimal literal is a `double` by default, so a `float` literal needs the suffix: `10.54f`.
+- `float f = 10.54;` is an **error** [▶ ~49:17](https://youtu.be/NtmULLvsABc?t=2957): *"Type mismatch: cannot convert from double to float"*. A decimal literal is a `double` by default, so a `float` literal needs the suffix: `10.54f`.
 - `char c = 'a';` prints `a`. `boolean bool = false;` prints `false`.
 
-### Number systems for integer literals [52:47]
+### Number systems for integer literals [▶ ~52:47](https://youtu.be/NtmULLvsABc?t=3167)
 
 | System | Base | Digits | Prefix | 5 written as |
 |---|---|---|---|---|
@@ -121,26 +121,26 @@ int      firstNumber = 10;
 | Octal | 8 | 0-7 | `0` | `05` |
 | Hexadecimal | 16 | 0-9, A-F (10-15) | `0x` | `0x5` |
 
-- **Binary** [54:04]: `0b` tells the compiler the digits that follow are binary.
+- **Binary** [▶ ~54:04](https://youtu.be/NtmULLvsABc?t=3244): `0b` tells the compiler the digits that follow are binary.
 - **Octal**: `05` is fine, but `08` is an error ("literal out of range") because 8 isn't an octal digit. Likewise `0b2` is invalid.
-- **Hex** [55:56]: `0xF` is 15 and `0xA` is 10.
+- **Hex** [▶ ~55:56](https://youtu.be/NtmULLvsABc?t=3356): `0xF` is 15 and `0xA` is 10.
 - These prefixes work for all integer types. Hex floating-point literals exist but are rarely used.
 
-### Scientific notation for doubles [58:12]
+### Scientific notation for doubles [▶ ~58:12](https://youtu.be/NtmULLvsABc?t=3492)
 - Standard way: `23.0987`. Scientific way: `6.022e23` means 6.022 × 10²³ (Avogadro's number).
 
-### Underscores in numeric literals [59:47]
+### Underscores in numeric literals [▶ ~59:47](https://youtu.be/NtmULLvsABc?t=3587)
 - `long l = 12_34_56_789L;` is easier to read (Indian grouping: 12 crore 34 lakh 56 thousand 789), and the compiler ignores the underscores. They work in floats and doubles too.
 - Underscores are **not allowed** next to the decimal point, next to `e`, or at the start or end of the number.
 
-### Declaration vs definition [61:59]
+### Declaration vs definition [▶ ~61:59](https://youtu.be/NtmULLvsABc?t=3719)
 - Values often come from the user, not from hard-coded literals. Then you declare first and assign later.
 - `int x;` is the **declaration**: reserve a 32-bit container called `x`. `x = 4;` gives it a value. `int x = 5;` does both at once.
 
-### Keywords [63:41]
+### Keywords [▶ ~63:41](https://youtu.be/NtmULLvsABc?t=3821)
 - Keywords are **reserved words** such as `class`, `public`, `static`, `void`, `int`, `boolean`. You can't name a variable `class`, because the compiler wouldn't know which you meant.
-- The video says Java has **68 keywords** [65:21] and suggests googling the list.
-- `goto` and `const` [65:38] are reserved but **never used**. They were reserved because C/C++ have them and Java's designers thought they might need them.
+- The video says Java has **68 keywords** [▶ ~65:21](https://youtu.be/NtmULLvsABc?t=3921) and suggests googling the list.
+- `goto` and `const` [▶ ~65:38](https://youtu.be/NtmULLvsABc?t=3938) are reserved but **never used**. They were reserved because C/C++ have them and Java's designers thought they might need them.
 
 ## Code Examples
 

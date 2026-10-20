@@ -28,36 +28,36 @@
 
 ## Detailed Notes
 
-### The problem: constants before enums [00:30]
+### The problem: constants before enums [▶ ~00:30](https://youtu.be/oXhy5dT-0Qs?t=30)
 - Scenario: payment status can only be **success, failed or pending**, and the whole app needs to share these values.
 - Pre-Java-5 approach: a class holding constants:
   `class PaymentStatus { public static final int SUCCESS = 1, FAILED = 2, PENDING = 3; }`
   - `final` because they never change. Upper-case names by convention.
   - `static` so they belong to the class (not to each object) and can be used as `PaymentStatus.SUCCESS` without creating objects.
 
-### Problems with `int` constants [04:07]
+### Problems with `int` constants [▶ ~04:07](https://youtu.be/oXhy5dT-0Qs?t=247)
 1. **No type safety.** `int status = 100;` compiles even though 100 means nothing. You want errors at **compile time**, not runtime, because runtime means the bug is already in production.
-2. **Poor readability** [06:30]. In `if (status == 2)`, a reader has to open `PaymentStatus` to learn that 2 means FAILED.
-3. **No grouping of related entities** [07:40]. Add `class Role { USER = 1, ADMIN = 2 }`. Now `if (status == Role.ADMIN)` compiles, since it's int against int, and silently means "FAILED".
+2. **Poor readability** [▶ ~06:30](https://youtu.be/oXhy5dT-0Qs?t=390). In `if (status == 2)`, a reader has to open `PaymentStatus` to learn that 2 means FAILED.
+3. **No grouping of related entities** [▶ ~07:40](https://youtu.be/oXhy5dT-0Qs?t=460). Add `class Role { USER = 1, ADMIN = 2 }`. Now `if (status == Role.ADMIN)` compiles, since it's int against int, and silently means "FAILED".
 
-### Strings don't fix it [07:57]
+### Strings don't fix it [▶ ~07:57](https://youtu.be/oXhy5dT-0Qs?t=477)
 - `public static final String SUCCESS = "Success"`. Comparing with a hand-typed `"success"` fails because of case, and you end up normalizing case everywhere.
 - String comparison works character by character, so it's slower than comparing ints or references.
-- **Duplicates are allowed** [10:26]. `MANAGER = 2` next to `ADMIN = 2` compiles without complaint, for both ints and Strings.
+- **Duplicates are allowed** [▶ ~10:26](https://youtu.be/oXhy5dT-0Qs?t=626). `MANAGER = 2` next to `ADMIN = 2` compiles without complaint, for both ints and Strings.
 
-### Enter `enum` (Java 5) [11:13]
+### Enter `enum` (Java 5) [▶ ~11:13](https://youtu.be/oXhy5dT-0Qs?t=673)
 - Short for **enumeration** (enumerated type): a **predefined set of constants**.
 - Syntax: `enum PaymentStatus { SUCCESS, FAILED, PENDING }`. You don't write `public static final`, a type, or a value.
-- Usage [13:25]: `PaymentStatus status = PaymentStatus.SUCCESS;`. The variable's type is now the enum.
+- Usage [▶ ~13:25](https://youtu.be/oXhy5dT-0Qs?t=805): `PaymentStatus status = PaymentStatus.SUCCESS;`. The variable's type is now the enum.
   - `PaymentStatus s = 100;` is a type-mismatch compile error ("cannot convert from int").
   - Assigning `"error"` is also a compile error.
   - `if (status == "success")` is a compile error (incomparable types).
 - `status.name()` prints `SUCCESS`.
 
-### An enum is a class [16:35]
+### An enum is a class [▶ ~16:35](https://youtu.be/oXhy5dT-0Qs?t=995)
 - Example used for the rest of the lecture: `enum Direction { NORTH, SOUTH, EAST, WEST }`.
-- After compilation, the enum **is a class** [16:58]. The `enum` keyword just marks it as special.
-- It implicitly **extends `java.lang.Enum<Direction>`** [18:21]. `java.lang` is auto-imported, so you don't write any of this.
+- After compilation, the enum **is a class** [▶ ~16:58](https://youtu.be/oXhy5dT-0Qs?t=1018). The `enum` keyword just marks it as special.
+- It implicitly **extends `java.lang.Enum<Direction>`** [▶ ~18:21](https://youtu.be/oXhy5dT-0Qs?t=1101). `java.lang` is auto-imported, so you don't write any of this.
 - Each constant is implicitly `public static final` and has type `Direction`. It's an **object of the enum's own class**.
 - Roughly what the compiler generates:
   ```
@@ -70,20 +70,20 @@
   }
   ```
   (The real constructor also passes the name and ordinal to `Enum`'s constructor.)
-- **Private constructor** [21:35]. `new Direction()` outside the enum is impossible, so exactly four objects ever exist.
+- **Private constructor** [▶ ~21:35](https://youtu.be/oXhy5dT-0Qs?t=1295). `new Direction()` outside the enum is impossible, so exactly four objects ever exist.
 
 > **Correction:** the video says every enum "overrides" the `Enum` class. It **extends** it. Also, the class is `final` only when no constant has a body. With constant-specific bodies (see below) the compiler makes it non-final, so that those bodies can be its anonymous subclasses, but it still can't be subclassed in source code.
 
-### Memory picture [22:54]
+### Memory picture [▶ ~22:54](https://youtu.be/oXhy5dT-0Qs?t=1374)
 - Each `new Direction()` allocates one object on the heap. The static references `NORTH`, `SOUTH`, `EAST` and `WEST` point to them. (The video shows them in "stack/static memory". Static fields actually live with the class data, but the point stands.)
 - These objects are **empty**, because the only fields are static. They work purely as **markers**.
 - `Direction d1 = Direction.NORTH; Direction d2 = Direction.SOUTH; Direction d3 = Direction.NORTH;` creates three references to existing objects and no new objects.
-- So `d1 == d3` is **true** [29:00]: both point to the NORTH object.
-- Another classic use: `enum DayOfWeek { MONDAY, …, SUNDAY }` [31:05]. You write one line and Java builds the whole class.
+- So `d1 == d3` is **true** [▶ ~29:00](https://youtu.be/oXhy5dT-0Qs?t=1740): both point to the NORTH object.
+- Another classic use: `enum DayOfWeek { MONDAY, …, SUNDAY }` [▶ ~31:05](https://youtu.be/oXhy5dT-0Qs?t=1865). You write one line and Java builds the whole class.
 
-### Enums can have fields, constructors and methods [32:49]
-- Since it's a class, an enum can have state and behavior. Example: compass degrees, with NORTH = 0°, EAST = 90°, SOUTH = 180°, WEST = 270° [34:22].
-- Code [35:00]:
+### Enums can have fields, constructors and methods [▶ ~32:49](https://youtu.be/oXhy5dT-0Qs?t=1969)
+- Since it's a class, an enum can have state and behavior. Example: compass degrees, with NORTH = 0°, EAST = 90°, SOUTH = 180°, WEST = 270° [▶ ~34:22](https://youtu.be/oXhy5dT-0Qs?t=2062).
+- Code [▶ ~35:00](https://youtu.be/oXhy5dT-0Qs?t=2100):
   ```
   enum Direction {
       NORTH(0), SOUTH(180), EAST(90), WEST(270);   // semicolon needed when members follow
@@ -93,56 +93,56 @@
   }
   ```
   `Direction.SOUTH.getDegree()` gives 180.
-- Generated code [38:24]: `NORTH(0)` becomes `new Direction(0)`. Each object now holds its own `degree` field, set through the constructor. Methods aren't stored in objects.
+- Generated code [▶ ~38:24](https://youtu.be/oXhy5dT-0Qs?t=2304): `NORTH(0)` becomes `new Direction(0)`. Each object now holds its own `degree` field, set through the constructor. Methods aren't stored in objects.
 - Whether or not you write a constructor, and whatever modifier you give it, it's **always private**. Only the declared constants may exist.
 
 > **Note:** the hand-drawn memory picture in the video swaps EAST and SOUTH (90 vs 180). The code (SOUTH = 180, EAST = 90) is right.
 
-### Abstract methods and constant-specific bodies [42:37]
+### Abstract methods and constant-specific bodies [▶ ~42:37](https://youtu.be/oXhy5dT-0Qs?t=2557)
 - Goal: one method `move()` that behaves differently for each direction. NORTH → y+1, SOUTH → y−1, EAST → x+1, WEST → x−1.
-- Without enums you'd write an abstract class `Direction` plus subclasses (`NorthDirection`, …), or anonymous classes [47:30]: `new Direction() { @Override public void move() {...} }`.
-- With an enum [44:53]: declare `public abstract void move();`. The compiler then demands that every constant implement it ("The enum constant NORTH must implement the abstract method move()"). Each constant gets a body:
+- Without enums you'd write an abstract class `Direction` plus subclasses (`NorthDirection`, …), or anonymous classes [▶ ~47:30](https://youtu.be/oXhy5dT-0Qs?t=2850): `new Direction() { @Override public void move() {...} }`.
+- With an enum [▶ ~44:53](https://youtu.be/oXhy5dT-0Qs?t=2693): declare `public abstract void move();`. The compiler then demands that every constant implement it ("The enum constant NORTH must implement the abstract method move()"). Each constant gets a body:
   `NORTH { public void move() { System.out.println("Move up: y + 1"); } }, ...`
 - Internally this is `public static final Direction NORTH = new Direction() { ...override... };`, an anonymous subclass per constant.
 - `Direction.NORTH.move()` prints the north behavior.
 
-### Built-in methods: where they come from [51:24]
+### Built-in methods: where they come from [▶ ~51:24](https://youtu.be/oXhy5dT-0Qs?t=3084)
 - Four important methods: `values()`, `valueOf(String)`, `name()` and `ordinal()`.
-- Interview trap [52:55]: only **`name()` and `ordinal()`** come from `java.lang.Enum`. **`values()` and `valueOf(String)` are generated by the compiler** for each enum. Look in `Enum.java` and you won't find them in that form.
+- Interview trap [▶ ~52:55](https://youtu.be/oXhy5dT-0Qs?t=3175): only **`name()` and `ordinal()`** come from `java.lang.Enum`. **`values()` and `valueOf(String)` are generated by the compiler** for each enum. Look in `Enum.java` and you won't find them in that form.
 
-### `values()` [54:01]
+### `values()` [▶ ~54:01](https://youtu.be/oXhy5dT-0Qs?t=3241)
 - `Direction[] dirs = Direction.values();` gives an array of every constant in declaration order.
 - Iterate with the **for-each loop**: `for (Direction d : dirs) System.out.println(d.name());` prints NORTH, SOUTH, EAST, WEST.
 - Use case: populating a dropdown or menu from an enum.
 
-### `valueOf(String)` [56:56]
+### `valueOf(String)` [▶ ~56:56](https://youtu.be/oXhy5dT-0Qs?t=3416)
 - Converts a String into the matching constant: `Direction.valueOf("EAST")` gives `Direction.EAST`.
-- **Case-sensitive and exact.** `valueOf("East")` throws **`IllegalArgumentException`** [58:05].
+- **Case-sensitive and exact.** `valueOf("East")` throws **`IllegalArgumentException`** [▶ ~58:05](https://youtu.be/oXhy5dT-0Qs?t=3485).
 
-### `name()` vs `toString()` [58:36]
+### `name()` vs `toString()` [▶ ~58:36](https://youtu.be/oXhy5dT-0Qs?t=3516)
 - `name()` returns the exact declared name. `toString()` returns the same thing by default, and `println(d)` calls `toString()`.
-- **Difference** [59:24]: you can **override `toString()`** (e.g. return `name() + " direction"`), but **`name()` is `final`**. Trying to override it gives "Cannot override the final method from Enum".
+- **Difference** [▶ ~59:24](https://youtu.be/oXhy5dT-0Qs?t=3564): you can **override `toString()`** (e.g. return `name() + " direction"`), but **`name()` is `final`**. Trying to override it gives "Cannot override the final method from Enum".
 
-### `ordinal()` [60:33]
+### `ordinal()` [▶ ~60:33](https://youtu.be/oXhy5dT-0Qs?t=3633)
 - The 0-based position in the declaration. With `NORTH, SOUTH, EAST, WEST`, `EAST.ordinal()` is `2`.
 - It's rarely useful, because it changes if you reorder the constants.
 - Enums also inherit `Object` methods (`equals`, `hashCode`, …).
 
-### What enums can't do [62:04]
+### What enums can't do [▶ ~62:04](https://youtu.be/oXhy5dT-0Qs?t=3724)
 - An enum **can't extend another class**, because it already extends `Enum` and Java allows only one superclass.
 - It **can implement any number of interfaces**.
 
-### How `values()` works internally [64:22]
+### How `values()` works internally [▶ ~64:22](https://youtu.be/oXhy5dT-0Qs?t=3862)
 - The compiler also generates `private static final Direction[] $VALUES = { NORTH, SOUTH, EAST, WEST };` (the video calls it "StarValues"; it's actually `$VALUES`).
 - `public static Direction[] values() { return $VALUES.clone(); }`. It's static because you can never get an instance any other way.
 - Why the compiler generates it: only the compiler knows how many constants each enum has. The generic `Enum` class can't.
 - Why `clone()`: so callers get a **copy** of the array and can't reorder or overwrite the internal one. The copy is shallow, but that's fine here: the elements are references to the same singleton constants, which can't be replaced anyway.
 
-### How `valueOf(String)` works internally [69:00]
+### How `valueOf(String)` works internally [▶ ~69:00](https://youtu.be/oXhy5dT-0Qs?t=4140)
 - `Enum` does have a `valueOf`, but with a different signature: `static <T> T valueOf(Class<T> enumClass, String name)`.
 - The compiler-generated `Direction.valueOf(String s)` simply calls `Enum.valueOf(Direction.class, s)`. `Direction.class` (a `Class` object) comes back with reflection.
 
-### When to use enums [71:12]
+### When to use enums [▶ ~71:12](https://youtu.be/oXhy5dT-0Qs?t=4272)
 - Any **small, fixed set of values**: days of the week, payment status, order status (PENDING, DELIVERED, …), log levels (INFO, DEBUG, ERROR), roles.
 
 ## Code Examples

@@ -26,97 +26,97 @@
 
 ## Detailed Notes
 
-### Intro [00:00]
+### Intro [▶ ~00:00](https://youtu.be/Q75kCaNa35Y?t=0)
 - The video opens by saying it covers Optional and parallel streams. In practice it covers **Optional** only; parallel streams are in #42. There's also a short motivational bit about consistency beating hard work.
 
-### The null problem [01:05]
-- `String name = getName(); int len = name.length();`: if `getName()` returns `null`, `name.length()` throws **`NullPointerException`** [02:10].
-- The usual fix is a guard: `if (name != null) { … }` [03:15]. Fine once, but painful at scale.
-- **Nested objects** [03:15]: `User` → `Address` → `String city`. To read a city safely you need `if (u != null)`, then `if (u.getAddress() != null)`, then `if (u.getAddress().getCity() != null)`, and only then `String city = u.getAddress().getCity();` [04:20].
-- This is **"null-check hell"** [05:25]: lots of ugly nested ifs for one simple lookup.
-- And `null` doesn't say *why* there's no value [05:25]: empty name, not found, API/connection error, or legitimately absent? It's ambiguous [06:30].
+### The null problem [▶ ~01:05](https://youtu.be/Q75kCaNa35Y?t=65)
+- `String name = getName(); int len = name.length();`: if `getName()` returns `null`, `name.length()` throws **`NullPointerException`** [▶ ~02:10](https://youtu.be/Q75kCaNa35Y?t=130).
+- The usual fix is a guard: `if (name != null) { … }` [▶ ~03:15](https://youtu.be/Q75kCaNa35Y?t=195). Fine once, but painful at scale.
+- **Nested objects** [▶ ~03:15](https://youtu.be/Q75kCaNa35Y?t=195): `User` → `Address` → `String city`. To read a city safely you need `if (u != null)`, then `if (u.getAddress() != null)`, then `if (u.getAddress().getCity() != null)`, and only then `String city = u.getAddress().getCity();` [▶ ~04:20](https://youtu.be/Q75kCaNa35Y?t=260).
+- This is **"null-check hell"** [▶ ~05:25](https://youtu.be/Q75kCaNa35Y?t=325): lots of ugly nested ifs for one simple lookup.
+- And `null` doesn't say *why* there's no value [▶ ~05:25](https://youtu.be/Q75kCaNa35Y?t=325): empty name, not found, API/connection error, or legitimately absent? It's ambiguous [▶ ~06:30](https://youtu.be/Q75kCaNa35Y?t=390).
 
-### `Optional`: a wrapper that may or may not hold a value [06:30]
-- Java 8 introduced `Optional`. It's simply a **wrapper around an inner object**, e.g. `Optional<String>` around a `String` [07:35].
+### `Optional`: a wrapper that may or may not hold a value [▶ ~06:30](https://youtu.be/Q75kCaNa35Y?t=390)
+- Java 8 introduced `Optional`. It's simply a **wrapper around an inner object**, e.g. `Optional<String>` around a `String` [▶ ~07:35](https://youtu.be/Q75kCaNa35Y?t=455).
 - Where you used to return `String`, you now return `Optional<String>`. The name says it: the value "may or may not be" there.
-- **Who is responsible** [08:41]: with `String getName()`, the *caller* has to remember to check for null, which is unsafe. With **`Optional<String> getName()`**, the return type itself warns that the value might be missing [09:46].
-- You **can't** call `name.length()` on an `Optional<String>`: `Optional` has no `length` method. You have to get the value out first [10:51], e.g. `name.ifPresent(System.out::println)`, which takes a `Consumer` and runs it only if a value is present [11:56]. No explicit null check needed [13:01].
+- **Who is responsible** [▶ ~08:41](https://youtu.be/Q75kCaNa35Y?t=521): with `String getName()`, the *caller* has to remember to check for null, which is unsafe. With **`Optional<String> getName()`**, the return type itself warns that the value might be missing [▶ ~09:46](https://youtu.be/Q75kCaNa35Y?t=586).
+- You **can't** call `name.length()` on an `Optional<String>`: `Optional` has no `length` method. You have to get the value out first [▶ ~10:51](https://youtu.be/Q75kCaNa35Y?t=651), e.g. `name.ifPresent(System.out::println)`, which takes a `Consumer` and runs it only if a value is present [▶ ~11:56](https://youtu.be/Q75kCaNa35Y?t=716). No explicit null check needed [▶ ~13:01](https://youtu.be/Q75kCaNa35Y?t=781).
 
-### Good design practice: Optional as a contract [14:06]
+### Good design practice: Optional as a contract [▶ ~14:06](https://youtu.be/Q75kCaNa35Y?t=846)
 - If a method might have no result, return `Optional<T>` (`Optional<String>`, `Optional<Student>`, …) instead of returning `null`.
-- Bad: `String name = null;`. Good: `Optional<String> name = Optional.empty();` [15:11]. The caller sees `Optional`, knows it might be empty, and uses `ifPresent`.
-- With a value: `Optional<String> name = Optional.of("Aditya");`, and `ifPresent` will run [16:16].
-- **Contract** [16:16]: an `Optional` return type says "I might be empty", while a plain return type says "I always return a real value".
-- Conceptually [17:22]: `class Optional<T> { private final T value; }`. `value == null` means **empty**, otherwise **present**. That simple design removes most NPE risk, *if* you follow the practice [18:27].
+- Bad: `String name = null;`. Good: `Optional<String> name = Optional.empty();` [▶ ~15:11](https://youtu.be/Q75kCaNa35Y?t=911). The caller sees `Optional`, knows it might be empty, and uses `ifPresent`.
+- With a value: `Optional<String> name = Optional.of("Aditya");`, and `ifPresent` will run [▶ ~16:16](https://youtu.be/Q75kCaNa35Y?t=976).
+- **Contract** [▶ ~16:16](https://youtu.be/Q75kCaNa35Y?t=976): an `Optional` return type says "I might be empty", while a plain return type says "I always return a real value".
+- Conceptually [▶ ~17:22](https://youtu.be/Q75kCaNa35Y?t=1042): `class Optional<T> { private final T value; }`. `value == null` means **empty**, otherwise **present**. That simple design removes most NPE risk, *if* you follow the practice [▶ ~18:27](https://youtu.be/Q75kCaNa35Y?t=1107).
 
-### Creating an Optional [19:32]
+### Creating an Optional [▶ ~19:32](https://youtu.be/Q75kCaNa35Y?t=1172)
 - **`Optional.of(value)`**: strict. Passing `null` throws immediately. *(The exception is `NullPointerException`. The video just says "an exception".)*
-- **`Optional.ofNullable(value)`** [20:37]: accepts either a value or `null` (null becomes an empty Optional). Use it when you aren't sure, e.g. when the value comes from another method.
-- **`Optional.empty()`** [21:42]: when you know there's no value.
+- **`Optional.ofNullable(value)`** [▶ ~20:37](https://youtu.be/Q75kCaNa35Y?t=1237): accepts either a value or `null` (null becomes an empty Optional). Use it when you aren't sure, e.g. when the value comes from another method.
+- **`Optional.empty()`** [▶ ~21:42](https://youtu.be/Q75kCaNa35Y?t=1302): when you know there's no value.
 - In every case you still can't call `n.length()`, and printing `n` directly shows `Optional[...]`/`Optional.empty`, not the bare string.
 
-### Getting the value out [22:47]
-- **`get()`**: the simplest method and the most dangerous. It returns the value, or throws **`NoSuchElementException`** if empty [23:52]. Calling `get()` blindly brings back the original problem with a different exception name [24:58].
-- **`isPresent()` + `get()`** [24:58]: `if (name.isPresent()) { String s = name.get(); }` is safe, but it's basically the old `if (name != null)` check again [26:03]. The only gain is that you can't *forget* to unwrap [27:08].
-- **`ifPresent(consumer)`** [27:08]: runs the lambda only when there's a value. Cleaner.
-- Newer, commonly used methods [28:13]:
-  - **`orElse(default)`**: `String s = name.orElse("Unknown");` gives the value if present, otherwise the default [29:18].
-  - **`orElseGet(supplier)`**: the same idea, but the default comes from a `Supplier` [29:18].
-  - **`orElseThrow()`**: the value, or throw `NoSuchElementException` on purpose [30:23]. *(The no-argument version is Java 10+. `orElseThrow(() -> new MyException(...))` lets you pick the exception.)*
-  - **`ifPresentOrElse(consumer, runnable)`** [30:23]: do one thing if present, another if empty. *(Java 9+.)*
+### Getting the value out [▶ ~22:47](https://youtu.be/Q75kCaNa35Y?t=1367)
+- **`get()`**: the simplest method and the most dangerous. It returns the value, or throws **`NoSuchElementException`** if empty [▶ ~23:52](https://youtu.be/Q75kCaNa35Y?t=1432). Calling `get()` blindly brings back the original problem with a different exception name [▶ ~24:58](https://youtu.be/Q75kCaNa35Y?t=1498).
+- **`isPresent()` + `get()`** [▶ ~24:58](https://youtu.be/Q75kCaNa35Y?t=1498): `if (name.isPresent()) { String s = name.get(); }` is safe, but it's basically the old `if (name != null)` check again [▶ ~26:03](https://youtu.be/Q75kCaNa35Y?t=1563). The only gain is that you can't *forget* to unwrap [▶ ~27:08](https://youtu.be/Q75kCaNa35Y?t=1628).
+- **`ifPresent(consumer)`** [▶ ~27:08](https://youtu.be/Q75kCaNa35Y?t=1628): runs the lambda only when there's a value. Cleaner.
+- Newer, commonly used methods [▶ ~28:13](https://youtu.be/Q75kCaNa35Y?t=1693):
+  - **`orElse(default)`**: `String s = name.orElse("Unknown");` gives the value if present, otherwise the default [▶ ~29:18](https://youtu.be/Q75kCaNa35Y?t=1758).
+  - **`orElseGet(supplier)`**: the same idea, but the default comes from a `Supplier` [▶ ~29:18](https://youtu.be/Q75kCaNa35Y?t=1758).
+  - **`orElseThrow()`**: the value, or throw `NoSuchElementException` on purpose [▶ ~30:23](https://youtu.be/Q75kCaNa35Y?t=1823). *(The no-argument version is Java 10+. `orElseThrow(() -> new MyException(...))` lets you pick the exception.)*
+  - **`ifPresentOrElse(consumer, runnable)`** [▶ ~30:23](https://youtu.be/Q75kCaNa35Y?t=1823): do one thing if present, another if empty. *(Java 9+.)*
 
-### Methods in code [31:28]
+### Methods in code [▶ ~31:28](https://youtu.be/Q75kCaNa35Y?t=1888)
 - `public static Optional<String> getName() { return Optional.of("Aditya"); }`, then `Optional<String> name = getName();`
-- `name.get()` → `Aditya`. Return `Optional.empty()` instead and `name.get()` throws `NoSuchElementException` [32:33].
+- `name.get()` → `Aditya`. Return `Optional.empty()` instead and `name.get()` throws `NoSuchElementException` [▶ ~32:33](https://youtu.be/Q75kCaNa35Y?t=1953).
 - `if (name.isPresent()) System.out.println(name.get());` prints nothing when empty, without an exception.
-- `name.ifPresent(System.out::println)` [33:39]. Note that `ifPresent` takes a `Consumer`. With `Optional.ofNullable(null)` it prints nothing and doesn't throw.
-- `System.out.println(name.orElse("Unknown"))` → `Unknown` when empty, `Aditya` when present [34:44].
-- `name.orElseGet(() -> "Unknown")` takes a **`Supplier`** (no input, returns a value) [35:49].
-- **`orElse` vs `orElseGet`** [36:54]: `orElse` *always* evaluates its argument, even when a value is present. `orElseGet` doesn't call the supplier if a value is present, a kind of short-circuit. Use `orElseGet` for expensive defaults.
-- `name.orElseThrow()` → `NoSuchElementException` when empty [37:59].
-- `name.ifPresentOrElse(System.out::println, () -> System.out.println("Unknown"))` [37:59]. The second argument is a **`Runnable`** (no input, no output) [39:04].
+- `name.ifPresent(System.out::println)` [▶ ~33:39](https://youtu.be/Q75kCaNa35Y?t=2019). Note that `ifPresent` takes a `Consumer`. With `Optional.ofNullable(null)` it prints nothing and doesn't throw.
+- `System.out.println(name.orElse("Unknown"))` → `Unknown` when empty, `Aditya` when present [▶ ~34:44](https://youtu.be/Q75kCaNa35Y?t=2084).
+- `name.orElseGet(() -> "Unknown")` takes a **`Supplier`** (no input, returns a value) [▶ ~35:49](https://youtu.be/Q75kCaNa35Y?t=2149).
+- **`orElse` vs `orElseGet`** [▶ ~36:54](https://youtu.be/Q75kCaNa35Y?t=2214): `orElse` *always* evaluates its argument, even when a value is present. `orElseGet` doesn't call the supplier if a value is present, a kind of short-circuit. Use `orElseGet` for expensive defaults.
+- `name.orElseThrow()` → `NoSuchElementException` when empty [▶ ~37:59](https://youtu.be/Q75kCaNa35Y?t=2279).
+- `name.ifPresentOrElse(System.out::println, () -> System.out.println("Unknown"))` [▶ ~37:59](https://youtu.be/Q75kCaNa35Y?t=2279). The second argument is a **`Runnable`** (no input, no output) [▶ ~39:04](https://youtu.be/Q75kCaNa35Y?t=2344).
 
-### Transforming an Optional: `map`, `flatMap`, `filter` [39:04]
-- They work almost exactly like the stream methods and **return an `Optional`**, so you can chain them [40:09].
-- The `User → Address → city` lookup becomes [41:14]:
+### Transforming an Optional: `map`, `flatMap`, `filter` [▶ ~39:04](https://youtu.be/Q75kCaNa35Y?t=2344)
+- They work almost exactly like the stream methods and **return an `Optional`**, so you can chain them [▶ ~40:09](https://youtu.be/Q75kCaNa35Y?t=2409).
+- The `User → Address → city` lookup becomes [▶ ~41:14](https://youtu.be/Q75kCaNa35Y?t=2474):
   `Optional<User> user = getUser(); user.map(x -> x.getAddress()).map(y -> y.getCity()).ifPresent(System.out::println);`
-  or with method references: `user.map(User::getAddress).map(Address::getCity).ifPresent(System.out::println)` [43:25].
+  or with method references: `user.map(User::getAddress).map(Address::getCity).ifPresent(System.out::println)` [▶ ~43:25](https://youtu.be/Q75kCaNa35Y?t=2605).
 - If any step yields `null`, `map` produces an **empty** Optional and the rest is skipped. No NPE.
 
-### Code: from null-check hell to a chain [44:30]
+### Code: from null-check hell to a chain [▶ ~44:30](https://youtu.be/Q75kCaNa35Y?t=2670)
 - `class User { public Address address; }`, `class Address { public String city; }` (public fields for the demo). `getUser()` builds `Address a` with `city = "Delhi"` and `User u` with `u.address = a`.
-- Traditional: `if (user != null) { Address address = user.address; if (address != null) { String city = address.city; if (city != null) System.out.println(city); } }` → `Delhi`, but verbose [46:40].
-- Optional version [47:45]: make `getUser()` return `Optional<User>` (`return Optional.of(u);`), then `user.map(x -> x.address).map(y -> y.city).ifPresent(System.out::println)` → `Delhi` [48:50].
-- **`map` on an Optional** [48:50]: if a value is present, apply the function and wrap the result in an Optional. Otherwise stay empty [51:01]. A stream applies `map` to each of many elements, while an Optional applies it to its single element.
+- Traditional: `if (user != null) { Address address = user.address; if (address != null) { String city = address.city; if (city != null) System.out.println(city); } }` → `Delhi`, but verbose [▶ ~46:40](https://youtu.be/Q75kCaNa35Y?t=2800).
+- Optional version [▶ ~47:45](https://youtu.be/Q75kCaNa35Y?t=2865): make `getUser()` return `Optional<User>` (`return Optional.of(u);`), then `user.map(x -> x.address).map(y -> y.city).ifPresent(System.out::println)` → `Delhi` [▶ ~48:50](https://youtu.be/Q75kCaNa35Y?t=2930).
+- **`map` on an Optional** [▶ ~48:50](https://youtu.be/Q75kCaNa35Y?t=2930): if a value is present, apply the function and wrap the result in an Optional. Otherwise stay empty [▶ ~51:01](https://youtu.be/Q75kCaNa35Y?t=3061). A stream applies `map` to each of many elements, while an Optional applies it to its single element.
 
-### `flatMap`: when the getter itself returns an Optional [52:06]
-- Change `User` to hold `Optional<Address> address` [53:11].
-- Now `user.map(x -> x.address)` gives **`Optional<Optional<Address>>`**: `map` wraps whatever the function returns, and the function already returns an `Optional`. The next `.map(y -> y.city)` doesn't compile ("type mismatch") [54:16].
-- **`flatMap`** [56:26] removes the extra layer: `user.flatMap(x -> x.address)` gives `Optional<Address>`, and then `.map(y -> y.city)` works.
-- Rule: **if the mapping function returns an `Optional`, use `flatMap`**. This is the same idea as flattening a `List<List<…>>` with streams [57:31].
+### `flatMap`: when the getter itself returns an Optional [▶ ~52:06](https://youtu.be/Q75kCaNa35Y?t=3126)
+- Change `User` to hold `Optional<Address> address` [▶ ~53:11](https://youtu.be/Q75kCaNa35Y?t=3191).
+- Now `user.map(x -> x.address)` gives **`Optional<Optional<Address>>`**: `map` wraps whatever the function returns, and the function already returns an `Optional`. The next `.map(y -> y.city)` doesn't compile ("type mismatch") [▶ ~54:16](https://youtu.be/Q75kCaNa35Y?t=3256).
+- **`flatMap`** [▶ ~56:26](https://youtu.be/Q75kCaNa35Y?t=3386) removes the extra layer: `user.flatMap(x -> x.address)` gives `Optional<Address>`, and then `.map(y -> y.city)` works.
+- Rule: **if the mapping function returns an `Optional`, use `flatMap`**. This is the same idea as flattening a `List<List<…>>` with streams [▶ ~57:31](https://youtu.be/Q75kCaNa35Y?t=3451).
 
-### `filter` [57:31]
-- It takes a `Predicate`. If a value is present **and** passes the test, the Optional stays as it is. Otherwise it becomes **empty** [58:37].
+### `filter` [▶ ~57:31](https://youtu.be/Q75kCaNa35Y?t=3451)
+- It takes a `Predicate`. If a value is present **and** passes the test, the Optional stays as it is. Otherwise it becomes **empty** [▶ ~58:37](https://youtu.be/Q75kCaNa35Y?t=3517).
 - `Optional<String> name = Optional.of("Aditya");`
-  `name.filter(x -> x.length() > 10).orElse("Empty")` → `Empty`, but with `> 5` → `Aditya` [60:47].
-- Combining them [62:57]: `name.map(x -> x.length()).filter(len -> len > 10).ifPresent(System.out::println)` prints nothing (6 isn't > 10). With `> 4` it prints `6` [65:07].
+  `name.filter(x -> x.length() > 10).orElse("Empty")` → `Empty`, but with `> 5` → `Aditya` [▶ ~60:47](https://youtu.be/Q75kCaNa35Y?t=3647).
+- Combining them [▶ ~62:57](https://youtu.be/Q75kCaNa35Y?t=3777): `name.map(x -> x.length()).filter(len -> len > 10).ifPresent(System.out::println)` prints nothing (6 isn't > 10). With `> 4` it prints `6` [▶ ~65:07](https://youtu.be/Q75kCaNa35Y?t=3907).
 
-### The mental model: Optional = mini-stream [66:12]
-- A stream has 0..many values, an Optional has **zero or one**. An empty Optional wraps `null` internally, and a present one wraps a value [67:18].
+### The mental model: Optional = mini-stream [▶ ~66:12](https://youtu.be/Q75kCaNa35Y?t=3972)
+- A stream has 0..many values, an Optional has **zero or one**. An empty Optional wraps `null` internally, and a present one wraps a value [▶ ~67:18](https://youtu.be/Q75kCaNa35Y?t=4038).
 - `map`, `filter` and `flatMap` all act on that single value (if it exists).
 
-### Guidelines: don't overuse it [67:18]
-- `Optional` was designed as a **return type** for methods that might not have a result [68:23].
-- Using it as a **field type** (`class X { Optional<String> name; }`) is allowed but **not good practice**. Every field becomes a wrapper and every access needs `ifPresent`/`orElse` [69:28]. Use normal types for fields, and return `Optional` from methods where "no value" is a real possibility.
+### Guidelines: don't overuse it [▶ ~67:18](https://youtu.be/Q75kCaNa35Y?t=4038)
+- `Optional` was designed as a **return type** for methods that might not have a result [▶ ~68:23](https://youtu.be/Q75kCaNa35Y?t=4103).
+- Using it as a **field type** (`class X { Optional<String> name; }`) is allowed but **not good practice**. Every field becomes a wrapper and every access needs `ifPresent`/`orElse` [▶ ~69:28](https://youtu.be/Q75kCaNa35Y?t=4168). Use normal types for fields, and return `Optional` from methods where "no value" is a real possibility.
 
-### Streams + Optional together [69:28]
-- A stream handles **0..many** elements and an Optional handles **0..1**. Together they handle **"maybe a value" inside "many values"** [70:33].
+### Streams + Optional together [▶ ~69:28](https://youtu.be/Q75kCaNa35Y?t=4168)
+- A stream handles **0..many** elements and an Optional handles **0..1**. Together they handle **"maybe a value" inside "many values"** [▶ ~70:33](https://youtu.be/Q75kCaNa35Y?t=4233).
 - Example: users who may or may not have an email, and you want a list of the emails that exist.
-  - Traditional [70:33]: `for (User u : users) if (u.getEmail() != null) result.add(u.getEmail());`, which is verbose.
-  - With `Optional<String> getEmail()` [71:38]:
-    `users.stream().map(u -> u.getEmail())` gives `Stream<Optional<String>>` [72:43],
-    then `.filter(x -> x.isPresent())` keeps the present ones [73:48],
-    then `.map(x -> x.get())` unwraps to `Stream<String>` [74:54],
+  - Traditional [▶ ~70:33](https://youtu.be/Q75kCaNa35Y?t=4233): `for (User u : users) if (u.getEmail() != null) result.add(u.getEmail());`, which is verbose.
+  - With `Optional<String> getEmail()` [▶ ~71:38](https://youtu.be/Q75kCaNa35Y?t=4298):
+    `users.stream().map(u -> u.getEmail())` gives `Stream<Optional<String>>` [▶ ~72:43](https://youtu.be/Q75kCaNa35Y?t=4363),
+    then `.filter(x -> x.isPresent())` keeps the present ones [▶ ~73:48](https://youtu.be/Q75kCaNa35Y?t=4428),
+    then `.map(x -> x.get())` unwraps to `Stream<String>` [▶ ~74:54](https://youtu.be/Q75kCaNa35Y?t=4494),
     then `.toList()`.
   - *(Java 9+ shortcut: `users.stream().map(User::getEmail).flatMap(Optional::stream).toList()`. `Optional.stream()` turns an Optional into a stream of 0 or 1 elements.)*
 

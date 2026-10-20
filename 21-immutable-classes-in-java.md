@@ -30,58 +30,58 @@
 
 ## Detailed Notes
 
-### What makes an object immutable [00:40]
+### What makes an object immutable [▶ ~00:40](https://youtu.be/vgQVz5OdFws?t=40)
 - An object has instance variables, such as `int i = 4, j = 5`, and methods, such as `fun()`. It's immutable if **neither** can ever change after it's created.
 - This matters a lot in Java, especially once you get to threads.
 
-### A typical mutable class [02:10]
+### A typical mutable class [▶ ~02:10](https://youtu.be/vgQVz5OdFws?t=130)
 - `Student` has `age` and `name`, a parameterized constructor, and getters and setters.
 - With `Student s1 = new Student(28, "Aditya")`, a call like `s1.setName("Rohit")` changes the **state**.
 - A `class ComputerScienceStudent extends Student` can override `markAttendance()`, which changes the **behavior**.
 
-### Rules for an immutable class [05:15]
+### Rules for an immutable class [▶ ~05:15](https://youtu.be/vgQVz5OdFws?t=315)
 Thinking it through from first principles:
 1. **Mark the class `final`**, so no one can inherit it and override its behavior. *(The video says `final` stops a class from being "overridden". The precise meaning is that it can't be **subclassed**.)*
 2. **Mark the instance variables `private` and `final`**: no direct access, and assigned only once.
 3. **No setters.** Initialize everything through the **constructor**. A `final` field can be assigned only once, and the constructor is where that happens.
 4. **Getters are fine.** They only read.
 
-### Demo: a simple immutable `Student` [07:40]
+### Demo: a simple immutable `Student` [▶ ~07:40](https://youtu.be/vgQVz5OdFws?t=460)
 - `final class Student` with `private final int age`, `private final String name`, a constructor, `getAge()` and `getName()`.
 - `new Student(28, "Aditya")`, and then printing `getName()` and `getAge()` shows "Aditya 28".
 - There is no way to change anything: no setter, no direct field access. `class CSStudent extends Student` fails with "cannot subclass the final class Student".
-- Adding `private final String college` with a getter keeps the class immutable [11:15], because **`String` is itself immutable** (why that is comes in the Strings video).
+- Adding `private final String college` with a getter keeps the class immutable [▶ ~11:15](https://youtu.be/vgQVz5OdFws?t=675), because **`String` is itself immutable** (why that is comes in the Strings video).
 
-### Where the rules break: a mutable field [12:15]
+### Where the rules break: a mutable field [▶ ~12:15](https://youtu.be/vgQVz5OdFws?t=735)
 - A college has more than a name (an address, grades, …), so it becomes its own class: `class College { String name; String address; }`. Its fields are package-private, so it's **mutable**.
 - `Student` now has `private final College college` and a `getCollege()` that returns `this.college`.
 - `College c = new College("IITG", "Assam"); Student s1 = new Student(28, "Aditya", c);`. Printing `s1.getCollege().name` gives "IITG".
 - Then `s1.getCollege().name = "IITB";` and printing again gives **"IITB"**. The student's internal state changed even though there's no setter. The class is **not purely immutable**.
 
-### Why it happened: references in memory [17:30]
+### Why it happened: references in memory [▶ ~17:30](https://youtu.be/vgQVz5OdFws?t=1050)
 - `c` (on the stack) points to a `College` object on the heap. `s1` points to a `Student` object, and its `college` field holds **the same address** as `c`.
 - `s1.getCollege()` returns that address, held in a temporary reference. `.name = "IITB"` follows the address and changes the one shared `College` object.
 - The video calls this a **shallow copy**: you "copied" the college, but only the reference, not the object.
 - *Note:* there's actually a second leak. The **caller still has `c`**, so `c.name = "IITB"` would also change the student's college.
 
-### Two ways to fix it [22:00]
+### Two ways to fix it [▶ ~22:00](https://youtu.be/vgQVz5OdFws?t=1320)
 1. **Make `College` immutable too**: a `final` class, `private final` fields, no setters. A class whose fields are all primitives or immutable types (like `String`) is then immutable as a whole.
    - *(The video says primitives are safe "because they live on the stack". Primitive fields actually live inside the object on the heap. They're safe because they're **copied by value**: there's no reference to leak.)*
 2. **If you can't change `College`** (it comes from a library, say), make **defensive copies** in two places:
    - **Constructor**: `this.college = new College(college.name, college.address);`. Don't keep the caller's object.
    - **Getter**: `return new College(college.name, college.address);`. Never hand out your own object.
 
-### Demo: defensive copy [23:50]
+### Demo: defensive copy [▶ ~23:50](https://youtu.be/vgQVz5OdFws?t=1430)
 - With both copies in place, `s1.getCollege().name = "IITB"` changes only a throwaway copy. Printing the student's college **still shows "IITG"** both times. The class is now properly immutable.
 
-### What happens in memory with defensive copies [27:20]
+### What happens in memory with defensive copies [▶ ~27:20](https://youtu.be/vgQVz5OdFws?t=1640)
 - `new College("IITG", "Assam")` creates object #1, referenced by `c`.
 - `new Student(..., c)` runs the constructor, which builds **object #2**, a new `College` with the same values. The student's `college` field points to #2, not #1.
 - Each `getCollege()` call creates **another** object (#3, #4, …) and returns it. Whatever the caller changes, #2 is never touched.
 - Rule of thumb: **never share the reference to an internal mutable object**, either on the way in or on the way out. Giving out a reference gives out access to the real thing.
 - Creating fresh objects instead of sharing references is the idea behind a **deep copy**. *(Strictly, a full deep copy also copies any mutable objects nested inside `College`. Here `College` holds only `String`s, so one level of copying is enough.)*
 
-### Why immutable objects matter [33:20]
+### Why immutable objects matter [▶ ~33:20](https://youtu.be/vgQVz5OdFws?t=2000)
 - With **threads**, several threads may run the same code at once, which can cause **race conditions** on shared state.
 - Immutable objects promise that their state can never change, so there's nothing to race on. (More on this in the threads videos.)
 

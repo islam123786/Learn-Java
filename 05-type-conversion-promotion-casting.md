@@ -26,71 +26,71 @@
 
 ## Detailed Notes
 
-### Intro [00:00]
+### Intro [▶ ~00:00](https://youtu.be/QpWha2cLS1c?t=0)
 - The instructor asks viewers to like, comment, and share their progress on LinkedIn/Twitter. Sharing gives you a learning record and builds a community around it.
 
-### Recap of primitive types [03:18]
+### Recap of primitive types [▶ ~03:18](https://youtu.be/QpWha2cLS1c?t=198)
 - Integers (`byte`, `short`, `int`, `long`), real numbers (`float`, `double`), `char` and `boolean`. The question for this video is how to convert between them, e.g. `byte → short` or `short → long`.
 
-### Two kinds of conversion [04:24]
+### Two kinds of conversion [▶ ~04:24](https://youtu.be/QpWha2cLS1c?t=264)
 - **Implicit**: Java does it automatically.
 - **Explicit**: you have to tell Java to do it.
 - Example: `byte b = 24; int i; i = b;` compiles, and `System.out.println(i)` prints `24`.
 
-### Rule for implicit conversion: the destination must be wider [05:30]
+### Rule for implicit conversion: the destination must be wider [▶ ~05:30](https://youtu.be/QpWha2cLS1c?t=330)
 - A `byte` is 8 bits (−128 to 127) and an `int` is 32 bits with a much larger range. Anything a `byte` can hold, an `int` can hold.
 - This is called **widening conversion**. The same applies to `short → int`, `int → long`, and so on.
 
-### Explicit / narrowing conversion [09:11]
+### Explicit / narrowing conversion [▶ ~09:11](https://youtu.be/QpWha2cLS1c?t=551)
 - `int i = 300; byte b; b = i;` gives the compile error *"Type mismatch: cannot convert from int to byte"*. 32 bits might not fit in 8, and Java won't silently **truncate** data.
 - The fix is a cast: `b = (byte) i;`
 - **What gets printed?** 300 in binary is `1 0010 1100` (9 significant bits inside a 32-bit `int`). A `byte` keeps only the **lowest 8 bits**, `0010 1100` = 32 + 8 + 4 = **44**.
-- **Shortcut** [12:51]: the byte range has 2⁸ = 256 values, and 300 % 256 = 44. (`%` is the modulo/remainder operator.)
+- **Shortcut** [▶ ~12:51](https://youtu.be/QpWha2cLS1c?t=771): the byte range has 2⁸ = 256 values, and 300 % 256 = 44. (`%` is the modulo/remainder operator.)
 - Other narrowing examples: `long → int`, `double → float`.
 
-### `char → int` is widening too [14:19]
+### `char → int` is widening too [▶ ~14:19](https://youtu.be/QpWha2cLS1c?t=859)
 - `char c = 'a';` is stored as its Unicode value, **97**. The `char` type tells Java to display it as a character.
 - `char` is 16 bits and `int` is 32 bits, so `int i = c;` is implicit and prints `97`.
 
-### Truncating conversion: floating point → integer [15:47]
+### Truncating conversion: floating point → integer [▶ ~15:47](https://youtu.be/QpWha2cLS1c?t=947)
 - `float f = 16.25f; int i = f;` doesn't compile. The two types have the same width (32 bits), but an `int` can't hold the decimal part.
 - With a cast, `i = (int) f;` stores `16`. The fraction is dropped.
 
-### Code demo: implicit conversions [17:15]
+### Code demo: implicit conversions [▶ ~17:15](https://youtu.be/QpWha2cLS1c?t=1035)
 - `byte b = 24; int i = b;` prints `24`.
 - `char c = 'a'; int i = c;` prints `97`.
 - Earlier blocks get commented out because the same variable name can't be declared twice in one scope.
 
-### Code demo: explicit conversions [19:28]
+### Code demo: explicit conversions [▶ ~19:28](https://youtu.be/QpWha2cLS1c?t=1168)
 - `int i = 24; byte b = i;` gives *"Type mismatch: cannot convert from int to byte"*. `byte b = (byte) i;` prints `24`, since it fits.
 - Change it to `int i = 300;` and it prints `44`. Printing `300 % 256` also shows `44`.
 
-### Code demo: truncation [21:40]
+### Code demo: truncation [▶ ~21:40](https://youtu.be/QpWha2cLS1c?t=1300)
 - `float f = 15.678f; int i = (int) f;` prints `15`. Without the cast the error is *"cannot convert from float to int"*.
 
-### `boolean` can't be converted [22:46]
+### `boolean` can't be converted [▶ ~22:46](https://youtu.be/QpWha2cLS1c?t=1366)
 - `boolean bool = false; int i = bool;` is a type mismatch, and `int i = (int) bool;` gives *"Cannot cast from boolean to int"*. `false` isn't a number in Java, so there's no conversion at all.
 
-### A surprising error: `b = b * 2` [24:14]
+### A surprising error: `b = b * 2` [▶ ~24:14](https://youtu.be/QpWha2cLS1c?t=1454)
 - `byte b = 50; b = b * 2;` gives *"cannot convert from int to byte"*, even though no `int` appears anywhere. The cause is **type promotion**.
 
-### Automatic type promotion [24:58]
+### Automatic type promotion [▶ ~24:58](https://youtu.be/QpWha2cLS1c?t=1498)
 - Example: `byte a = 40, b = 50, c = 100; int i = a * b / c;`
 - `a * b` = 2000, which is already outside the byte range. So Java **promotes the bytes to `int` before computing**: `2000 / 100 = 200` is an `int`, and it fits in `i`.
 - The same rule explains `b * 2`. `b` is promoted to `int`, so the product `100` is an `int`, and assigning an `int` to a `byte` is narrowing. It needs a cast.
 
-### Promotion rules [29:22]
+### Promotion rules [▶ ~29:22](https://youtu.be/QpWha2cLS1c?t=1762)
 1. `byte`, `short` and `char` are promoted to **`int`** in any expression.
 2. If one operand is **`long`**, the whole expression becomes `long`.
 3. If one operand is **`float`**, the whole expression becomes `float`.
 4. If one operand is **`double`**, the whole expression becomes `double`.
 - In short, the expression takes the type of its "largest" operand, and never anything smaller than `int`.
 
-### Fixing `b * 2` [31:13]
+### Fixing `b * 2` [▶ ~31:13](https://youtu.be/QpWha2cLS1c?t=1873)
 - `b = (byte) b * 2;` *still* fails. The cast applies only to `b`, which is then promoted to `int` again for the multiplication.
 - Wrap the whole expression in parentheses: `b = (byte) (b * 2);`. That prints `100`.
 
-### Mixed-type expression demo [32:40]
+### Mixed-type expression demo [▶ ~32:40](https://youtu.be/QpWha2cLS1c?t=1960)
 - Variables of every type: `byte`, `char`, `short`, `int`, `float`, `double`.
 - `f * b` is a `float`. `i / c` is an `int` (the `char` is promoted). `d * s` is a `double`.
 - `float + int` gives a `float`, and `float − double` gives a `double`, so the final `result` is a `double`. (The instructor notes his code accidentally used `+` instead of `−` for the last operation.)

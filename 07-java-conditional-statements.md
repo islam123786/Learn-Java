@@ -30,39 +30,39 @@
 
 ## Detailed Notes
 
-### Flow of control [00:00]
+### Flow of control [▶ ~00:00](https://youtu.be/cdNhXVb5j7o?t=0)
 - After `javac` compiles to bytecode and the JVM interprets/JIT-compiles it, statements run one after another: statement 1, 2, 3, …
-- Some keywords create an *alternate* flow. Java's three categories are **selection** (`if`, `switch`), **iteration** (loops, next video) and **jumps** [02:14].
+- Some keywords create an *alternate* flow. Java's three categories are **selection** (`if`, `switch`), **iteration** (loops, next video) and **jumps** [▶ ~02:14](https://youtu.be/cdNhXVb5j7o?t=134).
 
-### The `if` statement [03:21]
+### The `if` statement [▶ ~03:21](https://youtu.be/cdNhXVb5j7o?t=201)
 - Analogy: on the way home the road splits. The long road is pleasant, the short one has traffic and potholes. Which one you take depends on a parameter (how much time you have). Selection statements represent that choice in code.
-- Syntax [06:42]: `if (expression) { … }`. The block runs only if the expression is `true`; otherwise it is skipped and execution continues after it.
+- Syntax [▶ ~06:42](https://youtu.be/cdNhXVb5j7o?t=402): `if (expression) { … }`. The block runs only if the expression is `true`; otherwise it is skipped and execution continues after it.
 - The expression must evaluate to a `boolean`, e.g. `b == true` for a `boolean b`, or `i == 5`.
 
-### `if-else` [09:00]
+### `if-else` [▶ ~09:00](https://youtu.be/cdNhXVb5j7o?t=540)
 - `if (cond) { A } else { B }`: exactly one of A or B runs.
-- Demo [11:11]: with only an `if` followed by an unconditional print, `i = 5` printed both "i is 5" and "i is not 5". Moving the second print into an `else` fixes it.
-- Any comparison works, e.g. `i > 5` / else `i <= 5`, and compound conditions such as `i > 5 && i < 10` [15:39]. The whole expression just has to end up as a `boolean`.
-- Exercise [15:39]: odd or even with `i % 2 == 0`. Even numbers leave remainder 0, odd numbers remainder 1.
+- Demo [▶ ~11:11](https://youtu.be/cdNhXVb5j7o?t=671): with only an `if` followed by an unconditional print, `i = 5` printed both "i is 5" and "i is not 5". Moving the second print into an `else` fixes it.
+- Any comparison works, e.g. `i > 5` / else `i <= 5`, and compound conditions such as `i > 5 && i < 10` [▶ ~15:39](https://youtu.be/cdNhXVb5j7o?t=939). The whole expression just has to end up as a `boolean`.
+- Exercise [▶ ~15:39](https://youtu.be/cdNhXVb5j7o?t=939): odd or even with `i % 2 == 0`. Even numbers leave remainder 0, odd numbers remainder 1.
 
-### Optional braces [17:53]
+### Optional braces [▶ ~17:53](https://youtu.be/cdNhXVb5j7o?t=1073)
 - If a branch has **one** statement, the `{ }` can be omitted.
 - Good practice: always use braces. Statements tend to get added later, and leaving them out invites bugs.
 
-### Nested `if` [19:00]
+### Nested `if` [▶ ~19:00](https://youtu.be/cdNhXVb5j7o?t=1140)
 - An `if` inside another `if`'s block, e.g. `if (i > 5) { if (i < 10) { … } else { … } } else { … }`.
 - Each `else` belongs to the nearest preceding `if`. Every `if` may or may not have its own `else`.
-- Trace with `i = 8` [22:22]: `i > 5` is true, so go in. `i < 10` is true, so go in. `i == 7` is false and that inner `if` has no else, so nothing happens. Leaving, the outer `else` blocks are skipped because their `if`s were true.
+- Trace with `i = 8` [▶ ~22:22](https://youtu.be/cdNhXVb5j7o?t=1342): `i > 5` is true, so go in. `i < 10` is true, so go in. `i == 7` is false and that inner `if` has no else, so nothing happens. Leaving, the outer `else` blocks are skipped because their `if`s were true.
 - Java has no limit on nesting depth, but keep it to about two levels for readability.
-- Better [24:36]: `if (i > 5 && i < 10)` replaces two nested levels.
+- Better [▶ ~24:36](https://youtu.be/cdNhXVb5j7o?t=1476): `if (i > 5 && i < 10)` replaces two nested levels.
 
-### If-else-if ladder [25:43]
+### If-else-if ladder [▶ ~25:43](https://youtu.be/cdNhXVb5j7o?t=1543)
 - For more than two choices: `if (i == 5) … else if (i == 6) … else if (i == 7) … else …`.
 - Conditions are tested top to bottom. As soon as one is true, its block runs and the **rest of the ladder is skipped**, even if later conditions would also be true.
-- Example [31:18], age 50: `> 80` "very old", `> 60` "old", `> 40` "becoming old", `> 20` "young", `else` "child". It prints only "You are becoming old".
-- With **independent `if`s** instead of `else if` [35:47], age 50 matches both `> 40` and `> 20`, so two lines print. That's why the ladder (and the order of its conditions) matters.
+- Example [▶ ~31:18](https://youtu.be/cdNhXVb5j7o?t=1878), age 50: `> 80` "very old", `> 60` "old", `> 40` "becoming old", `> 20` "young", `else` "child". It prints only "You are becoming old".
+- With **independent `if`s** instead of `else if` [▶ ~35:47](https://youtu.be/cdNhXVb5j7o?t=2147), age 50 matches both `> 40` and `> 20`, so two lines print. That's why the ladder (and the order of its conditions) matters.
 
-### `switch`: syntax [36:54]
+### `switch`: syntax [▶ ~36:54](https://youtu.be/cdNhXVb5j7o?t=2214)
 ```
 switch (expression) {
     case 1:  statements; break;
@@ -72,34 +72,34 @@ switch (expression) {
 }
 ```
 - `case 1:` means roughly "if expression == 1". `default` plays the role of the final `else`.
-- Demo [44:44]: `i = 3` prints "i is 3"; `i = 5` falls to `default`, "i is greater than 3".
+- Demo [▶ ~44:44](https://youtu.be/cdNhXVb5j7o?t=2684): `i = 3` prints "i is 3"; `i = 5` falls to `default`, "i is greater than 3".
 
-### `break` and fall-through [48:05]
+### `break` and fall-through [▶ ~48:05](https://youtu.be/cdNhXVb5j7o?t=2885)
 - With every `break` removed and `i = 1`, the output is all four lines: "i is 1", "i is 2", "i is 3", "i is greater than 3".
 - After a matching case, execution simply runs on into the next case bodies **without comparing their labels**, until a `break` or the end of the switch.
-- Why Java allows it [50:19]: sometimes you deliberately want one case to run its own code plus the code of the cases below it. `break` gives you that control.
+- Why Java allows it [▶ ~50:19](https://youtu.be/cdNhXVb5j7o?t=3019): sometimes you deliberately want one case to run its own code plus the code of the cases below it. `break` gives you that control.
 
-### Why have both `switch` and if-else-if? [51:26]
+### Why have both `switch` and if-else-if? [▶ ~51:26](https://youtu.be/cdNhXVb5j7o?t=3086)
 - Any classic switch can be rewritten as an if-else-if ladder. So why does switch exist? Because in some cases it is **more efficient**.
-- Then why not always use switch? Because its use cases are **limited** [52:33]:
-  - The switch expression must be `byte`, `short`, `char` or `int` (or their wrapper classes), an **enum**, or (since Java 7) a **`String`** [55:55]. `long`, `float`, `double` and `boolean` are not allowed: `switch (i > 4)` fails with "Cannot switch on a value of type boolean".
-  - **No duplicate case labels** [54:48]: a second `case 1:` is a compile error ("Duplicate case label"). An if-else ladder can repeat a condition; the second one just never runs.
+- Then why not always use switch? Because its use cases are **limited** [▶ ~52:33](https://youtu.be/cdNhXVb5j7o?t=3153):
+  - The switch expression must be `byte`, `short`, `char` or `int` (or their wrapper classes), an **enum**, or (since Java 7) a **`String`** [▶ ~55:55](https://youtu.be/cdNhXVb5j7o?t=3355). `long`, `float`, `double` and `boolean` are not allowed: `switch (i > 4)` fails with "Cannot switch on a value of type boolean".
+  - **No duplicate case labels** [▶ ~54:48](https://youtu.be/cdNhXVb5j7o?t=3288): a second `case 1:` is a compile error ("Duplicate case label"). An if-else ladder can repeat a condition; the second one just never runs.
   - Case labels must be **compile-time constants** (literals or `final` constants), not variables or ranges.
 - Since **Java 14**, switch has been greatly enhanced (arrow `case ->` labels, switch *expressions*, `yield`). The series will cover it after core Java. The classic syntax is still fully valid.
 
-### Switch vs if-else-if: equality only [58:09]
+### Switch vs if-else-if: equality only [▶ ~58:09](https://youtu.be/cdNhXVb5j7o?t=3489)
 - `switch` only tests **equality** against constants. `if` can test anything: `<`, `>`, ranges, method calls, combinations.
 
-### Why switch can be faster: jump tables [61:30]
+### Why switch can be faster: jump tables [▶ ~61:30](https://youtu.be/cdNhXVb5j7o?t=3690)
 - If-else ladder with `i = 2`: test `i == 1` (false), then `i == 2` (true), so two evaluations. For `i = 3` it's three. In the worst case that's **O(n)** comparisons.
-- Switch [63:45]: the compiler builds a **jump table**, which works like an array indexed by the case value. Case 1's code is at index 0, case 2's at index 1, and so on, with anything out of range going to `default`. The value is used to jump straight to the right code: **O(1)**.
-- **Not always a table** [68:13]: if the case values are **sparse** (e.g. 1, 1000, 100000), an indexed table would need about 100,000 mostly empty slots. So there are two forms [71:34]:
+- Switch [▶ ~63:45](https://youtu.be/cdNhXVb5j7o?t=3825): the compiler builds a **jump table**, which works like an array indexed by the case value. Case 1's code is at index 0, case 2's at index 1, and so on, with anything out of range going to `default`. The value is used to jump straight to the right code: **O(1)**.
+- **Not always a table** [▶ ~68:13](https://youtu.be/cdNhXVb5j7o?t=4093): if the case values are **sparse** (e.g. 1, 1000, 100000), an indexed table would need about 100,000 mostly empty slots. So there are two forms [▶ ~71:34](https://youtu.be/cdNhXVb5j7o?t=4294):
   - **`tableswitch`** for **dense** values: direct index, O(1).
   - **`lookupswitch`** for **sparse** values: only the existing keys, stored **sorted**, and the matching key is found by binary search, about **O(log n)**.
 - Both beat a linear ladder.
 - *Correction/nuance:* `javac` chooses between the two bytecode instructions; the JVM specification only requires `lookupswitch` keys to be sorted (binary search is the typical implementation). In practice the JIT compiler also optimizes if-else chains, so for a handful of cases the speed difference is negligible. Choose `switch` mainly because it is clearer for "one value, many constant cases".
 
-### Nested switch [76:03]
+### Nested switch [▶ ~76:03](https://youtu.be/cdNhXVb5j7o?t=4563)
 - A `switch` can sit inside a `case` of another switch (e.g. switch on `j`, and inside `case 5:` switch on `k`), to any depth.
 - As with `if`, avoid deep nesting.
 

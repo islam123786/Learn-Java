@@ -31,11 +31,11 @@
 
 ## Detailed Notes
 
-### Recap: source → bytecode → machine code [00:00]
+### Recap: source → bytecode → machine code [▶ ~00:00](https://youtu.be/pdS8_smlsXA?t=0)
 - You write `Hello.java`. A **compiler** turns it into **bytecode**. The bytecode is platform independent, and every platform runs it through its own **JVM**, which produces that platform's machine code.
 - The rest of the video answers three questions: how does the JVM run bytecode, where does the compiler live, and what are the JRE and JDK?
 
-### The hierarchy: JVM ⊂ JRE ⊂ JDK [05:00]
+### The hierarchy: JVM ⊂ JRE ⊂ JDK [▶ ~05:00](https://youtu.be/pdS8_smlsXA?t=300)
 Draw them as concentric circles, with the JVM innermost, the JRE around it, and the JDK outermost.
 ```
 ┌──────────────── JDK (Java Development Kit) ────────────────┐
@@ -49,55 +49,55 @@ Draw them as concentric circles, with the JVM innermost, the JRE around it, and 
 └────────────────────────────────────────────────────────────┘
 ```
 
-### Compiler vs interpreter [08:19]
+### Compiler vs interpreter [▶ ~08:19](https://youtu.be/pdS8_smlsXA?t=499)
 - Both take code and translate it into another form. A compiler isn't required to output machine code. `javac` outputs bytecode, for example.
 - **Compiler**: reads the whole source, generates all the machine code, and only then does the CPU run it and produce output.
 - **Interpreter**: converts one line, hands it to the CPU, gets the output, then converts the next line, and so on.
 - Neither is strictly better. Each has trade-offs.
 
-### Is Java compiled or interpreted? Both. [13:43]
+### Is Java compiled or interpreted? Both. [▶ ~13:43](https://youtu.be/pdS8_smlsXA?t=823)
 - Step 1 is **compiled**: `javac` turns source into bytecode.
 - Step 2 is **interpreted**: originally the JVM used an interpreter to convert bytecode to machine code line by line, running each line as it went.
 
-### Why the early JVM used an interpreter [15:47]
+### Why the early JVM used an interpreter [▶ ~15:47](https://youtu.be/pdS8_smlsXA?t=947)
 - Java already does two conversion steps (source → bytecode → machine code). That's the price of portability.
 - In the 1990s hardware was slow, RAM was limited and disks were slow. Compiling twice would have made programs slow to *start*. An interpreter starts executing immediately.
 
-### The modern JVM: interpreter + JIT [17:52]
+### The modern JVM: interpreter + JIT [▶ ~17:52](https://youtu.be/pdS8_smlsXA?t=1072)
 - As hardware improved, a **JIT compiler** was added to the JVM. It works alongside the interpreter rather than replacing it.
 - The hybrid model works like this: the JVM spots code that is used **frequently** and JIT-compiles it straight to native code. Less frequent code keeps running through the interpreter.
 - C++ may still win some speed benchmarks because it skips the bytecode step. With modern hardware the gap is negligible for most applications, and Java buys portability, simplicity and security in exchange.
 
-### JVM responsibilities [21:36]
+### JVM responsibilities [▶ ~21:36](https://youtu.be/pdS8_smlsXA?t=1296)
 1. **Convert bytecode to machine code**, using the interpreter plus the JIT compiler.
 2. **Security through the sandbox model.** Bytecode downloaded from anywhere doesn't run directly on your OS. It runs inside the JVM, which watches for requests for access the code shouldn't have (deleting files, planting a virus or a trojan) and restricts them.
 3. **Garbage collection**, explained in a later lecture.
 
-### JRE = JVM + class libraries [24:06]
+### JRE = JVM + class libraries [▶ ~24:06](https://youtu.be/pdS8_smlsXA?t=1446)
 - With only a JVM you could run bytecode, but you couldn't produce any, and most programs still wouldn't work.
 - Your code calls built-in functionality all the time: printing to the console, reading files, and so on. In C++ that comes from `#include <iostream>` (`cout`), in C from `printf`, and in Java from **class libraries** brought in with `import` statements.
 - You write the business logic, and the language's libraries handle the internals.
 - So you need **at least a JRE** to run a Java program. Standalone JREs used to be downloadable, and the video says that today you just install the JDK.
 
-### JDK = JRE + development tools [27:25]
+### JDK = JRE + development tools [▶ ~27:25](https://youtu.be/pdS8_smlsXA?t=1645)
 - The JDK contains everything needed to **write and run** Java: the JRE, the **compiler** (`javac`), a **debugger** (which pauses a program at chosen lines so you can inspect values step by step), **javadoc** (for generating documentation), and more.
 - Any editor works: VS Code, IntelliJ, even Notepad for tiny programs. A real IDE is better for large projects.
-- **Homework** [29:55]: install the latest stable JDK yourself, from Oracle's site, Homebrew or another vendor. You may need to set `PATH`/`JAVA_HOME`. Work out the steps yourself before asking ChatGPT, Claude or Google.
+- **Homework** [▶ ~29:55](https://youtu.be/pdS8_smlsXA?t=1795): install the latest stable JDK yourself, from Oracle's site, Homebrew or another vendor. You may need to set `PATH`/`JAVA_HOME`. Work out the steps yourself before asking ChatGPT, Claude or Google.
 
-### JSE vs JEE vs JME [31:10]
+### JSE vs JEE vs JME [▶ ~31:10](https://youtu.be/pdS8_smlsXA?t=1870)
 - **JSE (Java Standard Edition)** is **core Java**: classes, methods, OOP, the whole language. The series covers this first.
 - **JEE (Java Enterprise Edition)**: once Java got popular for building websites and web apps, extra libraries and APIs were added (transactions and others). It's now called **Jakarta EE**. It comes up again when the series reaches Spring Boot.
 - **JME (Java Micro Edition)**: a lightweight edition used for apps on early mobile phones. It's obsolete because **Android** replaced it, and Android apps are written in Java or Kotlin (a JVM language). You don't need to study it.
 
-### Plan for the first program [34:54]
+### Plan for the first program [▶ ~34:54](https://youtu.be/pdS8_smlsXA?t=2094)
 1. Create `Demo.java` in an editor or IDE (VS Code in the video).
 2. Compile it: `javac Demo.java` produces `Demo.class` (bytecode).
 3. Run it: `java Demo`. The JRE's JVM loads the class, the interpreter and JIT turn it into machine code, the CPU executes it, and the output appears.
 
-### Live demo in VS Code [36:59]
+### Live demo in VS Code [▶ ~36:59](https://youtu.be/pdS8_smlsXA?t=2219)
 - In an empty folder called `java-first-program`, create `Demo.java`. VS Code generates some **boilerplate** (template code). Ignore `class`, `public static void main(String[] args)` and so on for now, since they're explained later.
 - Add `System.out.println("Hello World");` and save.
-- Open the integrated terminal and run `javac Demo.java` [38:38]. `Demo.class` appears in the folder.
+- Open the integrated terminal and run `javac Demo.java` [▶ ~38:38](https://youtu.be/pdS8_smlsXA?t=2318). `Demo.class` appears in the folder.
 - Opening `Demo.class` in VS Code shows source code again. That's because VS Code **decompiles** `.class` files (the banner mentions the *FernFlower* decompiler). A real `.class` file is unreadable binary bytecode, neither English nor machine code.
 - Run `java Demo` and "Hello World" prints.
 - The instructor has created a GitHub repository for the playlist with practice questions and asks you to solve them without immediately reaching for ChatGPT or Google.

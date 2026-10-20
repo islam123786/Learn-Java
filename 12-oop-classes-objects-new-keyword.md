@@ -32,32 +32,32 @@
 
 ## Detailed Notes
 
-### Life before OOP [00:00]
+### Life before OOP [▶ ~00:00](https://youtu.be/tmXD7Kzun54?t=0)
 - To describe Aditya you write `String name = "Aditya"; int age = 28; int rollNumber = 1001; String college = "IIT Guwahati";`.
 - For Rohit you copy all four and rename them `name2`, `age2`, `rollNumber2`, `college2`. Reading the code, you can't tell which variable belongs to whom.
 - A `print(String name, int age, int rollNumber, String college)` function needs all four arguments, and if you forget one the student isn't printed properly.
 
-### The four problems [06:28]
+### The four problems [▶ ~06:28](https://youtu.be/tmXD7Kzun54?t=388)
 1. Many independent variables are needed to represent **one** student.
 2. Passing a student to a function means passing every variable separately.
 3. Every new student needs a whole new set of variables.
 4. **No authority over the data.** No single entity owns the four values, so anyone can change any of them independently.
 
-### What OOP says [09:11]
+### What OOP says [▶ ~09:11](https://youtu.be/tmXD7Kzun54?t=551)
 - OOP is a separate **paradigm**, a way of writing and thinking about code. Java is an OOP language. Functional languages are a different style.
 - Why do we write code? To solve **real-world problems** (even a calculator solves one). OOP's idea: to solve real-world problems well, **mimic the real world** in your program.
 
-### Real-world objects become programming objects [12:01]
+### Real-world objects become programming objects [▶ ~12:01](https://youtu.be/tmXD7Kzun54?t=721)
 - In the real world a student is an **object**, a complete entity with characteristics: name, age, roll number, college.
 - So in code, the student should be **one block** that holds all four values as its intrinsic properties, instead of four scattered variables.
 - In short: start thinking in terms of **objects**, not loose variables and functions.
 
-### A human plays many roles: model only what you need [16:15]
+### A human plays many roles: model only what you need [▶ ~16:15](https://youtu.be/tmXD7Kzun54?t=975)
 - A student is a human, and the same human is a son/daughter at home and an employee at the office, with different characteristics in each role (house name; employee ID, salary, …).
 - Even as a student they have far more attributes (grades, subjects, marks per semester).
 - You **don't** model the whole hierarchy. You model the part relevant to your problem. For a college portal (attendance, subjects) that's the student role, and only the fields you'll actually use.
 
-### Class = blueprint [23:35]
+### Class = blueprint [▶ ~23:35](https://youtu.be/tmXD7Kzun54?t=1415)
 - "Student" on its own is an **abstract idea**. Arun and Varun are concrete (absolute) students.
 - In code the abstract idea is a **class**:
   ```text
@@ -68,58 +68,58 @@
       String college;
   }
   ```
-- Writing the class creates **no** object and allocates no memory for data. It only describes what a student looks like, which is why a class is called the **blueprint of an object** [24:49].
+- Writing the class creates **no** object and allocates no memory for data. It only describes what a student looks like, which is why a class is called the **blueprint of an object** [▶ ~24:49](https://youtu.be/tmXD7Kzun54?t=1489).
 
-### Primitive vs non-primitive / user-defined types [25:35]
+### Primitive vs non-primitive / user-defined types [▶ ~25:35](https://youtu.be/tmXD7Kzun54?t=1535)
 - Primitives: `byte`, `short`, `int`, `long`, `float`, `double`, `boolean`, `char`.
 - Non-primitives (arrays, `String`, objects) are containers that hold several things. Some come with Java. The ones you write yourself (like `Student`) are **user-defined data types**.
 
-### Creating an object: declaration and `new` [27:41]
+### Creating an object: declaration and `new` [▶ ~27:41](https://youtu.be/tmXD7Kzun54?t=1661)
 - Declaration: `Student s1;` gives a variable of type `Student`. No object exists yet.
 - Definition: `s1 = new Student();`. Or both in one line: `Student s1 = new Student();`.
 - Reading it right to left:
-  - `new` allocates a chunk of **heap** memory big enough for a `Student` [29:47].
+  - `new` allocates a chunk of **heap** memory big enough for a `Student` [▶ ~29:47](https://youtu.be/tmXD7Kzun54?t=1787).
   - The reference is stored in `s1`, which lives on the **stack** (inside `main`'s frame).
   - The video pictures this as `s1` holding the object's starting address (e.g. 1001).
-- `s1` is a **reference variable** [32:18], not the object. The heap object is **unnamed** [33:20]. Only the reference has a name.
+- `s1` is a **reference variable** [▶ ~32:18](https://youtu.be/tmXD7Kzun54?t=1938), not the object. The heap object is **unnamed** [▶ ~33:20](https://youtu.be/tmXD7Kzun54?t=2000). Only the reference has a name.
 
-### Compile time vs runtime: dynamic allocation [35:43]
+### Compile time vs runtime: dynamic allocation [▶ ~35:43](https://youtu.be/tmXD7Kzun54?t=2143)
 - Some errors appear at compile time (red squiggles), and others only when the program runs.
 - `new` allocates memory **at runtime**, which is why it's called **dynamic memory allocation**.
 - *Correction:* the video says `int x = 4` is allocated "at compile time" (static allocation). In Java, local variables are also created at runtime, in the method's stack frame when the method is called. The compiler only works out how much frame space is needed. The real distinction is **stack** (locals, freed when the method returns) vs **heap** (objects, freed by the garbage collector).
 
-### Assigning and reading fields with the dot operator [37:18]
+### Assigning and reading fields with the dot operator [▶ ~37:18](https://youtu.be/tmXD7Kzun54?t=2238)
 - `s1.name = "Aditya"; s1.age = 28; s1.rollNumber = 1001; s1.college = "IIT Guwahati";`
 - One blueprint gives you any number of objects: `Student s2 = new Student();` creates a second, independent heap block with its own four fields.
 - The dot operator follows the reference to the object and then picks the field. `System.out.println(s1.name)` reads it.
 
-### Naming conventions [42:18]
+### Naming conventions [▶ ~42:18](https://youtu.be/tmXD7Kzun54?t=2538)
 - Conventions are good practice, not compiler rules.
 - Variables (primitive and reference) and methods use **camelCase**: `firstName`, `firstNameOfStudent`, `markAttendance`.
 - Classes use **PascalCase** (start with a capital): `Student`, `Human`, `Chair`.
 
-### Objects also have behavior [45:26]
+### Objects also have behavior [▶ ~45:26](https://youtu.be/tmXD7Kzun54?t=2726)
 - Real objects also *do* things. An animal has characteristics (type, number of legs, wild or domestic) and behaviors (make sound, eat, run).
 - Characteristics → **variables**. Behaviors → **methods** written **inside** the class, because the behavior is intrinsic to the object.
 - Student example: `void markAttendance()` inside `Student`, called as `s1.markAttendance();`.
 - *Correction:* the video describes the method as living "inside" each object. Logically it belongs to the object, but physically each object only stores its fields. Method code is stored once per class (the next videos come back to this).
 
-### Helper behavior: the digital student [52:00]
+### Helper behavior: the digital student [▶ ~52:00](https://youtu.be/tmXD7Kzun54?t=3120)
 - Pass the whole student instead of four values: `void print(Student s)`.
-- Better still, move `print()` **into** the class. It needs no parameters because it can read the object's own fields directly. "Each student can print itself" [54:59].
+- Better still, move `print()` **into** the class. It needs no parameters because it can read the object's own fields directly. "Each student can print itself" [▶ ~54:59](https://youtu.be/tmXD7Kzun54?t=3299).
 - A real student can't "print itself", but the **digital** student can. Classes may contain helpers that make the code easier, beyond strict mimicry.
 
-### Non-physical objects [55:37]
+### Non-physical objects [▶ ~55:37](https://youtu.be/tmXD7Kzun54?t=3337)
 - Anything too complex for one variable becomes a class, whether or not it's physical: a `BankAccount` (account number, IFSC, branch), a `Location` (latitude, longitude).
 
-### Code walk-through [57:27]
+### Code walk-through [▶ ~57:27](https://youtu.be/tmXD7Kzun54?t=3447)
 - `class Student` is written **outside** the `public class Demo` block, with fields plus `markAttendance()` (prints "Attendance marked by " + name) and `print()`.
 - Objects are created in `main`, because execution starts there and memory is only allocated when that code runs.
 - Output: two "Attendance marked by …" lines, then both students' details.
 
-### The boilerplate is a class too [61:00]
+### The boilerplate is a class too [▶ ~61:00](https://youtu.be/tmXD7Kzun54?t=3660)
 - `public class Demo` is itself a class, and `main` is a method inside it whose return type is `void` and which takes `String[] args`. `public` and `static` are explained in later videos.
-- To run *anything* in Java you need at least one class containing `main`. The video calls Java "almost completely object-oriented" [63:39]. The "almost" is because primitives and `static` members aren't objects.
+- To run *anything* in Java you need at least one class containing `main`. The video calls Java "almost completely object-oriented" [▶ ~63:39](https://youtu.be/tmXD7Kzun54?t=3819). The "almost" is because primitives and `static` members aren't objects.
 
 ## Code Examples
 

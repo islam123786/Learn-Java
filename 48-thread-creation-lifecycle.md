@@ -28,24 +28,24 @@
 
 ## Detailed Notes
 
-### Two ways to create a thread [00:40]
+### Two ways to create a thread [▶ ~00:40](https://youtu.be/cVRdeQFP5IM?t=40)
 - In Java everything is an object, so a thread is created through a class too.
 - Option 1: **extend `Thread`**. Option 2: **implement `Runnable`**.
 
-### Way 1: extending `Thread` [01:29]
+### Way 1: extending `Thread` [▶ ~01:29](https://youtu.be/cVRdeQFP5IM?t=89)
 - `class MyThread extends Thread` overrides `public void run()`. Whatever you put in `run()` is what the thread does.
 - In `main`: `MyThread t1 = new MyThread(); t1.start();` prints "Thread is running", then the thread terminates, then `main` ends.
-- Behind the scenes of `start()` [03:33]:
+- Behind the scenes of `start()` [▶ ~03:33](https://youtu.be/cVRdeQFP5IM?t=213):
   1. The JVM asks the OS to create a new thread.
   2. The OS creates it inside the same process, next to `main`. `t1` is only the *reference variable*, not the thread's name.
   3. The new thread gets its own **stack** and **program counter**.
   4. The thread executes `run()` once the CPU gives it time.
 
-### Way 2: implementing `Runnable` [04:54]
+### Way 2: implementing `Runnable` [▶ ~04:54](https://youtu.be/cVRdeQFP5IM?t=294)
 - `class MyRunnable implements Runnable` overrides `public void run()`.
 - `Thread` itself `implements Runnable`, which you can see by opening the class.
 - A `Runnable` is not a thread, so you wrap it: `Thread t1 = new Thread(new MyRunnable()); t1.start();`. `Thread` has a constructor that takes a `Runnable task`.
-- The difference [07:27]: extending `Thread` means you are **defining a thread** (*is-a* relationship). Implementing `Runnable` means you are **defining a task**, and a separate `Thread` object runs it.
+- The difference [▶ ~07:27](https://youtu.be/cVRdeQFP5IM?t=447): extending `Thread` means you are **defining a thread** (*is-a* relationship). Implementing `Runnable` means you are **defining a task**, and a separate `Thread` object runs it.
 ```
 Runnable (interface)
    ▲            ▲
@@ -54,48 +54,48 @@ Thread (class)  MyRunnable (your task)
 MyThread (your subclass)
 ```
 
-### Why prefer `Runnable` [11:04]
+### Why prefer `Runnable` [▶ ~11:04](https://youtu.be/cVRdeQFP5IM?t=664)
 - **Separation of concerns.** Your class says *what* to do. Java's `Thread` handles *how* to run it.
 - **Reusability.** One `Runnable` instance can be given to several threads (`new Thread(r1)`, `new Thread(r1)`, ...).
 - **Inheritance freedom.** A class can extend only one class but implement many interfaces. Extending `Thread` uses up your single `extends`.
 - **Lambdas.** `Runnable` is a functional interface, so you can skip the class: `new Thread(() -> System.out.println("Thread is running"))`.
 - Either way, you end up asking the OS for a new thread with its own stack and PC.
 
-### Thread name and id [15:08]
+### Thread name and id [▶ ~15:08](https://youtu.be/cVRdeQFP5IM?t=908)
 - `Thread.currentThread()` is a **static** method that returns the `Thread` object currently running. `getName()` is an **instance** method, so `Thread.getName()` doesn't compile ("cannot make a static reference to a non-static method").
 - In `main`: name `main`, id `1`.
-- `getId()` is **deprecated** [17:54], and the compiler prints a note about a deprecated API. The video's reasoning is that the id gives a false sense of meaning (it doesn't reflect run order).
+- `getId()` is **deprecated** [▶ ~17:54](https://youtu.be/cVRdeQFP5IM?t=1074), and the compiler prints a note about a deprecated API. The video's reasoning is that the id gives a false sense of meaning (it doesn't reflect run order).
   - *(Precision: `getId()` was deprecated in Java 19 because it isn't `final` and can be overridden. The replacement is `threadId()`. The ids aren't random: they are handed out in increasing order, and the JVM's own internal threads take some of the numbers first. That is why your first thread shows an id like 20 or more instead of 2.)*
 - A thread that is created but never started never runs its code.
 - With two started threads, the four print lines (name and id of each) come out in a **different order on each run**.
 - Names are what you'll use for logging. Default names (`Thread-0`, `Thread-1`) say nothing, so you can set your own with `setName` (next video).
 
-### `start()` vs `run()` [24:00]
+### `start()` vs `run()` [▶ ~24:00](https://youtu.be/cVRdeQFP5IM?t=1440)
 - `t1.start()` prints `Current thread is Thread-0`.
 - `t1.run()` prints `Current thread is main`. No OS thread was created, so the lambda just ran as a normal method call on `main`.
-- **Can you start the same thread twice?** [27:24] No. The second `start()` throws **`IllegalThreadStateException`**. Once a thread has left the NEW state it can never be started again.
+- **Can you start the same thread twice?** [▶ ~27:24](https://youtu.be/cVRdeQFP5IM?t=1644) No. The second `start()` throws **`IllegalThreadStateException`**. Once a thread has left the NEW state it can never be started again.
 
-### Non-determinism [28:11]
+### Non-determinism [▶ ~28:11](https://youtu.be/cVRdeQFP5IM?t=1691)
 - Demo: T1 prints even numbers 2..100 and T2 prints odd numbers 1..99. Both are started, T1 first.
 - A beginner expects all the evens and then all the odds. The real output is mixed (for example 2 4 6 8, then 1 3 5 ... 13, then 10, ...), and a different run can even start with T2.
-- Why [33:07]: the CPU/OS **scheduling algorithm** (round robin, time slicing, priority-based, ...) decides which thread runs, where and for how long. Other factors:
+- Why [▶ ~33:07](https://youtu.be/cVRdeQFP5IM?t=1987): the CPU/OS **scheduling algorithm** (round robin, time slicing, priority-based, ...) decides which thread runs, where and for how long. Other factors:
   - **System load**: other apps (Chrome, OBS, ...) also have threads waiting.
   - **Hardware**: how many cores there are.
   - **Thread creation time**: when the OS actually creates each thread. T1 may get going before T2 even exists yet.
 - As a result, multithreaded bugs may appear once in many runs, which makes them hard to debug. Good practices (later videos) keep errors to a minimum.
 
-### Thread lifecycle [36:58]
+### Thread lifecycle [▶ ~36:58](https://youtu.be/cVRdeQFP5IM?t=2218)
 - **NEW**: `Thread t1 = new Thread(...)`. The object exists on the heap, but the OS knows nothing about it yet.
-- **RUNNABLE** [38:28]: after `t1.start()`. The OS thread exists and is in line for the CPU.
-- **"Running"** [39:28]: the thread currently on a core, executing `run()`. On a single core only one thread at a time is in this condition.
-- **TERMINATED** [40:14]: `run()` finished. No method call is needed to get here. A terminated thread can't be restarted.
-- **BLOCKED** [42:00]: shared data (e.g. a `Student s1` object on the heap that T1 sets to "Aditya" and T2 sets to "Rohit") makes a **critical section**. You protect it with a **lock** so that only one thread is inside at a time. If T1 holds the lock and T2 tries to enter, T2 goes to BLOCKED [45:48]. When T1 releases the lock, T2 goes back to RUNNABLE.
+- **RUNNABLE** [▶ ~38:28](https://youtu.be/cVRdeQFP5IM?t=2308): after `t1.start()`. The OS thread exists and is in line for the CPU.
+- **"Running"** [▶ ~39:28](https://youtu.be/cVRdeQFP5IM?t=2368): the thread currently on a core, executing `run()`. On a single core only one thread at a time is in this condition.
+- **TERMINATED** [▶ ~40:14](https://youtu.be/cVRdeQFP5IM?t=2414): `run()` finished. No method call is needed to get here. A terminated thread can't be restarted.
+- **BLOCKED** [▶ ~42:00](https://youtu.be/cVRdeQFP5IM?t=2520): shared data (e.g. a `Student s1` object on the heap that T1 sets to "Aditya" and T2 sets to "Rohit") makes a **critical section**. You protect it with a **lock** so that only one thread is inside at a time. If T1 holds the lock and T2 tries to enter, T2 goes to BLOCKED [▶ ~45:48](https://youtu.be/cVRdeQFP5IM?t=2748). When T1 releases the lock, T2 goes back to RUNNABLE.
   - Locks don't stop both threads from *ever* entering. They stop both from being inside *at the same time*.
-  - The video also puts **I/O waiting** (e.g. waiting for user input) under blocked [47:21]. *(Precision: in Java's `Thread.State`, a thread blocked in a read from a socket or `System.in` actually reports **RUNNABLE**. `BLOCKED` is reserved for waiting to enter a `synchronized` block or method.)*
-- RUNNABLE and running are **one state** in Java [48:07]. You can only `start()` a thread, never make it run, so Java doesn't separate "ready" from "running". Arrows into BLOCKED/WAITING come from (and go back to) RUNNABLE as a whole.
-- **WAITING** [49:08]: entered via `wait()` (and also `join()` with no timeout). Left via `notify()` / `notifyAll()`. Used for communication between threads (later video).
-- **TIMED_WAITING** [49:42]: entered via `sleep(ms)`, `join(ms)` or `wait(ms)`. Goes back to RUNNABLE when the time is up.
-- **`stop()`** [51:01] used to move a thread from any state straight to TERMINATED. It is deprecated and dangerous (it can leave shared data half-updated).
+  - The video also puts **I/O waiting** (e.g. waiting for user input) under blocked [▶ ~47:21](https://youtu.be/cVRdeQFP5IM?t=2841). *(Precision: in Java's `Thread.State`, a thread blocked in a read from a socket or `System.in` actually reports **RUNNABLE**. `BLOCKED` is reserved for waiting to enter a `synchronized` block or method.)*
+- RUNNABLE and running are **one state** in Java [▶ ~48:07](https://youtu.be/cVRdeQFP5IM?t=2887). You can only `start()` a thread, never make it run, so Java doesn't separate "ready" from "running". Arrows into BLOCKED/WAITING come from (and go back to) RUNNABLE as a whole.
+- **WAITING** [▶ ~49:08](https://youtu.be/cVRdeQFP5IM?t=2948): entered via `wait()` (and also `join()` with no timeout). Left via `notify()` / `notifyAll()`. Used for communication between threads (later video).
+- **TIMED_WAITING** [▶ ~49:42](https://youtu.be/cVRdeQFP5IM?t=2982): entered via `sleep(ms)`, `join(ms)` or `wait(ms)`. Goes back to RUNNABLE when the time is up.
+- **`stop()`** [▶ ~51:01](https://youtu.be/cVRdeQFP5IM?t=3061) used to move a thread from any state straight to TERMINATED. It is deprecated and dangerous (it can leave shared data half-updated).
   - *(Update: since Java 20, `Thread.stop()` always throws `UnsupportedOperationException`. Stop threads cooperatively with `interrupt()`, covered in #49.)*
 ```
           start()                       run() ends
@@ -109,12 +109,12 @@ MyThread (your subclass)
                            thread ends)
 ```
 
-### Seeing the states in code [52:04]
+### Seeing the states in code [▶ ~52:04](https://youtu.be/cVRdeQFP5IM?t=3124)
 - `Thread.State` is an **enum** with `NEW, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING, TERMINATED`. There is no RUNNING value.
 - `t1.getState()` before `start()` gives `NEW`. Right after `start()` it gives `RUNNABLE`. It is very likely not `TERMINATED` yet, because creating the OS thread takes longer than the next `println` does, even when you repeat the print several times.
 - To observe `TERMINATED`, make `main` `Thread.sleep(2000)` (this needs `try/catch` for the checked `InterruptedException`), then check again.
-- To observe `TIMED_WAITING` for `main` [59:37], save `Thread mainThread = Thread.currentThread()` before starting T1, and have **T1 print `mainThread.getState()`** while `main` is asleep. `main` itself can't print anything while it sleeps.
-- Lock behavior [60:28]. The video says BLOCKED and WAITING threads release their monitor locks while TIMED_WAITING threads don't. *(Correction: what matters is the method, not the state. `wait()` and `wait(ms)` **release** the monitor of the object you wait on, even though `wait(ms)` puts the thread in TIMED_WAITING. `sleep()` **keeps** every lock it holds. A BLOCKED thread holds nothing for that monitor: it is trying to get the lock.)*
+- To observe `TIMED_WAITING` for `main` [▶ ~59:37](https://youtu.be/cVRdeQFP5IM?t=3577), save `Thread mainThread = Thread.currentThread()` before starting T1, and have **T1 print `mainThread.getState()`** while `main` is asleep. `main` itself can't print anything while it sleeps.
+- Lock behavior [▶ ~60:28](https://youtu.be/cVRdeQFP5IM?t=3628). The video says BLOCKED and WAITING threads release their monitor locks while TIMED_WAITING threads don't. *(Correction: what matters is the method, not the state. `wait()` and `wait(ms)` **release** the monitor of the object you wait on, even though `wait(ms)` puts the thread in TIMED_WAITING. `sleep()` **keeps** every lock it holds. A BLOCKED thread holds nothing for that monitor: it is trying to get the lock.)*
 
 ## Code Examples
 

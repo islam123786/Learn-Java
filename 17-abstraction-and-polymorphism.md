@@ -30,74 +30,74 @@
 
 ## Detailed Notes
 
-### What abstraction is [01:23]
+### What abstraction is [▶ ~01:23](https://youtu.be/-L9BcU6Xk2c?t=83)
 - Definition: focus on what something does, ignore how it does it.
 - The whole world runs on abstraction. A **car** is understood through its data (color, type such as SUV/hatchback/sedan, price) and its behaviors (drive, accelerate, brake), not through its roughly 30,000 parts.
 - The chain: without abstraction every driver would have to be an engineer, every engineer a physicist, and every physicist a mathematician. Abstraction lets each layer use the layer below without fully understanding it.
 - An **ATM** is understood as deposit / withdraw / check balance. In code those behaviors become **methods** of a class.
 
-### OOP simulates perception, not reality [06:17]
+### OOP simulates perception, not reality [▶ ~06:17](https://youtu.be/-L9BcU6Xk2c?t=377)
 - "OOP simulates the real world" is a half-truth. It simulates **how humans think about** the real world.
 - A `Teacher` class has `teach()` and `takeAttendance()` and some data (name, age, gender). It does not model cells and organs.
 - Two rules come out of this:
   1. **Represent only what's necessary.**
   2. **The users of a model don't need to know how it's implemented, only how to use it.** The car maker gives you a steering wheel, pedals and a gear box (interfaces) and hides the rest.
 
-### Low-level vs high-level abstraction in Java [12:35]
+### Low-level vs high-level abstraction in Java [▶ ~12:35](https://youtu.be/-L9BcU6Xk2c?t=755)
 - Java implements abstraction at two levels:
   - **Low-level**: hide the implementation details.
   - **High-level**: separate the *what* from the *how*.
-- **Low-level** [13:17]: write a `Car` class with `start()`, `accelerate()`, `brake()`. Another developer's `main` (in a different file) does `Car c = new Car(); c.start();` without ever opening the class. Plain classes, the bundling part of encapsulation, already give you this.
+- **Low-level** [▶ ~13:17](https://youtu.be/-L9BcU6Xk2c?t=797): write a `Car` class with `start()`, `accelerate()`, `brake()`. Another developer's `main` (in a different file) does `Car c = new Car(); c.start();` without ever opening the class. Plain classes, the bundling part of encapsulation, already give you this.
 
-### High-level abstraction: decoupling what from how [17:29]
+### High-level abstraction: decoupling what from how [▶ ~17:29](https://youtu.be/-L9BcU6Xk2c?t=1049)
 - **Concrete classes** tie a reference to one implementation. With `Car hondaCity = new Car()`, `hondaCity.accelerate()` always runs that one `accelerate()`. The *what* and the *how* are **tightly coupled**.
-- Add a `FuelCar` and an `ElectricCar` [20:59]. Both `drive()`, but internally they are completely different (combustion vs electric, gears vs none). As separate classes you need `ElectricCar ec = ...`, `FuelCar fc = ...`, then later `DieselCar`, `WaterCar`, and so on, each with its own reference type.
-- The fix [24:28]: a common parent `Car` with `FuelCar extends Car` and `ElectricCar extends Car`. A parent reference can point to any child, so `Car c = new ElectricCar()` or `new FuelCar()` works.
+- Add a `FuelCar` and an `ElectricCar` [▶ ~20:59](https://youtu.be/-L9BcU6Xk2c?t=1259). Both `drive()`, but internally they are completely different (combustion vs electric, gears vs none). As separate classes you need `ElectricCar ec = ...`, `FuelCar fc = ...`, then later `DieselCar`, `WaterCar`, and so on, each with its own reference type.
+- The fix [▶ ~24:28](https://youtu.be/-L9BcU6Xk2c?t=1468): a common parent `Car` with `FuelCar extends Car` and `ElectricCar extends Car`. A parent reference can point to any child, so `Car c = new ElectricCar()` or `new FuelCar()` works.
 - Shared behavior such as `applyHandBrake()` lives once in the parent and is inherited. Each child provides its own `drive()`. Now `c.drive()` picks the implementation based on the object, so the what and the how are separated.
 
-### Abstract classes [28:40]
+### Abstract classes [▶ ~28:40](https://youtu.be/-L9BcU6Xk2c?t=1720)
 - If the parent `Car` writes a generic `accelerate()` ("Car is accelerating at 10 km/h"), the code is meaningless. *Which* car? Each concrete subclass overrides it anyway.
 - So **declare** the method without **defining** it, the way `int x;` is a declaration and `x = 4;` is a definition: `abstract void accelerate();`
-- The rules [36:22]:
+- The rules [▶ ~36:22](https://youtu.be/-L9BcU6Xk2c?t=2182):
   - Without the `abstract` keyword, the compiler complains that the method requires a body.
   - **If a class has even one abstract method, the class itself must be `abstract`.**
   - **An abstract class can't be instantiated.** Otherwise `new Car().accelerate()` would call a method with no body.
   - An abstract class may still have **fully defined methods**, such as a common `start()`, which children inherit.
   - Every concrete subclass **must implement all inherited abstract methods**. Otherwise the error is "FuelCar must implement the inherited abstract method …".
   - A subclass that doesn't want to implement them can itself be declared `abstract`, and the hierarchy can go deeper.
-- In the demo [39:52], `Car car = new ElectricCar()` prints "Car started / Electric car is accelerating / Electric car is stopping". Changing it to `new FuelCar()` switches the last two lines, while `start()` still comes from the parent.
-- `@Override` [42:40] is optional but good practice. It tells the compiler you mean to override, so typos get caught.
+- In the demo [▶ ~39:52](https://youtu.be/-L9BcU6Xk2c?t=2392), `Car car = new ElectricCar()` prints "Car started / Electric car is accelerating / Electric car is stopping". Changing it to `new FuelCar()` switches the last two lines, while `start()` still comes from the parent.
+- `@Override` [▶ ~42:40](https://youtu.be/-L9BcU6Xk2c?t=2560) is optional but good practice. It tells the compiler you mean to override, so typos get caught.
 
-### Interfaces [45:27]
+### Interfaces [▶ ~45:27](https://youtu.be/-L9BcU6Xk2c?t=2727)
 - The syntax looks like an abstract class, but the idea is different. **A class is a blueprint of an object. An interface has nothing to do with objects.** It's a **contract**.
 - `interface Car { void start(); void accelerate(); void brake(); }`. No `abstract` keyword is needed because interface methods are abstract by default (in classic Java).
 - Classes `implements` an interface (they `extends` a class): `class FuelCar implements Car`.
 - In classic Java the implementing class must define **all** the methods, including `start()`. Java 8+ allows `default` methods (covered in a later video).
 - `new Car()` on an interface gives the same "Cannot instantiate" error. `Car car = new FuelCar()` works exactly as before.
-- **The "Cannot reduce the visibility of the inherited method" error** [61:33]: interface methods are implicitly `public`, so the implementations must be declared `public` too. An override can widen visibility but never narrow it.
+- **The "Cannot reduce the visibility of the inherited method" error** [▶ ~61:33](https://youtu.be/-L9BcU6Xk2c?t=3693): interface methods are implicitly `public`, so the implementations must be declared `public` too. An override can widen visibility but never narrow it.
 
-### Why Java has interfaces (C++ doesn't) [50:21]
+### Why Java has interfaces (C++ doesn't) [▶ ~50:21](https://youtu.be/-L9BcU6Xk2c?t=3021)
 1. **Pure "what" (pure abstraction).** Classic interfaces define no behavior, only what can be done. Abstract classes give a **partial what + how**. *(Java 8+ default methods blur this line.)*
-2. **Intent** [51:45]: interfaces are **contracts**, like a loan agreement with a bank. They describe **responsibilities / capabilities / roles**. If something wants to call itself a `Car`, it must implement these methods.
-   - Naming convention [55:15]: capability names such as `Comparable`, `Serializable`, `Runnable`, `Flyable`, `Walkable`. `Bird` and `Airplane` both implement `Flyable`, and each defines `fly()` its own way (flapping wings vs engines and aerodynamics). `Car` is a weak interface name. C# uses an `I` prefix (`ICar`), and some Java teams copy that. It's a convention, not a rule.
-   - **Abstract classes represent families of similar objects** [58:03]: `Car` is the parent of `ElectricCar` and `FuelCar`, implements what they share and leaves the rest to them.
+2. **Intent** [▶ ~51:45](https://youtu.be/-L9BcU6Xk2c?t=3105): interfaces are **contracts**, like a loan agreement with a bank. They describe **responsibilities / capabilities / roles**. If something wants to call itself a `Car`, it must implement these methods.
+   - Naming convention [▶ ~55:15](https://youtu.be/-L9BcU6Xk2c?t=3315): capability names such as `Comparable`, `Serializable`, `Runnable`, `Flyable`, `Walkable`. `Bird` and `Airplane` both implement `Flyable`, and each defines `fly()` its own way (flapping wings vs engines and aerodynamics). `Car` is a weak interface name. C# uses an `I` prefix (`ICar`), and some Java teams copy that. It's a convention, not a rule.
+   - **Abstract classes represent families of similar objects** [▶ ~58:03](https://youtu.be/-L9BcU6Xk2c?t=3483): `Car` is the parent of `ElectricCar` and `FuelCar`, implements what they share and leaves the rest to them.
    - Choosing between them is a design decision. Use an abstract class for an "is-a family", and an interface for a contract or capability.
-3. **Multiple inheritance** [59:27]: not supported through classes, but supported through interfaces. A class can implement many interfaces. Details come in the interfaces deep-dive.
+3. **Multiple inheritance** [▶ ~59:27](https://youtu.be/-L9BcU6Xk2c?t=3567): not supported through classes, but supported through interfaces. A class can implement many interfaces. Details come in the interfaces deep-dive.
 
-### Abstraction vs encapsulation [63:39]
+### Abstraction vs encapsulation [▶ ~63:39](https://youtu.be/-L9BcU6Xk2c?t=3819)
 - **Encapsulation**: (1) bundle data and methods into a class, and (2) **data security**: sensitive data is protected with access modifiers.
 - **Abstraction**: the world is complex, so hide the implementation. That's **hiding, not security**. You can open the car's bonnet and study the engine if you want; you just don't have to.
 - The video's one-liner: *abstraction is about hiding, encapsulation is about security.*
 - *Nuance:* `private` is a design boundary checked by the compiler, not real security (reflection can get around it). A better summary is that abstraction hides **complexity** and encapsulation hides **state** and protects invariants.
 
-### Polymorphism [65:45]
+### Polymorphism [▶ ~65:45](https://youtu.be/-L9BcU6Xk2c?t=3945)
 - *Poly* = many, *morph* = forms.
-- **Type 1: same object, same command, one parameter changes** [66:26]. A human told to "run" runs at 2 km/h, and at 5 km/h if a dog is chasing them.
+- **Type 1: same object, same command, one parameter changes** [▶ ~66:26](https://youtu.be/-L9BcU6Xk2c?t=3986). A human told to "run" runs at 2 km/h, and at 5 km/h if a dog is chasing them.
   - In code: `run()` and `run(boolean isDogBehind)`. That's **method overloading**.
-  - It's called **compile-time polymorphism** [69:56] because the compiler picks the overload from the arguments at the call site.
-- **Type 2: different objects, same command, same situation** [70:38]. A dog, a duck and a human all "run", each in its own way.
+  - It's called **compile-time polymorphism** [▶ ~69:56](https://youtu.be/-L9BcU6Xk2c?t=4196) because the compiler picks the overload from the arguments at the call site.
+- **Type 2: different objects, same command, same situation** [▶ ~70:38](https://youtu.be/-L9BcU6Xk2c?t=4238). A dog, a duck and a human all "run", each in its own way.
   - In code: `abstract class Animal { abstract void run(); }` with `Dog`, `Duck`, `Human` overriding `run()`. That's **method overriding**.
-  - It's called **run-time (dynamic) polymorphism** [74:08]. With `Animal a; if (type.equals("duck")) a = new Duck(); else ...`, which class gets instantiated, and therefore which `run()` executes, is only known while the program runs.
+  - It's called **run-time (dynamic) polymorphism** [▶ ~74:08](https://youtu.be/-L9BcU6Xk2c?t=4448). With `Animal a; if (type.equals("duck")) a = new Duck(); else ...`, which class gets instantiated, and therefore which `run()` executes, is only known while the program runs.
 - Summary table:
 
 | Kind | Also called | Mechanism | Decided |
@@ -105,12 +105,12 @@
 | Compile-time | static polymorphism | overloading | by the compiler, from the argument types |
 | Run-time | dynamic polymorphism | overriding | by the JVM, from the object's actual class |
 
-### What doesn't take part in overriding [76:56]
+### What doesn't take part in overriding [▶ ~76:56](https://youtu.be/-L9BcU6Xk2c?t=4616)
 - **`static` methods aren't overridden.** They belong to the class, not to objects. With `A a = new B(); a.fun();` where both declare `static void fun()`, you get **A's** version ("Hello", not "Bye"), because the call binds to the reference type. *(The precise term is method **hiding**. Putting `@Override` on a static method doesn't compile.)*
-- **`private` methods can't be overridden** [80:26]. The child can't even see them, so a same-named method in the child is a completely separate method.
-- **`final` methods can't be overridden** [81:50]. The error is "Cannot override the final method from A". Use `final` when every subclass must keep the parent's behavior.
-- **Fields aren't polymorphic** [83:14]. With `int x = 10` in A and `int x = 20` in B, `A a = new B(); a.x` gives **10**, because fields resolve by the reference type. To get B's value you need a B reference, or turn the field into an overridable method (`int getX()`). Then `a.getX()` gives 20.
-- **`final` class** [86:44]: it can't be subclassed. The error is "The type B cannot subclass the final class A".
+- **`private` methods can't be overridden** [▶ ~80:26](https://youtu.be/-L9BcU6Xk2c?t=4826). The child can't even see them, so a same-named method in the child is a completely separate method.
+- **`final` methods can't be overridden** [▶ ~81:50](https://youtu.be/-L9BcU6Xk2c?t=4910). The error is "Cannot override the final method from A". Use `final` when every subclass must keep the parent's behavior.
+- **Fields aren't polymorphic** [▶ ~83:14](https://youtu.be/-L9BcU6Xk2c?t=4994). With `int x = 10` in A and `int x = 20` in B, `A a = new B(); a.x` gives **10**, because fields resolve by the reference type. To get B's value you need a B reference, or turn the field into an overridable method (`int getX()`). Then `a.getX()` gives 20.
+- **`final` class** [▶ ~86:44](https://youtu.be/-L9BcU6Xk2c?t=5204): it can't be subclassed. The error is "The type B cannot subclass the final class A".
 - Closing thought: once abstraction, encapsulation and inheritance make sense, polymorphism is simply overloading plus overriding.
 
 ## Code Examples

@@ -32,14 +32,14 @@
 
 ## Detailed Notes
 
-### Race condition [00:41]
+### Race condition [▶ ~00:41](https://youtu.be/lrrdN_c0HQ4?t=41)
 - With threads T1..Tn running in parallel or concurrently, the **final state depends on the order of execution**, which is non-deterministic.
-- `count++` looks like one statement but is a **risky line** [01:42]. The CPU does:
+- `count++` looks like one statement but is a **risky line** [▶ ~01:42](https://youtu.be/lrrdN_c0HQ4?t=102). The CPU does:
   1. **Read** `count` from memory (into a register).
   2. **Increment** it by 1.
   3. **Write** the new value back to memory.
 - Sample code: `class Counter { int count = 0; void increment() { count++; } }`, one `Counter c1`, and several threads calling `c1.increment()`.
-- Step-by-step interleaving [05:27], with count = 0:
+- Step-by-step interleaving [▶ ~05:27](https://youtu.be/lrrdN_c0HQ4?t=327), with count = 0:
   | Step | T1 | T2 |
   |---|---|---|
   | 1 | read 0 | |
@@ -49,64 +49,64 @@
   | 5 | write 1 | |
   | 6 | | write 1 (overwrites T1's write) |
   - Two increments happened, but count = **1**. That is a race condition.
-- It happens in **true parallelism** too [09:15]. Two cores read 0 at the same moment and both write 1.
+- It happens in **true parallelism** too [▶ ~09:15](https://youtu.be/lrrdN_c0HQ4?t=555). Two cores read 0 at the same moment and both write 1.
 
-### Race condition in code [10:19]
+### Race condition in code [▶ ~10:19](https://youtu.be/lrrdN_c0HQ4?t=619)
 - One `increment()` per thread almost always prints 2, so the bug hides.
-- With each thread calling `increment()` **10,000 times** [13:46], expected 20,000, the runs printed **12109, 19669, 11864**. Every run is different and usually less than 20,000.
+- With each thread calling `increment()` **10,000 times** [▶ ~13:46](https://youtu.be/lrrdN_c0HQ4?t=826), expected 20,000, the runs printed **12109, 19669, 11864**. Every run is different and usually less than 20,000.
 - Remember to `join()` both threads before printing, or `main` may print before they have even started.
 
-### Critical section and shared resource [15:17]
+### Critical section and shared resource [▶ ~15:17](https://youtu.be/lrrdN_c0HQ4?t=917)
 - **Critical section**: the risky region several threads share, here the body of `increment()`.
-- **Shared resource** [16:22]: the data inside it that threads share (`count`). It can be anything: a `List<Integer>`, a `BankAccount` object, and so on.
+- **Shared resource** [▶ ~16:22](https://youtu.be/lrrdN_c0HQ4?t=982): the data inside it that threads share (`count`). It can be anything: a `List<Integer>`, a `BankAccount` object, and so on.
 
-### The atomicity problem [17:12]
+### The atomicity problem [▶ ~17:12](https://youtu.be/lrrdN_c0HQ4?t=1032)
 - The root cause of the `count++` race: it is **non-atomic** (read, increment, write).
 - **Atomic** (definition): *any operation that either happens completely or not at all*. There is no halfway point, and a thread can be switched out before it or after it, but never in the middle.
 - Each of the three sub-steps on its own (read a value, add 1, write a value) is atomic. You can't "half read" `x`.
-- Banking example [21:07]: transferring ₹500 from account A to account B means `A.balance -= 500; B.balance += 500;`. If the thread is switched out (or blocks or waits for a long time) after the debit, A has lost money and B never receives it. Operations like this must be made atomic.
-- Ways to fix it [23:26]: **`synchronized`** blocks/methods and **atomic classes** (`AtomicInteger`, also `AtomicLong`, etc.). Internally the atomic classes use **CAS (compare-and-swap)**, which is covered later. *(The transcript says "CAS theorem". It is the compare-and-swap CPU instruction, not a theorem.)*
+- Banking example [▶ ~21:07](https://youtu.be/lrrdN_c0HQ4?t=1267): transferring ₹500 from account A to account B means `A.balance -= 500; B.balance += 500;`. If the thread is switched out (or blocks or waits for a long time) after the debit, A has lost money and B never receives it. Operations like this must be made atomic.
+- Ways to fix it [▶ ~23:26](https://youtu.be/lrrdN_c0HQ4?t=1406): **`synchronized`** blocks/methods and **atomic classes** (`AtomicInteger`, also `AtomicLong`, etc.). Internally the atomic classes use **CAS (compare-and-swap)**, which is covered later. *(The transcript says "CAS theorem". It is the compare-and-swap CPU instruction, not a theorem.)*
 
-### Atomic vs non-atomic operations [23:51]
+### Atomic vs non-atomic operations [▶ ~23:51](https://youtu.be/lrrdN_c0HQ4?t=1431)
 - Always atomic:
   - A simple assignment of a literal, e.g. `int x = 2;`: one write.
   - A reference assignment, e.g. `Student s1 = new Student();`: storing the reference is one write.
   - *(Precision: the **write of the reference** is atomic, but object construction is not, which is why safe publication matters. And `x = y` reads `y` and then writes `x`, two separate atomic steps.)*
 - Non-atomic:
   - `x++`, `x--`, `x + y` stored back, and compound assignments like `x = x + 5` (fetch, add, store).
-  - **Check-then-act** [25:12]: `if (balance >= amount) balance -= amount;`
+  - **Check-then-act** [▶ ~25:12](https://youtu.be/lrrdN_c0HQ4?t=1512): `if (balance >= amount) balance -= amount;`
 - Check-then-act walkthrough, with balance ₹1000. T1 withdraws ₹500 and T2 withdraws ₹600:
   1. T1 checks `1000 >= 500`, which passes, and is switched out right before subtracting.
   2. T2 checks `1000 >= 600`, which passes, and subtracts. Balance = ₹400.
   3. T1 resumes *inside* the `if`. Its check is now stale, and it subtracts ₹500. Balance = **−₹100**.
   - ₹1100 was paid out of a ₹1000 account, which is like a UPI app letting you overspend.
-- Edge case [29:04]: `double d = 112.234;` may be written as **two 32-bit halves** by some JVMs, so another thread could see half of an old value and half of a new one.
+- Edge case [▶ ~29:04](https://youtu.be/lrrdN_c0HQ4?t=1744): `double d = 112.234;` may be written as **two 32-bit halves** by some JVMs, so another thread could see half of an old value and half of a new one.
   - *(Precision: JLS §17.7 allows this for non-`volatile` **`long` and `double`** fields only. On today's 64-bit JVMs these writes are atomic in practice, but the spec only guarantees it if you declare the field `volatile`.)*
 
-### The visibility problem [30:16]
+### The visibility problem [▶ ~30:16](https://youtu.be/lrrdN_c0HQ4?t=1816)
 - Definition: *one thread updates a variable, but another thread doesn't see the updated value*. The new value is "invisible" to it.
-- Hardware picture [31:49]: each core has **registers** and its own **cache** (L1/L2...) in front of the shared **RAM**. RAM is slow, cache is faster and registers are faster still, so cores keep working copies.
+- Hardware picture [▶ ~31:49](https://youtu.be/lrrdN_c0HQ4?t=1909): each core has **registers** and its own **cache** (L1/L2...) in front of the shared **RAM**. RAM is slow, cache is faster and registers are faster still, so cores keep working copies.
   - `flag = false` lives in RAM. T1 (core 1) and T2 (core 2) each copy it into their own cache.
   - T1 sets `flag = true`, and it reaches RAM.
   - T2 keeps reading **its cached `false`** and never sees `true`.
   - With a single thread there is no problem, because it always sees its own writes.
 - *(Precision: modern CPUs keep their caches coherent in hardware, so the usual real culprit is the **JIT compiler**. It sees that the loop body never writes `flag`, so it reads `flag` once and keeps it in a register, effectively turning the loop into `while (true)`. The video's cache model is a good mental picture, and the Java fix is the same either way. Formally, the Java Memory Model just says that without a *happens-before* relationship there is no guarantee another thread ever sees the write.)*
 
-### Visibility in code [35:06]
+### Visibility in code [▶ ~35:06](https://youtu.be/lrrdN_c0HQ4?t=2106)
 - `static boolean flag = false;`. T2 runs `while (!flag) { }`. T1 sleeps 1 s and then sets `flag = true`.
   - The field has to be `static` (a class field), because a lambda can only capture local variables that are effectively final.
-- With `System.out.println("Thread 2 running...")` inside the loop, the program **did stop** after 1 s [39:41]. The video explains that `println` is internally `synchronized`, and lock acquire/release forces fresh reads from main memory.
+- With `System.out.println("Thread 2 running...")` inside the loop, the program **did stop** after 1 s [▶ ~39:41](https://youtu.be/lrrdN_c0HQ4?t=2381). The video explains that `println` is internally `synchronized`, and lock acquire/release forces fresh reads from main memory.
   - *(Precision: this is a side effect, not a guarantee. The lock inside `println` is on the `PrintStream`, not on anything related to `flag`. Never rely on a print statement to fix visibility.)*
-- With an **empty loop body** [40:17], the program **never stops**. T2 never sees the update.
-- The fix [42:43] is **`static volatile boolean flag = false;`**. Reads and writes of a `volatile` variable always go to main memory (no stale copies), so T2 sees `true` and prints "Thread 2 finished".
-- **`volatile` doesn't fix race conditions** [44:07]. `volatile int count; count++;` is still read, increment, write. It fixes *where* you read from, not threads interleaving in the middle of `++`.
+- With an **empty loop body** [▶ ~40:17](https://youtu.be/lrrdN_c0HQ4?t=2417), the program **never stops**. T2 never sees the update.
+- The fix [▶ ~42:43](https://youtu.be/lrrdN_c0HQ4?t=2563) is **`static volatile boolean flag = false;`**. Reads and writes of a `volatile` variable always go to main memory (no stale copies), so T2 sees `true` and prints "Thread 2 finished".
+- **`volatile` doesn't fix race conditions** [▶ ~44:07](https://youtu.be/lrrdN_c0HQ4?t=2647). `volatile int count; count++;` is still read, increment, write. It fixes *where* you read from, not threads interleaving in the middle of `++`.
 - `synchronized` also fixes visibility, because locking and unlocking flush and refresh memory. But it costs more (it involves locking), so it is usually kept for atomicity problems, and `volatile` is used for plain visibility.
 
-### The ordering (reordering) problem [46:13]
+### The ordering (reordering) problem [▶ ~46:13](https://youtu.be/lrrdN_c0HQ4?t=2773)
 - Ordering means *the sequence in which instructions are executed*.
 - `int a = 1; int b = 2;` may run as "b first, then a". The **compiler/JIT** and the **CPU** reorder instructions for efficiency.
-- The rule [48:20]: reordering must never change the result for a **single-threaded** program. Dependent statements stay in order: `int b = a + 1` can't move before `a` is assigned. Java makes no such promise for multithreaded code, because it can't predict how threads will interleave.
-- Example [49:28], with `int x = 0; boolean flag = false;`:
+- The rule [▶ ~48:20](https://youtu.be/lrrdN_c0HQ4?t=2900): reordering must never change the result for a **single-threaded** program. Dependent statements stay in order: `int b = a + 1` can't move before `a` is assigned. Java makes no such promise for multithreaded code, because it can't predict how threads will interleave.
+- Example [▶ ~49:28](https://youtu.be/lrrdN_c0HQ4?t=2968), with `int x = 0; boolean flag = false;`:
   - T1: `x = 10; flag = true;`
   - T2: `if (flag) System.out.println(x);`
   - You would expect `10` (or nothing if T2 runs first). If T1's two writes are reordered (`flag = true` first), and T2 runs right between them, T2 sees `flag == true` and prints **0**.
@@ -119,7 +119,7 @@
   | Ordering | Yes | Yes | Yes |
   | Atomicity / race on `++` | No | Yes | Yes |
 
-### Thread interference [53:43]
+### Thread interference [▶ ~53:43](https://youtu.be/lrrdN_c0HQ4?t=3223)
 - Everything above is **thread interference**: threads disturbing each other's work through shared data. The causes are non-atomic operations, shared resources, race conditions, visibility and ordering.
 - The result is **data inconsistency**, the most dangerous outcome, because every app (for example banking balances and user info) is built around its data.
 - Solutions to come: `synchronized` blocks, `volatile`, atomic integers, and other (explicit) lock mechanisms.

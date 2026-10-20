@@ -28,86 +28,86 @@
 
 ## Detailed Notes
 
-### What and why [00:00]
+### What and why [▶ ~00:00](https://youtu.be/0LaBK28_470?t=0)
 - In Java you can nest classes, just as you nest loops or `switch` statements.
-- The four types [01:15], classified by *how* the inner class is nested: static nested, inner, local, anonymous.
-- Why nest [01:53]:
+- The four types [▶ ~01:15](https://youtu.be/0LaBK28_470?t=75), classified by *how* the inner class is nested: static nested, inner, local, anonymous.
+- Why nest [▶ ~01:53](https://youtu.be/0LaBK28_470?t=113):
   1. **Logical grouping.** Some classes make sense only inside another class.
   2. **Better access to the outer class.** A nested class is inside the outer class, so it can use the outer class's `private` members without getters or setters. A separate top-level class would need `getX()`/`setX()`.
 
-### Static nested class [05:02]
+### Static nested class [▶ ~05:02](https://youtu.be/0LaBK28_470?t=302)
 - Syntax: `class Outer { static class Inner { ... } }`.
-- **Creating an object** [06:55]. Static members belong to the class, not to objects (as with `static int x`, accessed as `Outer.x`). A static nested class likewise needs **no outer object**.
-  - The JVM finds it through the outer class, so its name is `Outer.Inner` [08:48].
+- **Creating an object** [▶ ~06:55](https://youtu.be/0LaBK28_470?t=415). Static members belong to the class, not to objects (as with `static int x`, accessed as `Outer.x`). A static nested class likewise needs **no outer object**.
+  - The JVM finds it through the outer class, so its name is `Outer.Inner` [▶ ~08:48](https://youtu.be/0LaBK28_470?t=528).
   - `Outer.Inner inner = new Outer.Inner(); inner.fun();` prints "Hello".
-- **It can access only the outer class's static members** [10:42].
+- **It can access only the outer class's static members** [▶ ~10:42](https://youtu.be/0LaBK28_470?t=642).
   - Accessing a static `x` works. Accessing an instance field `y` gives the error "Cannot make a static reference to the non-static field y".
   - Reason: an `Inner` object can exist without any `Outer` object. Which object's `y` would it read?
-  - **Workaround** [13:50]: pass an outer reference in, either as a method parameter (`fun(Outer outer) { outer.y }`) or through a constructor that stores it in a field.
-- **Private members are fine** [16:21]: `private static int x` is accessible, because the nested class is inside `Outer`.
-- **It's a full-fledged class** [16:59]. It can `extend` a class, `implement` interfaces, and have fields, methods, constructors, and **its own static members**. Only its name (`Outer.Inner`) and its lack of access to the outer's instance members are different.
-- **Access modifiers** [19:30]. Members of the nested class can be `private`/`protected`/`public`, and so can **the nested class itself**.
-- **Example: a private helper class** [20:08].
+  - **Workaround** [▶ ~13:50](https://youtu.be/0LaBK28_470?t=830): pass an outer reference in, either as a method parameter (`fun(Outer outer) { outer.y }`) or through a constructor that stores it in a field.
+- **Private members are fine** [▶ ~16:21](https://youtu.be/0LaBK28_470?t=981): `private static int x` is accessible, because the nested class is inside `Outer`.
+- **It's a full-fledged class** [▶ ~16:59](https://youtu.be/0LaBK28_470?t=1019). It can `extend` a class, `implement` interfaces, and have fields, methods, constructors, and **its own static members**. Only its name (`Outer.Inner`) and its lack of access to the outer's instance members are different.
+- **Access modifiers** [▶ ~19:30](https://youtu.be/0LaBK28_470?t=1170). Members of the nested class can be `private`/`protected`/`public`, and so can **the nested class itself**.
+- **Example: a private helper class** [▶ ~20:08](https://youtu.be/0LaBK28_470?t=1208).
   - `BankAccount.computeInterest(principal)` delegates to `private static class InterestCalculator` with `static double calculateYearly(p, rate)`, and later `calculateMonthly`, `calculateQuarterly`, and so on.
   - The calculator is completely hidden from outside code. Only `BankAccount`'s methods can use it. This is the main benefit.
-- **Use cases** [24:32]:
+- **Use cases** [▶ ~24:32](https://youtu.be/0LaBK28_470?t=1472):
   - helper classes for the outer class
   - the **Builder design pattern**
   - nested classes that need static methods
   - request/response **DTOs** (Spring Boot, later in the series)
 
-### Inner class [27:03]
+### Inner class [▶ ~27:03](https://youtu.be/0LaBK28_470?t=1623)
 - An inner class is any nested class **without** `static`. It belongs to an **object** of the outer class.
-- **Creating one** [28:19]:
+- **Creating one** [▶ ~28:19](https://youtu.be/0LaBK28_470?t=1699):
   - `new Outer.Inner()` gives a compile error, because an outer instance is required.
   - `Outer outer = new Outer(); Outer.Inner inner = outer.new Inner();`. Read it like `outer.x`: "inside the outer object, create a new `Inner`".
-  - One-liner [30:50]: `Outer.Inner inner = new Outer().new Inner();`. Use it only when you don't need a reference to the outer object.
-- **Memory** [32:43]:
+  - One-liner [▶ ~30:50](https://youtu.be/0LaBK28_470?t=1850): `Outer.Inner inner = new Outer().new Inner();`. Use it only when you don't need a reference to the outer object.
+- **Memory** [▶ ~32:43](https://youtu.be/0LaBK28_470?t=1963):
   - The inner object is **not** stored inside the outer object. It's a separate heap object.
   - The compiler adds a hidden field to the inner class holding a reference to the outer object. That's why the two are linked.
-- **It can access everything** [35:52]: static and instance members, private or not.
+- **It can access everything** [▶ ~35:52](https://youtu.be/0LaBK28_470?t=2152): static and instance members, private or not.
   - The video says each outer object has "its own" inner object, while static nested objects are "shared". *Correction:* inner objects are created explicitly, so one outer object can have zero, one or many inner objects, and each inner object is tied to exactly one outer object. Static nested classes can also have any number of instances. "Static" only means there's no link to an outer instance; it doesn't make the instance shared.
-- **Shadowing and `Outer.this`** [37:45]:
+- **Shadowing and `Outer.this`** [▶ ~37:45](https://youtu.be/0LaBK28_470?t=2265):
   - If `Outer` has `int x = 10` and `Inner` has `int x = 20`, then `x` inside `Inner` is **20** (the inner field shadows the outer one).
   - `Outer.this.x` is **10**.
   - Without a field of the same name, a plain `x` resolves to `Outer.this.x` automatically.
-- **Static members inside inner classes** [40:17]:
+- **Static members inside inner classes** [▶ ~40:17](https://youtu.be/0LaBK28_470?t=2417):
   - Allowed **since Java 16** (JEP 395, which came with records). In older Java they were a compile error.
-- **Why old Java forbade them** [42:48]:
+- **Why old Java forbade them** [▶ ~42:48](https://youtu.be/0LaBK28_470?t=2568):
   - `static` means "one per class". But an inner class is itself tied to outer *instances*.
   - Should a `static int x` in `B` (inner to `A`) be one value shared across all `A` objects, or one per `A` object? Java avoided the ambiguity by banning it. If you need static members, make the nested class static.
 
-### Local class [46:34]
+### Local class [▶ ~46:34](https://youtu.be/0LaBK28_470?t=2794)
 - A class declared inside **any code block**: a method, constructor, `if`, `for`/`while`, `switch`, or even a `static` block.
 - Rarely used in production, but good to know.
-- **Demo** [47:50]:
+- **Demo** [▶ ~47:50](https://youtu.be/0LaBK28_470?t=2870):
   - `void greet() { class Local { void sayHello() {...} } Local l = new Local(); l.sayHello(); }`.
   - The class declaration is just a definition. Nothing happens until `new Local()` runs.
   - It's useful when a group of helper methods only matters inside one method. It can usually be replaced by plain code (if/else).
-- **Access** [52:52]: it follows the same rules as an inner class. It can see all of the outer class's static and instance members, including private ones.
-- **The effectively-final rule** [53:30]:
+- **Access** [▶ ~52:52](https://youtu.be/0LaBK28_470?t=3172): it follows the same rules as an inner class. It can see all of the outer class's static and instance members, including private ones.
+- **The effectively-final rule** [▶ ~53:30](https://youtu.be/0LaBK28_470?t=3210):
   - It can read a local variable `y` of the enclosing method. But adding `y++` anywhere gives "Local variable y defined in an enclosing scope must be final or effectively final".
-- **Why** [57:16]:
+- **Why** [▶ ~57:16](https://youtu.be/0LaBK28_470?t=3436):
   - Local variables live on the stack and disappear when the method returns. The local class's object lives on the heap and may **outlive** the method, for example if the method returns it.
   - So the compiler **copies** the captured value into a hidden field of the object.
   - If `y` could change later, which value should the copy hold? To avoid that ambiguity, Java demands the variable never change.
-- **Returning a local-class object** [67:20]:
+- **Returning a local-class object** [▶ ~67:20](https://youtu.be/0LaBK28_470?t=4040):
   - The type name `Local` doesn't exist outside the method, so the return type must be a supertype, such as **`Object`**, the root class of all classes (covered in its own video). An interface also works.
 
-### Anonymous class [68:36]
+### Anonymous class [▶ ~68:36](https://youtu.be/0LaBK28_470?t=4116)
 - "Anonymous" means a class without a name.
 - **Problem**: `Person.introduce()` prints "Hi, I am a person". Exactly one place in the program needs "Hi, I am a guest".
   - Writing `class Guest extends Person` with an override, then `Person p2 = new Guest()`, works, but it's a whole class for one use.
-- **Shortcut** [71:45]: `Person p2 = new Person() { @Override void introduce() { ... "Hi, I am a guest" ... } };`. Opening a `{` instead of ending with `;` starts the body of an unnamed subclass.
-- **What it can contain** [74:16]:
+- **Shortcut** [▶ ~71:45](https://youtu.be/0LaBK28_470?t=4305): `Person p2 = new Person() { @Override void introduce() { ... "Hi, I am a guest" ... } };`. Opening a `{` instead of ending with `;` starts the body of an unnamed subclass.
+- **What it can contain** [▶ ~74:16](https://youtu.be/0LaBK28_470?t=4456):
   - Fields (`String name = "Aditya"`) and extra methods (`greet()`).
   - `p2.greet()` and `p2.name` **don't compile**. The reference type is `Person`, which has neither. Extra members can be used only *inside* the overridden methods. For example, `introduce()` can call `greet()` and print "Hello" then "Hi, I am Aditya".
   - *Nuance:* with `var p2 = new Person() {...}` (Java 10+), the inferred type is the anonymous type, so `p2.greet()` does compile.
-- **No constructors** [77:25]: a constructor must be named after its class, and this class has no name. *(It can still pass arguments to the superclass constructor, `new Person("x") {...}`, and use an instance initializer block `{ ... }`.)*
-- **When to use it** [78:03]: short, localized, one-off behavior. If you need the behavior repeatedly, write a proper class.
+- **No constructors** [▶ ~77:25](https://youtu.be/0LaBK28_470?t=4645): a constructor must be named after its class, and this class has no name. *(It can still pass arguments to the superclass constructor, `new Person("x") {...}`, and use an instance initializer block `{ ... }`.)*
+- **When to use it** [▶ ~78:03](https://youtu.be/0LaBK28_470?t=4683): short, localized, one-off behavior. If you need the behavior repeatedly, write a proper class.
 - **Rules**: the same as for inner classes (full access to the outer class's members). If it's declared inside a method, it's also local, so the effectively-final rule applies.
 
-### How often each kind is used [79:18]
+### How often each kind is used [▶ ~79:18](https://youtu.be/0LaBK28_470?t=4758)
 1. **Static nested**: by far the most common.
 2. **Inner**: less common, but you'll see it.
 3. **Anonymous**: widely used in old Java and now mostly replaced by **lambdas**.

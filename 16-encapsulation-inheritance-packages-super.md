@@ -34,37 +34,37 @@
 
 ## Detailed Notes
 
-### The four pillars [00:00]
+### The four pillars [▶ ~00:00](https://youtu.be/jfLpzL1VW7Q?t=0)
 - OOP rests on four pillars: **encapsulation**, **inheritance**, **abstraction**, **polymorphism**. This video covers the first two.
 
-### Encapsulation, part 1: bundle data and behavior [00:45]
+### Encapsulation, part 1: bundle data and behavior [▶ ~00:45](https://youtu.be/jfLpzL1VW7Q?t=45)
 - A capsule packs different medicines inside one wrapper. In the same way, an object's **data** (an animal's legs, type) and **behavior** (eat, walk, run) are intrinsic to it and belong in one class.
 - We've already been doing this (fields + methods in a class). That's "50%" of encapsulation.
 
-### Encapsulation, part 2: no unrestricted access [04:22]
+### Encapsulation, part 2: no unrestricted access [▶ ~04:22](https://youtu.be/jfLpzL1VW7Q?t=262)
 - Definition: (1) data and behavior are encapsulated in an object, and (2) data **must not have unrestricted access**.
-- **Bank account** example [05:32]: `class BankAccount { double balance; String bankName; String ifsc; }`. Anyone can write `ba.balance = 100000;`, which is clearly wrong.
+- **Bank account** example [▶ ~05:32](https://youtu.be/jfLpzL1VW7Q?t=332): `class BankAccount { double balance; String bankName; String ifsc; }`. Anyone can write `ba.balance = 100000;`, which is clearly wrong.
 - In real life you can't edit your balance. You **deposit** or **withdraw**, and the balance changes as a side effect. Mimic that.
 
-### Access modifiers [09:55]
+### Access modifiers [▶ ~09:55](https://youtu.be/jfLpzL1VW7Q?t=595)
 - They decide who can access a variable, method, constructor or class. Java has four levels: `public`, *default*, `protected`, `private`.
 - Putting `private` on `balance` makes `ba.balance` a compile error from outside the class: *"The field BankAccount.balance is not visible."*
 
-### `private` [13:19]
+### `private` [▶ ~13:19](https://youtu.be/jfLpzL1VW7Q?t=799)
 - Accessible **only inside the same class**. Methods of `BankAccount` (e.g. `withdraw`) can use `balance`, and nothing outside can.
 - Works on fields and methods: a `private void withdraw()` couldn't be called as `ba.withdraw()` from outside.
 
-### Default (package-private) [15:21]
+### Default (package-private) [▶ ~15:21](https://youtu.be/jfLpzL1VW7Q?t=921)
 - Accessible from any class **in the same package**.
-- **Package** [17:11]: like a folder that groups similar classes and interfaces.
+- **Package** [▶ ~17:11](https://youtu.be/jfLpzL1VW7Q?t=1031): like a folder that groups similar classes and interfaces.
 - Writing **no modifier** gives default access. Every field and class written without a modifier so far has been package-private.
 - *Correction:* the video calls `default` one of the four access-modifier "keywords". There's no `default` keyword for access. You get package-private access by writing *nothing* (`double balance;`). Writing `default double balance;` is a syntax error. (`default` is a keyword, but for `switch` labels and interface default methods.)
 
-### `protected` and `public` [18:32]
+### `protected` and `public` [▶ ~18:32](https://youtu.be/jfLpzL1VW7Q?t=1112)
 - `protected`: same package **plus subclasses**, even subclasses in other packages.
 - `public`: accessible from everywhere.
 - Strictness: `private` > default > `protected` > `public`.
-- In real code, **`private` and `public` are by far the most used** [20:26]. Package-private and `protected` are less common (the video says default is "hardly used").
+- In real code, **`private` and `public` are by far the most used** [▶ ~20:26](https://youtu.be/jfLpzL1VW7Q?t=1226). Package-private and `protected` are less common (the video says default is "hardly used").
 
 | Modifier | Same class | Same package | Subclass (other package) | Everywhere |
 |---|---|---|---|---|
@@ -73,92 +73,92 @@
 | `protected` | yes | yes | yes | no |
 | `public` | yes | yes | yes | yes |
 
-### Which modifiers can a class have? [22:01]
+### Which modifiers can a class have? [▶ ~22:01](https://youtu.be/jfLpzL1VW7Q?t=1321)
 - A **top-level** class can be `public` or package-private (no modifier). It **can't** be `private` ("private relative to what? There's only the package outside it") or `protected`.
 - Nested classes *can* be `private` or `protected` (covered later).
 - The `main` class has been `public`, and helper classes like `class Student` (no modifier) have been package-private.
 
-### Implementing encapsulation [24:56]
+### Implementing encapsulation [▶ ~24:56](https://youtu.be/jfLpzL1VW7Q?t=1496)
 - `private double balance;` plus `public void deposit(double amount)`, `public void withdraw(double amount)` and `public double getBalance()`.
 - Outside code calls `ba.deposit(500)` and `ba.withdraw(300)` but never touches `balance` directly.
 - In real code these methods hold **validations** (is the note genuine? is there enough balance?). That's the whole point: the field is reachable only through code that enforces the rules.
 - `getBalance()` is **read-only** access. There's deliberately **no `setBalance()`**.
-- **Getters and setters** [32:58] are the most common encapsulation tool. Methods like `deposit`/`withdraw` are domain ("functional") methods.
+- **Getters and setters** [▶ ~32:58](https://youtu.be/jfLpzL1VW7Q?t=1978) are the most common encapsulation tool. Methods like `deposit`/`withdraw` are domain ("functional") methods.
 
-### Encapsulation in code [33:47]
+### Encapsulation in code [▶ ~33:47](https://youtu.be/jfLpzL1VW7Q?t=2027)
 - With a public field, `ba.balance = <huge>` simply works. With `private` you get the "not visible" error. After deposit 500 and withdraw 300, `getBalance()` returns `200.0`.
-- **Student with getters/setters** [37:01]: all fields `private`, a constructor for the initial values, then `getName()`/`setName()`, `getCollege()`/`setCollege()`, …
+- **Student with getters/setters** [▶ ~37:01](https://youtu.be/jfLpzL1VW7Q?t=2221): all fields `private`, a constructor for the initial values, then `getName()`/`setName()`, `getCollege()`/`setCollege()`, …
   - (The video first types `public void getName()` and fixes it to `String`: a getter returns the field's type.)
   - "If there's a getter and a setter anyway, why not just make it public?" Because the setter can **validate**: the college must exist (e.g. check a list or an API), the name must have first and last name, the age can't be 200, the roll number has to be in range.
 - The withdraw validation should be `amount <= balance` (the video says "≥" and then corrects itself).
 
-### Packages in practice [43:31]
+### Packages in practice [▶ ~43:31](https://youtu.be/jfLpzL1VW7Q?t=2611)
 - Folder `video16/` with subfolders `school/` and `college/`, each with a `Student.java`. The same class name is fine in different packages.
 - The IDE adds `package college;` (or `package school;`) as the **first line**. Every class in that folder belongs to that package.
 - `Student.print()` prints "College student" or "School student".
 
-### `import` [47:14]
+### `import` [▶ ~47:14](https://youtu.be/jfLpzL1VW7Q?t=2834)
 - C/C++ use `#include`. Java uses `import packageName.ClassName;`, e.g. `import college.Student;`.
 - `s1.print()` from `Demo2` fails with *"The method print() from the type Student is not visible"*, because `print()` has default access and `Demo2` is in a different package.
   - A `Teacher` class in the `college` package (same file or a separate `Teacher.java`) **can** call it without any import.
   - Making `print()` `public` fixes `Demo2`. Creating `new Student()` from `Demo2` already worked because the class is `public` (and has an implicit public constructor).
-- Importing **both** `college.Student` and `school.Student` [52:53] gives the error *"The import school.Student collides with another import statement."* Use the **fully qualified name** for one (or both): `school.Student s2 = new school.Student();`.
-- Wildcard [54:30]: `import college.*;` imports every class in `college`.
+- Importing **both** `college.Student` and `school.Student` [▶ ~52:53](https://youtu.be/jfLpzL1VW7Q?t=3173) gives the error *"The import school.Student collides with another import statement."* Use the **fully qualified name** for one (or both): `school.Student s2 = new school.Student();`.
+- Wildcard [▶ ~54:30](https://youtu.be/jfLpzL1VW7Q?t=3270): `import college.*;` imports every class in `college`.
   - *Precision:* a wildcard doesn't import sub-packages. If two wildcards bring in the same simple name, using that name is ambiguous, so you still need the fully qualified name.
 
-### Built-in packages [56:27]
+### Built-in packages [▶ ~56:27](https://youtu.be/jfLpzL1VW7Q?t=3387)
 - `java.lang` (`String`, `System`, `Math`, …) is imported **automatically**. `java.util` holds the Collections Framework (`ArrayList`, …). `java.io` handles input and output.
 - `import java.util.ArrayList;` or `import java.util.*;`. Together these packages form the Java class library.
 
-### How imports work [58:01]
+### How imports work [▶ ~58:01](https://youtu.be/jfLpzL1VW7Q?t=3481)
 - The video's explanation: the compiler reads the imports and loads `ArrayList.class` (bytecode) into memory so there's no ambiguity.
 - *Correction:* `import` is purely a **compile-time name-resolution shortcut**. It doesn't load or copy any code, and the bytecode is the same as if you had written fully qualified names. At runtime the JVM's class loader loads `ArrayList.class` lazily, the first time the class is actually used.
-- Production packages are hierarchical, reverse-domain names [60:56] such as `com.company.project.module`. More on this in the Spring module.
+- Production packages are hierarchical, reverse-domain names [▶ ~60:56](https://youtu.be/jfLpzL1VW7Q?t=3656) such as `com.company.project.module`. More on this in the Spring module.
 
-### Inheritance: the is-a relationship [61:29]
+### Inheritance: the is-a relationship [▶ ~61:29](https://youtu.be/jfLpzL1VW7Q?t=3689)
 - *Car is a vehicle*, *bike is a vehicle*, *engineering student is a student*. Every child is a parent, but not every parent is that child.
 - Every vehicle can `start()`. A car starts *because* it's a vehicle, so write `start()` once in `Vehicle`.
 
-### `extends` [66:04]
+### `extends` [▶ ~66:04](https://youtu.be/jfLpzL1VW7Q?t=3964)
 - `class Car extends Vehicle { void setGear() {...} }`. `setGear` is car-specific (a bicycle has none), and `start()` is inherited.
 - `Car c = new Car(); c.start(); c.setGear();` both work.
 - If `Car` declares its own `start()`, then `c.start()` runs the car's version.
   - *Terminology:* the video calls this "shadowing" the parent's `start()`. For methods the correct term is **overriding**. *Hiding/shadowing* applies to fields (and static methods).
 
-### Benefits [68:51]
+### Benefits [▶ ~68:51](https://youtu.be/jfLpzL1VW7Q?t=4131)
 - **Code reusability** (no duplicated `start()` in every vehicle) and **support for polymorphism** (next video).
 
-### Inheritance in code [69:46]
+### Inheritance in code [▶ ~69:46](https://youtu.be/jfLpzL1VW7Q?t=4186)
 - `Student { name; age; markAttendance() }` and `EngineeringStudent extends Student { attendLab() }`. An `EngineeringStudent` can call both methods.
 - A plain `Student` **can't** call `attendLab()`: *"The method attendLab() is undefined for the type Student."* A parent knows nothing about its children's additions.
-- Parent = **superclass**, child = **subclass** [72:43].
+- Parent = **superclass**, child = **subclass** [▶ ~72:43](https://youtu.be/jfLpzL1VW7Q?t=4363).
 - Access and inheritance:
   - Default, `protected` and `public` parent methods are usable in the child (same package here).
   - A `private markAttendance()` is invisible to the child.
   - The video says the student "can't call it either". Precisely, it can't be called *from outside* `Student` (e.g. from `main` in another class). Code *inside* `Student` can still call it.
 
-### Types of inheritance [74:48]
+### Types of inheritance [▶ ~74:48](https://youtu.be/jfLpzL1VW7Q?t=4488)
 - **Single:** `Student` → `EngineeringStudent`.
-- **Multilevel** [75:43]: `Student` → `EngineeringStudent` → `CSEEngineeringStudent`. The grandchild can call `markAttendance()`, `attendLab()` and its own `attendCSELab()`, meaning all non-private members up the chain.
-- **Hierarchical** [78:03]: `EngineeringStudent` and `MedicalStudent` both extend `Student`. Each defines its own `attendLab()` ("Lab attended for Medical/Engineering student").
-- **Multiple** [81:11]: `class C extends A, B` is a **compile error** in Java. Java supports it only through **interfaces** (a class can implement many interfaces), covered later.
+- **Multilevel** [▶ ~75:43](https://youtu.be/jfLpzL1VW7Q?t=4543): `Student` → `EngineeringStudent` → `CSEEngineeringStudent`. The grandchild can call `markAttendance()`, `attendLab()` and its own `attendCSELab()`, meaning all non-private members up the chain.
+- **Hierarchical** [▶ ~78:03](https://youtu.be/jfLpzL1VW7Q?t=4683): `EngineeringStudent` and `MedicalStudent` both extend `Student`. Each defines its own `attendLab()` ("Lab attended for Medical/Engineering student").
+- **Multiple** [▶ ~81:11](https://youtu.be/jfLpzL1VW7Q?t=4871): `class C extends A, B` is a **compile error** in Java. Java supports it only through **interfaces** (a class can implement many interfaces), covered later.
 
-### The diamond problem [82:32]
+### The diamond problem [▶ ~82:32](https://youtu.be/jfLpzL1VW7Q?t=4952)
 - A has `show()`. B and C both extend A and override `show()`. If D could extend both B and C and didn't override `show()`, `d.show()` would be ambiguous.
 - *Correction:* the video says the compiler "won't be able to tell at runtime". The ambiguity is a **compile-time** design problem, and Java avoids it by forbidding multiple class inheritance. (With interface default methods, Java makes you resolve such clashes explicitly in the class.)
 
-### `super` [85:11]
+### `super` [▶ ~85:11](https://youtu.be/jfLpzL1VW7Q?t=5111)
 - `this` refers to the current object. **`super` refers to its parent-class part.**
 - **Use 1, parent fields:** if both `A` and `B extends A` declare `int x` (4 and 5), then inside `B`, `x` is 5 and `super.x` is 4.
 - **Use 2, parent methods:** `super.greet()` calls the parent's version, which is useful inside an override.
-- **Use 3 (most important), parent constructor** [87:41]: `super(...)` inside a child constructor runs the parent's constructor first.
+- **Use 3 (most important), parent constructor** [▶ ~87:41](https://youtu.be/jfLpzL1VW7Q?t=5261): `super(...)` inside a child constructor runs the parent's constructor first.
   - If you don't write it, Java inserts `super()` automatically.
 
-### `super` in code [89:05]
+### `super` in code [▶ ~89:05](https://youtu.be/jfLpzL1VW7Q?t=5345)
 - `Student { name, age, rollNumber; print() }` and `EngineeringStudent extends Student { college; print() { super.print(); /* then college */ } }`. Calling `es1.print()` prints all four values.
 - (`super.super.rollNumber` appears in the video by mistake. You can't chain `super.super`. With no name clash, plain `rollNumber` or `super.rollNumber` works.)
 - When the child declares a field with the same name (`x`), the child's own field wins, and `super.x` reaches the parent's.
-- Constructors [93:56]: `Student(String name, int age, int rollNumber)`, plus an explicit no-arg constructor because the parameterized one removes the default.
+- Constructors [▶ ~93:56](https://youtu.be/jfLpzL1VW7Q?t=5636): `Student(String name, int age, int rollNumber)`, plus an explicit no-arg constructor because the parameterized one removes the default.
   - `EngineeringStudent(String college)` alone leaves the inherited fields at `null 0 0`.
   - Better: `EngineeringStudent(String name, int age, int rollNumber, String college) { super(name, age, rollNumber); this.college = college; }`. The parent initializes its own fields, so the output is `Aditya, 28, 1001, IIT G`.
 - Why the no-arg parent constructor mattered: if a child constructor doesn't call `super(...)` explicitly, the compiler inserts `super()`, and that **fails to compile** when the parent has no no-arg constructor.

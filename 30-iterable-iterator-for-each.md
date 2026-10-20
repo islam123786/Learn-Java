@@ -28,103 +28,103 @@
 
 ## Detailed Notes
 
-### Where `Iterable` sits [00:00]
+### Where `Iterable` sits [▶ ~00:00](https://youtu.be/LVwpxEZ6uMQ?t=0)
 - Hierarchy recap: `Object`, then `Iterable`, then `Collection`, then `List` / `Queue` / `Set`, then the concrete classes. `Map` sits outside `Collection`.
 
-### Problem: iterate over *any* collection [00:56]
+### Problem: iterate over *any* collection [▶ ~00:56](https://youtu.be/LVwpxEZ6uMQ?t=56)
 - The collection might be an `ArrayList`, `LinkedList`, stack, queue, set or map. The goal is to traverse it and fetch the elements one by one.
-- First attempt, the index loop [02:47]:
+- First attempt, the index loop [▶ ~02:47](https://youtu.be/LVwpxEZ6uMQ?t=167):
   ```
   for (int i = 0; i < list.size(); i++) System.out.println(list.get(i));
   ```
   This works for an `ArrayList` (2, 3, 5, 9, 7, 8 printed in order).
 
-### Why the index loop isn't general [04:26]
+### Why the index loop isn't general [▶ ~04:26](https://youtu.be/LVwpxEZ6uMQ?t=266)
 - Structures split into two groups:
   - those that **keep insertion order and positions**: lists;
   - those that **don't**: `Set` and `Map` (placed by hash, used for O(1) lookup), and `Stack` / `Queue` (they follow LIFO or FIFO, and you only access the top or front).
 - Only `List` has `get(i)`. Sets, maps, stacks and queues don't, so the index loop can't be used for them.
-- Even for `LinkedList` [07:02]: nodes aren't in contiguous memory, so there's no random access. Each `get(i)` walks from the start, which makes the whole loop **O(n²)** [~09:30]. `get` exists (it comes from `List`), but it's very slow here.
-- Second attempt: use each structure's own API (repeatedly `pop()` a stack, `poll()` a queue until empty) [11:37]. The problem is that this **tightly couples** the loop to the underlying structure. If someone changes `new LinkedList<>()` to `new HashSet<>()`, the loop breaks.
+- Even for `LinkedList` [▶ ~07:02](https://youtu.be/LVwpxEZ6uMQ?t=422): nodes aren't in contiguous memory, so there's no random access. Each `get(i)` walks from the start, which makes the whole loop **O(n²)** [▶ ~09:30](https://youtu.be/LVwpxEZ6uMQ?t=570). `get` exists (it comes from `List`), but it's very slow here.
+- Second attempt: use each structure's own API (repeatedly `pop()` a stack, `poll()` a queue until empty) [▶ ~11:37](https://youtu.be/LVwpxEZ6uMQ?t=697). The problem is that this **tightly couples** the loop to the underlying structure. If someone changes `new LinkedList<>()` to `new HashSet<>()`, the loop breaks.
 
-### The solution: `Iterable` [12:09]
+### The solution: `Iterable` [▶ ~12:09](https://youtu.be/LVwpxEZ6uMQ?t=729)
 - Definition: *the root interface representing any object whose elements can be traversed one by one*. If a collection wants to be traversable, it implements `Iterable`.
-- Thought experiment [13:12]: picture an object X that walks over an array-backed list. To traverse anything it needs two operations:
+- Thought experiment [▶ ~13:12](https://youtu.be/LVwpxEZ6uMQ?t=792): picture an object X that walks over an array-backed list. To traverse anything it needs two operations:
   - `hasNext()`: is there another element? (returns `boolean`)
   - `next()`: return the element and move forward.
 - The caller doesn't need to know how X moves. That's **abstraction**.
-- `Iterable` has the important method `iterator()` [16:18], which returns an **`Iterator`**. `Iterator` is a *separate* interface, and it's the one that declares `hasNext()` and `next()`.
+- `Iterable` has the important method `iterator()` [▶ ~16:18](https://youtu.be/LVwpxEZ6uMQ?t=978), which returns an **`Iterator`**. `Iterator` is a *separate* interface, and it's the one that declares `hasNext()` and `next()`.
 
-### Demo: one loop, any collection [17:08]
+### Demo: one loop, any collection [▶ ~17:08](https://youtu.be/LVwpxEZ6uMQ?t=1028)
 - Code:
   ```
   Iterator<Integer> it = list.iterator();
   while (it.hasNext()) System.out.println(it.next());
   ```
   This prints `10 20 30 40 50`. `next()` both returns the element **and** advances the cursor. When the cursor reaches `size`, `hasNext()` is false.
-- In the JDK source [18:34]: `ArrayList` extends `AbstractList`, then `AbstractCollection`, which implements `Collection`, which extends `Iterable<E>`. `Iterable` declares `Iterator<E> iterator()`, and `Iterator<E>` declares `hasNext()` and `E next()`.
+- In the JDK source [▶ ~18:34](https://youtu.be/LVwpxEZ6uMQ?t=1114): `ArrayList` extends `AbstractList`, then `AbstractCollection`, which implements `Collection`, which extends `Iterable<E>`. `Iterable` declares `Iterator<E> iterator()`, and `Iterator<E>` declares `hasNext()` and `E next()`.
 - Swap the implementation and the loop stays unchanged:
   - `LinkedList` gives `10 20 30 40 50`.
-  - Declare it as `Collection<Integer> c` and assign it a `new HashSet<>()` [23:05]. That gives `50 20 40 10 30`, because a set stores by hash, not insertion order. The loop still works.
-  - `ArrayDeque` [24:06] gives `10 20 30 40 50` (FIFO order). `TreeSet` gives sorted order (it's backed by a BST).
+  - Declare it as `Collection<Integer> c` and assign it a `new HashSet<>()` [▶ ~23:05](https://youtu.be/LVwpxEZ6uMQ?t=1385). That gives `50 20 40 10 30`, because a set stores by hash, not insertion order. The loop still works.
+  - `ArrayDeque` [▶ ~24:06](https://youtu.be/LVwpxEZ6uMQ?t=1446) gives `10 20 30 40 50` (FIFO order). `TreeSet` gives sorted order (it's backed by a BST).
 
-### How it works inside [24:55]
+### How it works inside [▶ ~24:55](https://youtu.be/LVwpxEZ6uMQ?t=1495)
 - `Iterable` has `iterator()`, which returns an `Iterator`. `Iterator` has `hasNext()` and `next()`.
 - `ArrayList` implements `Iterable` indirectly, so it **must** implement `iterator()`. Since `Iterator` is an interface you can't instantiate it, so some class has to implement it. Conceptually: `class ArrayListIterator implements Iterator`, and `iterator()` does `return new ArrayListIterator();`.
 - `list.iterator()` hands you that object, stored in an `Iterator` reference `it`, and you call `it.hasNext()` / `it.next()` on it.
 - *(In the real JDK the class is the private inner class `ArrayList.Itr`. `LinkedList` uses `ListItr`, and `HashMap`'s key, value and entry iterators extend `HashIterator`.)*
 
-### Conceptual `ArrayList` iterator [31:07]
+### Conceptual `ArrayList` iterator [▶ ~31:07](https://youtu.be/LVwpxEZ6uMQ?t=1867)
 - Outer class: a private array `arr`, a private `size`, and `iterator()` overridden to return `new ArrayListIterator()`.
 - The iterator keeps a cursor `pos = 0`.
   - `hasNext()`: `return pos < size;`
   - `next()`: `return arr[pos++];` (postfix: return the current element, then advance).
-- Problem: the iterator needs `arr` and `size`, which are private to the list. The solution is **nested/inner classes** [36:09]. Put the iterator class *inside* the list class and it can read those private members directly, with no passing of objects around.
+- Problem: the iterator needs `arr` and `size`, which are private to the list. The solution is **nested/inner classes** [▶ ~36:09](https://youtu.be/LVwpxEZ6uMQ?t=2169). Put the iterator class *inside* the list class and it can read those private members directly, with no passing of objects around.
 - Trace: `pos` goes 0 to 5 while printing 1 to 5. At `pos == 5`, `hasNext()` is false and the loop ends.
 
-### Conceptual `LinkedList` iterator [40:18]
+### Conceptual `LinkedList` iterator [▶ ~40:18](https://youtu.be/LVwpxEZ6uMQ?t=2418)
 - There's no array, only nodes: `static class Node { int data; Node next; }` and a `head` reference.
 - `iterator()` returns `new LinkedListIterator()`, an inner class that keeps `Node current = head`.
   - `hasNext()`: `return current != null;`
   - `next()`: `int data = current.data; current = current.next; return data;`
 - The caller writes the same `while (it.hasNext()) … it.next()` loop.
 
-### Sets, maps, trees, queues [45:56]
+### Sets, maps, trees, queues [▶ ~45:56](https://youtu.be/LVwpxEZ6uMQ?t=2756)
 - Hash-based `Set`/`Map`: the iterator probably walks **bucket by bucket**, and within a bucket element by element through the chain.
 - `TreeSet`/`TreeMap` (a BST): the iterator gives an **in-order traversal**, so the elements come out sorted.
 - Array-backed queues and stacks: the iterator walks the underlying array.
 - *(Caveat: the legacy `Stack` class iterates bottom-to-top, in insertion order, **not** in pop order. `ArrayDeque` used as a stack via `push` iterates top-first.)*
 
-### Build your own iterable: `NameContainer` [47:11]
+### Build your own iterable: `NameContainer` [▶ ~47:11](https://youtu.be/LVwpxEZ6uMQ?t=2831)
 - `class NameContainer implements Iterable<String>` holds `private String[] names` and `private int size`.
 - Without `iterator()` you get the error "must implement the inherited abstract method". You override `public Iterator<String> iterator()` to return `new NameContainerIterator()`.
 - `private class NameContainerIterator implements Iterator<String>` keeps `private int pos = 0`, with `hasNext() { return pos < size; }` and `next() { return names[pos++]; }`.
 - Used in `main` with `Aditya, Rohit, Rohan, Monu`, it prints all four names.
-- **Anonymous class** [53:42]: the iterator class is only used in one place, so you can write `return new Iterator<String>() { ... };` directly inside `iterator()` and delete the named inner class. The output is the same.
+- **Anonymous class** [▶ ~53:42](https://youtu.be/LVwpxEZ6uMQ?t=3222): the iterator class is only used in one place, so you can write `return new Iterator<String>() { ... };` directly inside `iterator()` and delete the named inner class. The output is the same.
 
-### The for-each loop is sugar [54:43]
+### The for-each loop is sugar [▶ ~54:43](https://youtu.be/LVwpxEZ6uMQ?t=3283)
 - The iterator loop is verbose, so Java added the **enhanced for / for-each loop**: `for (String name : container) System.out.println(name);`
 - The compiler rewrites it into the `iterator()` / `hasNext()` / `next()` loop.
-- Proof [56:22]: remove `implements Iterable` from `NameContainer` and the for-each loop fails with **"Can only iterate over an array or an instance of java.lang.Iterable"**.
+- Proof [▶ ~56:22](https://youtu.be/LVwpxEZ6uMQ?t=3382): remove `implements Iterable` from `NameContainer` and the for-each loop fails with **"Can only iterate over an array or an instance of java.lang.Iterable"**.
 
-### Other methods of `Iterable` and `Iterator` [57:08]
+### Other methods of `Iterable` and `Iterator` [▶ ~57:08](https://youtu.be/LVwpxEZ6uMQ?t=3428)
 - `Iterable`: `iterator()`, plus `forEach(Consumer)` (covered later with lambdas and functional interfaces) and `spliterator()` (covered later with streams).
-- `Iterator` [57:43]: `hasNext()`, `next()`, **`remove()`**, and `forEachRemaining(Consumer)`.
+- `Iterator` [▶ ~57:43](https://youtu.be/LVwpxEZ6uMQ?t=3463): `hasNext()`, `next()`, **`remove()`**, and `forEachRemaining(Consumer)`.
   - `it.remove()` removes the element **last returned by `next()`**.
   - `remove()` is a `default` method, so you only *have* to implement `hasNext()` and `next()`. *(The default implementation throws `UnsupportedOperationException`.)*
-- **Why no `add()` on `Iterator`?** [58:31] For a list, "insert after the cursor" makes sense. For a set, the new element lands wherever its hash says, possibly *behind* the cursor, so the iterator would never visit it. A general `add` would be ill-defined. **`ListIterator`** (lists only) does have `add`, covered in the `List` video.
+- **Why no `add()` on `Iterator`?** [▶ ~58:31](https://youtu.be/LVwpxEZ6uMQ?t=3511) For a list, "insert after the cursor" makes sense. For a set, the new element lands wherever its hash says, possibly *behind* the cursor, so the iterator would never visit it. A general `add` would be ill-defined. **`ListIterator`** (lists only) does have `add`, covered in the `List` video.
 
-### `ConcurrentModificationException` [60:18]
+### `ConcurrentModificationException` [▶ ~60:18](https://youtu.be/LVwpxEZ6uMQ?t=3618)
 - Loop over `[1, 2, 3, 4, 5]` with an iterator. When `value == 3`, call `list.remove(...)`. The output is `1 2 3`, then **`ConcurrentModificationException`**.
 - Why: the list was modified *behind the iterator's back*. The iterator can no longer tell what it has or hasn't visited. With a set the removed element could be anywhere.
-- This is **fail-fast** behavior [63:32]: throw immediately rather than guess.
+- This is **fail-fast** behavior [▶ ~63:32](https://youtu.be/LVwpxEZ6uMQ?t=3812): throw immediately rather than guess.
 - *(Notes: (1) In the video's code `value` is an `int`, so `list.remove(value)` calls `remove(int index)` and removes the element at **index** 3, not the value 3. Use `list.remove(Integer.valueOf(3))` to remove by value. (2) The fix is `it.remove()`, or `list.removeIf(x -> x == 3)`. (3) Fail-fast is best-effort. Removing the second-to-last element happens to end the loop without an exception, so don't rely on CME to find bugs.)*
 
-### Why a separate `Iterator`? Why not let `ArrayList` implement `Iterator`? [63:42]
-- Reason 1, **separation of concerns** [65:16]: the collection's responsibility is storing data, and walking over it belongs to a separate object. This is the **Single Responsibility Principle** from SOLID / low-level design.
-- Reason 2, the more important one, **state** [67:09]. Suppose `MyArrayList` itself has `pos`, `hasNext()` and `next()`:
-  - After one full loop, `pos == size`, so a second loop prints nothing. You'd need a `reset()` method [70:04].
-  - **Nested loops** break [70:28]. The goal is all pairs (`10 10, 10 20, 10 30, 20 10, …`), but the inner loop moves the *same* `pos` that the outer loop uses. You get `10 20, 10 30` and then nothing. A `reset()` would also reset the outer loop. A fixed number of extra cursor fields doesn't scale to 3 or 4 nested loops.
+### Why a separate `Iterator`? Why not let `ArrayList` implement `Iterator`? [▶ ~63:42](https://youtu.be/LVwpxEZ6uMQ?t=3822)
+- Reason 1, **separation of concerns** [▶ ~65:16](https://youtu.be/LVwpxEZ6uMQ?t=3916): the collection's responsibility is storing data, and walking over it belongs to a separate object. This is the **Single Responsibility Principle** from SOLID / low-level design.
+- Reason 2, the more important one, **state** [▶ ~67:09](https://youtu.be/LVwpxEZ6uMQ?t=4029). Suppose `MyArrayList` itself has `pos`, `hasNext()` and `next()`:
+  - After one full loop, `pos == size`, so a second loop prints nothing. You'd need a `reset()` method [▶ ~70:04](https://youtu.be/LVwpxEZ6uMQ?t=4204).
+  - **Nested loops** break [▶ ~70:28](https://youtu.be/LVwpxEZ6uMQ?t=4228). The goal is all pairs (`10 10, 10 20, 10 30, 20 10, …`), but the inner loop moves the *same* `pos` that the outer loop uses. You get `10 20, 10 30` and then nothing. A `reset()` would also reset the outer loop. A fixed number of extra cursor fields doesn't scale to 3 or 4 nested loops.
 - With `Iterable`, the cursor lives in the iterator object, and **each `iterator()` call returns a new, independent iterator**. Outer and inner loops each get their own.
 
 ## Code Examples

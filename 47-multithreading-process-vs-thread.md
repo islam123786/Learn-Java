@@ -30,39 +30,39 @@
 
 ## Detailed Notes
 
-### Why multithreading? [00:36]
+### Why multithreading? [▶ ~00:36](https://youtu.be/fyAW0W526RM?t=36)
 - Normally the main thread executes your code top to bottom, one instruction at a time (with `if`s and loops branching the flow).
 - Multithreading adds more threads (T1, T2, T3, ...) that execute parts of the code alongside `main`.
 - Most people answer "to make the code faster". The video says that is only one advantage, and the smallest one.
-- Example [02:26]: an IDE such as VS Code autocompletes while it underlines compile errors. A natural design gives each job its own thread so they run side by side.
+- Example [▶ ~02:26](https://youtu.be/fyAW0W526RM?t=146): an IDE such as VS Code autocompletes while it underlines compile errors. A natural design gives each job its own thread so they run side by side.
 
-### What is a program? [03:48]
+### What is a program? [▶ ~03:48](https://youtu.be/fyAW0W526RM?t=228)
 - A set of instructions, for example `Demo.java`. `javac Demo.java` produces `Demo.class` (bytecode), which is still just a file on disk.
 - Running `java Demo` is what actually executes it. Installed apps (Chrome, VS Code, Spotify) are also just programs until you open them.
 
-### What is a process? [06:19]
+### What is a process? [▶ ~06:19](https://youtu.be/fyAW0W526RM?t=379)
 - **A program that is currently being executed is a process.**
 - Running something means the **OS loads it from disk into RAM**. The CPU only talks to RAM (through registers and caches), never directly to the disk.
 - Rough hardware path: CPU (registers) ↔ cache ↔ RAM ↔ disk/SSD.
-- RAM is limited [10:29]. With 8 GB, three processes using 2 GB each consume 6 GB. Each process uses only its own share.
+- RAM is limited [▶ ~10:29](https://youtu.be/fyAW0W526RM?t=629). With 8 GB, three processes using 2 GB each consume 6 GB. Each process uses only its own share.
 - A Java process's share holds the JVM memory areas: heap, stack, method area and program counter (see the memory-management video).
-- What a process needs [13:21]: **RAM**, **CPU time**, and **resources** (files, network), which the OS provides.
-- **Processes don't share memory** [15:04]. P1 (e.g. Chrome) can never look into P2's (e.g. VS Code's) memory.
+- What a process needs [▶ ~13:21](https://youtu.be/fyAW0W526RM?t=801): **RAM**, **CPU time**, and **resources** (files, network), which the OS provides.
+- **Processes don't share memory** [▶ ~15:04](https://youtu.be/fyAW0W526RM?t=904). P1 (e.g. Chrome) can never look into P2's (e.g. VS Code's) memory.
 
-### What is a thread? [15:44]
+### What is a thread? [▶ ~15:44](https://youtu.be/fyAW0W526RM?t=944)
 - Textbook definition: *the smallest sequence of instructions that can be executed by the CPU independently*, also called a *lightweight process*.
 - A process is a big chunk, and it can be divided into multiple threads. Java always creates the **main thread**, and you can create T1, T2, ... in your code (how: next video). They all belong to the same process.
 - The CPU works with **threads, not processes**. "Running process P1" really means running P1's threads.
-- On a **single-core** CPU [18:13] only one thread runs at a time: main for a while, then T1, then T2, then main again, and so on. A core is roughly "one thing at a time". Modern CPUs have 8, 10 or more.
+- On a **single-core** CPU [▶ ~18:13](https://youtu.be/fyAW0W526RM?t=1093) only one thread runs at a time: main for a while, then T1, then T2, then main again, and so on. A core is roughly "one thing at a time". Modern CPUs have 8, 10 or more.
 
-### Inside a Java process: the JVM [22:18]
+### Inside a Java process: the JVM [▶ ~22:18](https://youtu.be/fyAW0W526RM?t=1338)
 - The OS creates the process. The **JVM** then starts inside it and manages everything within it (threads, memory). The OS's job ends at creating the process.
 - JVM duties: load classes, run bytecode, manage memory (stack, heap, method area), run garbage collection.
 - The JVM splits the process's memory (e.g. 2 GB) into heap (the largest part), method area, stack and PC.
-- **OS view vs JVM view** [24:33]. Language-independent OS books describe process memory as *code segment, data segment, heap, stack, registers*. The JVM's view maps onto that roughly as: code/data segments → **method area**, heap → **heap**, stack → **stack**, registers → **program counter**. There is also a native method stack for native (C/C++) code.
-- Why the JVM has its own layout [25:56]: Java is **platform independent**, so it doesn't follow each OS's layout. It defines its own areas and takes the memory for them from whatever RAM the platform has. A C++ program has no JVM layer, so the OS manages its memory directly.
+- **OS view vs JVM view** [▶ ~24:33](https://youtu.be/fyAW0W526RM?t=1473). Language-independent OS books describe process memory as *code segment, data segment, heap, stack, registers*. The JVM's view maps onto that roughly as: code/data segments → **method area**, heap → **heap**, stack → **stack**, registers → **program counter**. There is also a native method stack for native (C/C++) code.
+- Why the JVM has its own layout [▶ ~25:56](https://youtu.be/fyAW0W526RM?t=1556): Java is **platform independent**, so it doesn't follow each OS's layout. It defines its own areas and takes the memory for them from whatever RAM the platform has. A C++ program has no JVM layer, so the OS manages its memory directly.
 
-### What happens when you run `java Demo` [28:32]
+### What happens when you run `java Demo` [▶ ~28:32](https://youtu.be/fyAW0W526RM?t=1712)
 1. The JVM loads into the process.
 2. The JVM's **class loader** finds and loads the main class (the one with `main`).
 3. The JVM creates the **main thread**.
@@ -70,7 +70,7 @@
 5. Execution starts at `main()`: a **stack frame** for `main` is pushed onto the main thread's stack and holds its local variables.
 - PC holds the current instruction. Stack holds the method being executed. Heap holds objects. Method area holds class metadata.
 
-### Multiple threads in one process [31:12]
+### Multiple threads in one process [▶ ~31:12](https://youtu.be/fyAW0W526RM?t=1872)
 ```
 Process
 └── JVM
@@ -80,24 +80,24 @@ Process
     └── Thread-1    → own Stack + own PC
 ```
 
-### Single core: context switching and concurrency [32:57]
+### Single core: context switching and concurrency [▶ ~32:57](https://youtu.be/fyAW0W526RM?t=1977)
 - The CPU fetches each instruction from the current thread's **PC**, executes it, and keeps intermediate values in its **registers**. For `a = b + c * d`, the CPU computes `c * d` into a register first, then adds `b`.
-- With main and T1 both ready, a single core can't run both. The OS **context switches** [36:35]: run main for a time slice (imagine 0.5 s), pause it, run T1, pause it, run main again, and so on.
-- When a thread is paused, its progress has to be saved so it can resume where it stopped. For example, a loop paused at iteration 50 resumes at 51, not 0. The video says the progress goes into the thread's **PC** (the next instruction) and its **stack**, with intermediate values in the frame's **operand stack** [38:46].
+- With main and T1 both ready, a single core can't run both. The OS **context switches** [▶ ~36:35](https://youtu.be/fyAW0W526RM?t=2195): run main for a time slice (imagine 0.5 s), pause it, run T1, pause it, run main again, and so on.
+- When a thread is paused, its progress has to be saved so it can resume where it stopped. For example, a loop paused at iteration 50 resumes at 51, not 0. The video says the progress goes into the thread's **PC** (the next instruction) and its **stack**, with intermediate values in the frame's **operand stack** [▶ ~38:46](https://youtu.be/fyAW0W526RM?t=2326).
 - *(Correction/precision: at the hardware level the OS saves the CPU's registers into the thread's kernel data structure when it switches. The JVM operand stack is part of the method frame and simply stays where it is. The idea is the same: everything needed to resume is saved per thread.)*
-- **Concurrent execution** [40:00]: several threads are ready, only one makes progress at any instant, and over time all of them progress (e.g. main 50 % done, T1 40 % done). Switching is fast enough that it *looks* simultaneous. That is how an old single-core PC still seemed to autocomplete and check errors at the same time.
+- **Concurrent execution** [▶ ~40:00](https://youtu.be/fyAW0W526RM?t=2400): several threads are ready, only one makes progress at any instant, and over time all of them progress (e.g. main 50 % done, T1 40 % done). Switching is fast enough that it *looks* simultaneous. That is how an old single-core PC still seemed to autocomplete and check errors at the same time.
 
-### Multiple cores: true parallelism [41:56]
+### Multiple cores: true parallelism [▶ ~41:56](https://youtu.be/fyAW0W526RM?t=2516)
 - With 2 cores, core 1 can run main and core 2 can run T1 at the same moment, with no context switching needed.
-- If main and T1 each need 3 s of CPU, parallel execution finishes both in about **3 s**. Concurrent execution on one core takes about **6 s** in total. This is **true parallelism** [43:43], and it is where the "multithreading makes code faster" claim comes from.
+- If main and T1 each need 3 s of CPU, parallel execution finishes both in about **3 s**. Concurrent execution on one core takes about **6 s** in total. This is **true parallelism** [▶ ~43:43](https://youtu.be/fyAW0W526RM?t=2623), and it is where the "multithreading makes code faster" claim comes from.
 - Concurrency alone is often enough, for example to keep a UI responsive.
 
-### Real machines: both at once [45:41]
+### Real machines: both at once [▶ ~45:41](https://youtu.be/fyAW0W526RM?t=2741)
 - Many processes (Chrome, VS Code, your Java app), each with several threads, give far more threads than cores. Example: 5 threads on 2 cores.
 - Each core runs threads in **parallel** with the other core, and each core also **context switches** among the waiting (runnable) threads. A thread may run on core 1 now and core 2 later.
 - The CPU doesn't care which process a thread belongs to. It might run T1 from process 1 and then T3 from process 2. Which thread goes where is decided by the **OS scheduler**, not by you. You only control which threads are ready to run.
 
-### Multitasking vs multithreading [48:17]
+### Multitasking vs multithreading [▶ ~48:17](https://youtu.be/fyAW0W526RM?t=2897)
 | | Multitasking | Multithreading |
 |---|---|---|
 | Level | Operating system concept | Programming concept |

@@ -28,83 +28,83 @@
 
 ## Detailed Notes
 
-### Recap: the critical section [00:38]
+### Recap: the critical section [▶ ~00:38](https://youtu.be/k9sURAu0xT8?t=38)
 - Critical section: code that only one thread at a time should enter, for example `Counter.increment()` doing `count++`. The shared resource is `count`.
 - `count++` is non-atomic (read, increment, write), so several threads inside it at once cause a race condition.
 
-### Adding `synchronized` [02:04]
+### Adding `synchronized` [▶ ~02:04](https://youtu.be/k9sURAu0xT8?t=124)
 - The demo from #50: one `Counter c1`, T1 and T2 each calling `c1.increment()` 10,000 times, `join` both, print. The result is less than 20,000 (e.g. 12,016).
-- Writing `synchronized void increment()` [03:12] makes it print **20,000 every run**. It can never be lower, and it can't be higher either.
+- Writing `synchronized void increment()` [▶ ~03:12](https://youtu.be/k9sURAu0xT8?t=192) makes it print **20,000 every run**. It can never be lower, and it can't be higher either.
 
-### How it works step by step [05:06]
+### How it works step by step [▶ ~05:06](https://youtu.be/k9sURAu0xT8?t=306)
 1. T1 enters the synchronized method and **acquires the lock**.
-2. T2 tries to acquire the same lock and goes to the **BLOCKED** state [05:21].
+2. T2 tries to acquire the same lock and goes to the **BLOCKED** state [▶ ~05:21](https://youtu.be/k9sURAu0xT8?t=321).
 3. T1 performs the task (read, increment, write). Even if T1 is **context switched out** halfway (for example after reading), T2 still can't enter, because T1 still owns the lock. It's like T1 locking a house and stepping out: nobody else gets in.
 4. When T1 comes back it finishes, and as soon as T1 **exits** it releases the lock. T2 moves BLOCKED → RUNNABLE, then runs and acquires the lock itself, so a T3 would have to wait for it.
 - The name comes from this: it turns non-deterministic, asynchronous access into an orderly, *in sync*, one-at-a-time sequence.
 
-### Demo: `show()` with sleep [08:51]
+### Demo: `show()` with sleep [▶ ~08:51](https://youtu.be/k9sURAu0xT8?t=531)
 - `class Test { void show() { print(name + " inside show"); sleep 2 s; print(name + " show finished"); } }`, with two threads calling `test.show()` on the same object.
 - Without `synchronized`, both print "inside show" first, then both print "finished".
 - With `synchronized`, Thread-0 does inside then finished, and only then does Thread-1 do inside then finished. Sleeping inside a synchronized method **keeps the lock**.
 
-### Why we need `synchronized` [11:57]
+### Why we need `synchronized` [▶ ~11:57](https://youtu.be/k9sURAu0xT8?t=717)
 1. To **protect shared data**.
 2. To **make any operation atomic**. The whole block runs as one unit from other threads' point of view.
 3. To **ensure visibility**. Changes made inside are seen by the next thread that takes the same lock (fresh reads from main memory).
 4. To **prevent reordering** around the critical section.
-- Common confusion [13:26]: only the **synchronized region** is exclusive. Code outside it still runs concurrently or in parallel in all threads.
+- Common confusion [▶ ~13:26](https://youtu.be/k9sURAu0xT8?t=806): only the **synchronized region** is exclusive. Code outside it still runs concurrently or in parallel in all threads.
 
-### Monitor locks / object locks [13:57]
+### Monitor locks / object locks [▶ ~13:57](https://youtu.be/k9sURAu0xT8?t=837)
 - The mechanism behind `synchronized` is called **monitor locks**, also known as object locks.
-- A lock is like a **permission token** [14:21]. A thread asks for it before entering the critical section and gets it only if nobody else holds it. Otherwise it goes to BLOCKED. When the holder leaves, a blocked thread becomes RUNNABLE and then has to acquire the lock itself.
+- A lock is like a **permission token** [▶ ~14:21](https://youtu.be/k9sURAu0xT8?t=861). A thread asks for it before entering the critical section and gets it only if nobody else holds it. Otherwise it goes to BLOCKED. When the holder leaves, a blocked thread becomes RUNNABLE and then has to acquire the lock itself.
 - Java also has more advanced locks (explicit locks, later videos).
-- **`synchronized` locks an object, not a method** [16:09]:
+- **`synchronized` locks an object, not a method** [▶ ~16:09](https://youtu.be/k9sURAu0xT8?t=969):
   - **Every Java object has an inherent (intrinsic) lock**, maintained by the JVM, which decides when it is acquired and released.
   - `synchronized void increment1()`, `increment2()` and `increment3()` in the same class all use the lock of `this`. If T1 is in any of them on object `c1`, T2 can't enter **any** of them on `c1`.
 
-### Demo: two synchronized methods, one object [17:43]
+### Demo: two synchronized methods, one object [▶ ~17:43](https://youtu.be/k9sURAu0xT8?t=1063)
 - `Test` has `synchronized m1()` and `synchronized m2()`, each printing entered, sleeping 2 s, and printing exit. T1 calls `test.m1()` and T2 calls `test.m2()`.
 - Output: m1 entered → m1 exit → m2 entered → m2 exit (or m2 first). They are different methods, but they share the **same lock**.
-- **One object = one lock** [21:08]. Whoever holds it blocks every synchronized method of that object.
-- **Two objects = two locks** [21:40]. With `test1` and `test2`, T1 can run `test1.m1()` while T2 runs `test2.m1()` at the same time, because they acquire different locks.
+- **One object = one lock** [▶ ~21:08](https://youtu.be/k9sURAu0xT8?t=1268). Whoever holds it blocks every synchronized method of that object.
+- **Two objects = two locks** [▶ ~21:40](https://youtu.be/k9sURAu0xT8?t=1300). With `test1` and `test2`, T1 can run `test1.m1()` while T2 runs `test2.m1()` at the same time, because they acquire different locks.
 
-### Synchronized blocks [22:50]
+### Synchronized blocks [▶ ~22:50](https://youtu.be/k9sURAu0xT8?t=1370)
 - Often only a small part of a method is critical. Like a `static` block, Java has a **synchronized block**: `synchronized (this) { count++; }`, where the parentheses take the **object whose lock** you want.
 - Moving only `count++` into `synchronized (this)` (with the method itself not synchronized) still gives 20,000.
 - Why bother: every lock acquire/release has **overhead**, so the smaller the locked region, the better.
 
-### Custom lock objects [25:00]
-- Problem [26:11]: a `Bank` with `synchronized deposit()` and `synchronized withdraw()` (each sleeping 2 s). With one `Bank b1`, a deposit blocks a withdraw, because both lock `this`.
-- Since every object has a lock, create dedicated lock objects [28:17]:
+### Custom lock objects [▶ ~25:00](https://youtu.be/k9sURAu0xT8?t=1500)
+- Problem [▶ ~26:11](https://youtu.be/k9sURAu0xT8?t=1571): a `Bank` with `synchronized deposit()` and `synchronized withdraw()` (each sleeping 2 s). With one `Bank b1`, a deposit blocks a withdraw, because both lock `this`.
+- Since every object has a lock, create dedicated lock objects [▶ ~28:17](https://youtu.be/k9sURAu0xT8?t=1697):
   - `Object lock1 = new Object();` and `Object lock2 = new Object();`
   - `deposit()` uses `synchronized (lock1) { ... }` and `withdraw()` uses `synchronized (lock2) { ... }`.
 - Result: a deposit and a withdraw **can run in parallel**, but two deposits (or two withdraws) still can't. Each operation is still protected against itself.
   - *(Caution: this is only correct if deposit and withdraw don't touch the **same** data. If both update one `balance`, they have to share one lock, or the race comes back. Use separate locks only for truly independent state.)*
 
-### Interview question: `synchronized (new Object())` [30:39]
+### Interview question: `synchronized (new Object())` [▶ ~30:39](https://youtu.be/k9sURAu0xT8?t=1839)
 - Using `this` or `lock1` in `m1()` lets one thread in at a time, as expected.
-- `synchronized (new Object()) { ... }` [32:30] creates a **new object, with a new lock, on every entry**. Every thread gets its own lock, so all of them enter together. It is the same as having no synchronization at all.
+- `synchronized (new Object()) { ... }` [▶ ~32:30](https://youtu.be/k9sURAu0xT8?t=1950) creates a **new object, with a new lock, on every entry**. Every thread gets its own lock, so all of them enter together. It is the same as having no synchronization at all.
 
-### Static synchronization [33:49]
+### Static synchronization [▶ ~33:49](https://youtu.be/k9sURAu0xT8?t=2029)
 - `static` members belong to the class. For `static synchronized void increment()` with `static int count`, called as `Counter.increment()` from two threads (each sleeping 2 s and then printing the count): it prints 1, then after a gap prints 2. It is exclusive.
-- There's no object, so what is locked? The **class**, or precisely its `Class` object. These two are equivalent [37:45]:
+- There's no object, so what is locked? The **class**, or precisely its `Class` object. These two are equivalent [▶ ~37:45](https://youtu.be/k9sURAu0xT8?t=2265):
   - `static synchronized void increment() { ... }`
   - `static void increment() { synchronized (Counter.class) { ... } }`
   - `this` is not allowed in a static context.
-- **Class lock vs object lock** [39:04]: in `Test`, make `m1()` static with `synchronized (Test.class)` and keep `m2()` with `synchronized (this)`. T1 calls `Test.m1()` and T2 calls `test.m2()`. Both enter **at the same time**, because one locks the class and the other locks the instance, which are different locks. Calling the static method through an instance (`test.m1()`) gives only a warning and still locks `Test.class`.
+- **Class lock vs object lock** [▶ ~39:04](https://youtu.be/k9sURAu0xT8?t=2344): in `Test`, make `m1()` static with `synchronized (Test.class)` and keep `m2()` with `synchronized (this)`. T1 calls `Test.m1()` and T2 calls `test.m2()`. Both enter **at the same time**, because one locks the class and the other locks the instance, which are different locks. Calling the static method through an instance (`test.m1()`) gives only a warning and still locks `Test.class`.
 - One class has one class-level lock, and each object has one object-level lock.
 
-### How locks work internally (conceptual) [41:37]
+### How locks work internally (conceptual) [▶ ~41:37](https://youtu.be/k9sURAu0xT8?t=2497)
 - Picture each object's lock as a small record:
   ```
   lock { ownerThread = null, isLocked = false, waitingQueue = [] }
   ```
 - Acquiring the lock (pseudocode): `if (!obj.lock.isLocked) { obj.lock.isLocked = true; obj.lock.owner = currentThread; } else { obj.lock.waitingQueue.add(currentThread); /* BLOCKED */ }`
-- Isn't that **check-then-act** [45:00]? Two threads could both see `isLocked == false`. The JVM makes this acquisition **atomic** using **CAS (compare-and-swap)**, a single CPU instruction that sets the value only if it still has the expected one. *(The transcript says "cash/kaash". It is CAS.)* More about CAS later.
+- Isn't that **check-then-act** [▶ ~45:00](https://youtu.be/k9sURAu0xT8?t=2700)? Two threads could both see `isLocked == false`. The JVM makes this acquisition **atomic** using **CAS (compare-and-swap)**, a single CPU instruction that sets the value only if it still has the expected one. *(The transcript says "cash/kaash". It is CAS.)* More about CAS later.
 - *(Precision: in HotSpot the lock state lives in the object header's "mark word" and is acquired via CAS, inflating to a full OS-backed monitor under contention. Also note that Java monitors are **reentrant**: a thread already holding a lock can enter another `synchronized` section on the same object without blocking itself.)*
 
-### Cost and alternatives [47:16]
+### Cost and alternatives [▶ ~47:16](https://youtu.be/k9sURAu0xT8?t=2836)
 - Overusing `synchronized` creates **overhead** and makes programs **slower** (threads queue up, and parallelism is lost).
 - In production, people often prefer better mechanisms such as explicit locks and **optimistic locking**, which doesn't actually lock and is faster under low contention. These come in the next videos.
 

@@ -30,28 +30,28 @@
 
 ## Detailed Notes
 
-### `Thread.sleep()` [01:40]
+### `Thread.sleep()` [▶ ~01:40](https://youtu.be/ZPxJby0GeOQ?t=100)
 - *(The first ~1.5 minutes are a course announcement.)*
 - `Thread.sleep(2000)` inside `main` prints "main thread starts", pauses for 2 s, then prints "main thread ends". The thread that sleeps is always the **current** one, because `sleep` is static.
 - It must be wrapped in `try/catch (InterruptedException e)` because `InterruptedException` is **checked** (otherwise you get an "unhandled exception" compile error).
 - State path: RUNNABLE → **TIMED_WAITING** → RUNNABLE, and then it runs when the CPU picks it again. As covered in #48, "running" is part of RUNNABLE in Java.
 - **Sleeping doesn't release locks.** If the thread is inside a critical section, every other thread waiting for that lock keeps waiting for the whole sleep.
 
-### `join()` [03:50]
+### `join()` [▶ ~03:50](https://youtu.be/ZPxJby0GeOQ?t=230)
 - Without coordination: `main` starts T1 (which prints "Thread-0 starts") and prints "main thread ends". The order is non-deterministic, but usually `main` finishes first because the new thread isn't scheduled immediately. With a 2 s sleep inside T1, "main thread ends" almost always comes before "Thread-0 starts".
 - **`t1.join()` called in `main`** means "main, go to WAITING until T1 terminates". Everything after that line runs only after T1 is done. Output: main starts → (2 s) → Thread-0 starts → main ends.
   - State path: main RUNNABLE → WAITING. T1 RUNNABLE → TERMINATED, then main WAITING → RUNNABLE → TERMINATED.
 - `join` also throws `InterruptedException`. The demo adds `throws InterruptedException` to `main` for convenience, which the video notes is a bad habit in real code.
 - **Overload `join(ms)`**: wait *at most* that long. With `t1.join(1000)` and a 2 s sleep inside T1: main starts → (1 s) → main ends → (1 s) → Thread-0 starts. A timed join puts the caller in **TIMED_WAITING**, not WAITING.
 
-### `Thread.yield()` [09:45]
+### `Thread.yield()` [▶ ~09:45](https://youtu.be/ZPxJby0GeOQ?t=585)
 - Static. The current thread says: "if another runnable thread with the **same priority** wants the CPU, I'm willing to give it my time."
 - The thread **doesn't** go to WAITING, TIMED_WAITING or BLOCKED. It stays **RUNNABLE**.
 - It is only a **request/suggestion to the OS**, which can ignore it completely. Java runs inside the JVM, and the OS and CPU decide what actually runs.
 - Demo: T1 and T2 each print 1..10. Without `yield`, the output is mixed in some random order. With `Thread.yield()` after each print in T1, in one run T1 printed 1, then T2 printed 1–9, then T1 printed 2, and so on. T2 got most of the CPU. There is no guarantee this happens.
 - It is not used in production. It can be handy when testing scheduling or context-switching behavior.
 
-### `interrupt()` [15:40]
+### `interrupt()` [▶ ~15:40](https://youtu.be/ZPxJby0GeOQ?t=940)
 - `t1.interrupt()` is an **instance** method. It *sends a signal* to T1 that it should stop what it is doing. It does **not** force T1 to stop.
 - Internally every thread has an **interrupt flag**, `false` by default. `interrupt()` sets it to `true`, and that's all.
 - Demo 1: T1 runs `while (true) println("running")`. Calling `t1.interrupt()` changes nothing, and it keeps printing forever (the video stops it by hand).
@@ -60,28 +60,28 @@
   - With `main` sleeping 2 s before calling `t1.interrupt()`, "running" prints for about 2 s and then the program ends on its own. This is **handling interruption gracefully**.
 - Uses: run a thread **until an external condition** happens, **cancel a long-running background task**, and **stopping thread pools** (executors interrupt their workers on `shutdownNow()`).
 
-### `isInterrupted()` vs `interrupted()` [22:15]
+### `isInterrupted()` vs `interrupted()` [▶ ~22:15](https://youtu.be/ZPxJby0GeOQ?t=1335)
 - `isInterrupted()` returns the flag's value and **doesn't change it**.
 - `interrupted()` returns the flag's value **and resets it to `false`**.
 - *(Precision: `Thread.interrupted()` is **static** and always checks the **current** thread. `isInterrupted()` is an instance method you can call on any thread.)*
 - Why `sleep`/`join`/`wait` throw `InterruptedException`: if a thread is sleeping, joining or waiting (TIMED_WAITING or WAITING) and someone calls `interrupt()` on it, it wakes up immediately with `InterruptedException`. The compiler can't know whether that will happen, so the exception is checked.
   - *(Precision: the video phrases this as "you cannot call interrupt on a sleeping thread". You can, and that is exactly how you wake it up early. Also note that when the exception is thrown, the flag is **cleared**, so code that catches it usually calls `Thread.currentThread().interrupt()` to restore the flag.)*
 
-### `isAlive()` [24:40]
+### `isAlive()` [▶ ~24:40](https://youtu.be/ZPxJby0GeOQ?t=1480)
 - A thread is alive from `start()` until it terminates. It is "dead" both **before it starts** and **after it ends**, like a life between birth and death.
 - Demo: T1 sleeps 2 s. `isAlive()` before `start()` is `false`. Right after `start()` it is `true`, even while T1 sleeps. After `main` sleeps 3 s it is `false`, because T1 has terminated.
 
-### `currentThread()`, `getName()`, `setName()` [27:20]
+### `currentThread()`, `getName()`, `setName()` [▶ ~27:20](https://youtu.be/ZPxJby0GeOQ?t=1640)
 - `Thread.currentThread()` returns a reference to the running thread, and you can call any method on it (`getName()`, `getPriority()`, and the deprecated `getId()`).
 - The default name is `Thread-0`. `t1.setName("worker1")` (before starting) makes it print `worker1`.
 - Good names matter for logging. In thread pools, threads are usually called **workers**.
 
-### Thread priority [29:40]
+### Thread priority [▶ ~29:40](https://youtu.be/ZPxJby0GeOQ?t=1780)
 - `t1.getPriority()` gives **5** by default. In the `Thread` source: `MIN_PRIORITY = 1`, `NORM_PRIORITY = 5`, `MAX_PRIORITY = 10`.
 - `t1.setPriority(10)` tells the OS "this thread is more important, prefer it".
 - It is **only an indication**. Depending on the OS, it may be respected, partially respected, or ignored completely. T1 with priority 10 usually printed before T2 with priority 5, but not always. It is rarely used.
 
-### Daemon threads [33:10]
+### Daemon threads [▶ ~33:10](https://youtu.be/ZPxJby0GeOQ?t=1990)
 - **Background-running threads are called daemon threads.** Java has two kinds: **user threads** (the default, everything created so far) and **daemon threads**.
 - A user thread keeps the program running. A T1 with `while (true) println("running")` keeps going even after `main` returns.
 - **`t1.setDaemon(true)` before `start()`** means the JVM doesn't wait for this thread. When `main` (the last user thread) finishes, the daemon is stopped immediately.

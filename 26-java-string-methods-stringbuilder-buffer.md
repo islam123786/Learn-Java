@@ -30,70 +30,70 @@
 
 ## Detailed Notes
 
-### Recap: literal vs `new` [00:00]
+### Recap: literal vs `new` [▶ ~00:00](https://youtu.be/JcAD9a22Rks?t=0)
 - `String s1 = "Hello";` goes to the **String Pool**. `String s2 = new String("Hello");` goes to the **regular heap** (and the literal argument is also in the pool). See #25.
 
-### String constructors [01:40]
-- **Empty** [02:16]: `new String()` and `new String("")` both give an empty string, which prints nothing (not `null`, not a space).
+### String constructors [▶ ~01:40](https://youtu.be/JcAD9a22Rks?t=100)
+- **Empty** [▶ ~02:16](https://youtu.be/JcAD9a22Rks?t=136): `new String()` and `new String("")` both give an empty string, which prints nothing (not `null`, not a space).
 - **From a String**: `new String("Hello")`. A heap object, plus the pooled literal.
 - **From another String variable**: `new String(s3)` creates another heap copy, while `s3` stays the pooled one.
-- **From a `char[]`** [05:13]: `new String(arr)` gives `"Aditya"`. The String **copies** the array, so `arr[0] = 'B'` afterwards doesn't change it. That's immutability at work.
-- **From part of a `char[]`**: `new String(arr, 0, 6)` takes the first 6 chars of `"Aditya Tandon"`, giving `"Aditya"`. The IDE shows the parameters as **`(value, offset, count)`** [09:03]. The one-argument version simply uses `offset = 0, count = value.length`.
-- **From a `byte[]`** [06:41]: `new String(new byte[]{97, 98, 99})` gives `"abc"`. You can also give an offset and count: `(arr2, 0, 2)` gives `"ab"`.
-- **From `StringBuilder`/`StringBuffer`** [12:05]: `new String(sb)` gives `"Hello"`.
+- **From a `char[]`** [▶ ~05:13](https://youtu.be/JcAD9a22Rks?t=313): `new String(arr)` gives `"Aditya"`. The String **copies** the array, so `arr[0] = 'B'` afterwards doesn't change it. That's immutability at work.
+- **From part of a `char[]`**: `new String(arr, 0, 6)` takes the first 6 chars of `"Aditya Tandon"`, giving `"Aditya"`. The IDE shows the parameters as **`(value, offset, count)`** [▶ ~09:03](https://youtu.be/JcAD9a22Rks?t=543). The one-argument version simply uses `offset = 0, count = value.length`.
+- **From a `byte[]`** [▶ ~06:41](https://youtu.be/JcAD9a22Rks?t=401): `new String(new byte[]{97, 98, 99})` gives `"abc"`. You can also give an offset and count: `(arr2, 0, 2)` gives `"ab"`.
+- **From `StringBuilder`/`StringBuffer`** [▶ ~12:05](https://youtu.be/JcAD9a22Rks?t=725): `new String(sb)` gives `"Hello"`.
 
 > **Correction:** the video describes the third argument as an "ending index, exclusive", written `[0, 6)`. The parameter is actually a **count** (how many chars to take, starting at `offset`). The two only agree when `offset` is 0. `new String(arr, 7, 6)` takes 6 chars starting at index 7 ("Tandon"), not indexes 7 to 6.
 
-### Don't memorize, group [15:32]
+### Don't memorize, group [▶ ~15:32](https://youtu.be/JcAD9a22Rks?t=932)
 - The String class has dozens of methods, many of them overloaded. Learn **what operations exist**. Type `s.` in the IDE for the rest.
 
 > **Correction:** while motivating this, the video mentions a String `reverse` method. **`String` has no `reverse()`.** Reversing is done with `new StringBuilder(s).reverse().toString()`.
 
-### Length and emptiness [15:34]
+### Length and emptiness [▶ ~15:34](https://youtu.be/JcAD9a22Rks?t=934)
 - `s.length()` is a **method** for Strings, while arrays use the **field** `arr.length` (no parentheses).
 - `s.isEmpty()` is true only when `length() == 0`.
-- `s.isBlank()` (**Java 11**) [18:08] is true when the string is empty **or contains only whitespace**.
+- `s.isBlank()` (**Java 11**) [▶ ~18:08](https://youtu.be/JcAD9a22Rks?t=1088) is true when the string is empty **or contains only whitespace**.
 - For `"     "` (5 spaces): `length()` is 5, `isEmpty()` is false, `isBlank()` is true.
 
-### Character access [19:13]
+### Character access [▶ ~19:13](https://youtu.be/JcAD9a22Rks?t=1153)
 - `s.charAt(2)` on `"Aditya"` gives `'i'` (0-based index).
-- `s.toCharArray()` [20:22] returns a **new** `char[]` copy: `['A','d','i','t','y','a']`.
+- `s.toCharArray()` [▶ ~20:22](https://youtu.be/JcAD9a22Rks?t=1222) returns a **new** `char[]` copy: `['A','d','i','t','y','a']`.
 
-### Comparison [20:57]
+### Comparison [▶ ~20:57](https://youtu.be/JcAD9a22Rks?t=1257)
 - `s1 == s2` compares references. Two `new String("Aditya")` objects give **false**.
 - `s1.equals(s2)` compares content and gives **true**. String overrides `Object.equals` (see #22).
-- `s1.equalsIgnoreCase(s2)` [22:42] is true for `"Aditya"` vs `"ADITYA"`.
-- `s1.compareTo(s2)` [23:26] is a **lexicographic** (dictionary-order) comparison. It's negative if s1 comes first, 0 if the strings are equal, positive if s1 comes after.
+- `s1.equalsIgnoreCase(s2)` [▶ ~22:42](https://youtu.be/JcAD9a22Rks?t=1362) is true for `"Aditya"` vs `"ADITYA"`.
+- `s1.compareTo(s2)` [▶ ~23:26](https://youtu.be/JcAD9a22Rks?t=1406) is a **lexicographic** (dictionary-order) comparison. It's negative if s1 comes first, 0 if the strings are equal, positive if s1 comes after.
   - `"ABC".compareTo("ABD")` is −1. `"ABC".compareTo("ABE")` is −2. Equal strings give 0.
 
 > **Correction:** the video suggests `compareTo` adds up the characters' ASCII values and subtracts the totals. It actually finds the **first index where the strings differ** and returns `s1.charAt(k) - s2.charAt(k)` (C − D = −1, C − E = −2). If one string is a prefix of the other, it returns the **length difference** (`"ab".compareTo("abcd")` is −2). There's also `compareToIgnoreCase`.
 
-### Searching [25:57]
-- `s.contains("ity")` is true. Its parameter type is **`CharSequence`** [26:50], an interface that `String`, `StringBuilder` and `StringBuffer` all implement.
+### Searching [▶ ~25:57](https://youtu.be/JcAD9a22Rks?t=1557)
+- `s.contains("ity")` is true. Its parameter type is **`CharSequence`** [▶ ~26:50](https://youtu.be/JcAD9a22Rks?t=1610), an interface that `String`, `StringBuilder` and `StringBuffer` all implement.
 - `s.indexOf('i')` is 2. `indexOf` has many overloads (char given as `int`, String, with a start index…). `s.indexOf("ity")` is also **2**, the index where the substring *starts*. Both return −1 if the target isn't found.
-- `s.lastIndexOf("ity")` [28:55] on `"Adityaity"` gives 6.
-- `s.startsWith("Ad")` is true. `s.endsWith("ya")` [29:32] checks the suffix.
+- `s.lastIndexOf("ity")` [▶ ~28:55](https://youtu.be/JcAD9a22Rks?t=1735) on `"Adityaity"` gives 6.
+- `s.startsWith("Ad")` is true. `s.endsWith("ya")` [▶ ~29:32](https://youtu.be/JcAD9a22Rks?t=1772) checks the suffix.
 
-### Extraction and transformation [29:56]
+### Extraction and transformation [▶ ~29:56](https://youtu.be/JcAD9a22Rks?t=1796)
 - `s.substring(1, 4)` on `"Aditya"` gives `"dit"`, using the range **[1, 4)**. `s.substring(1)` gives `"ditya"` (to the end).
-- `toUpperCase()` / `toLowerCase()` [31:58].
-- `trim()` [32:16] removes **leading and trailing** whitespace and never touches the inside: `"  Aditya  Tandon  "` becomes `"Aditya  Tandon"`.
-- `strip()` [33:15] (**Java 11**) does the same but is **Unicode-aware**. It also removes Unicode whitespace such as the em space (`\u2003`), which `trim()` (only chars ≤ `' '`) leaves alone. `stripLeading()` and `stripTrailing()` also exist.
-- `repeat(3)` [33:38] (**Java 11**) gives `"AdityaAdityaAditya"`.
+- `toUpperCase()` / `toLowerCase()` [▶ ~31:58](https://youtu.be/JcAD9a22Rks?t=1918).
+- `trim()` [▶ ~32:16](https://youtu.be/JcAD9a22Rks?t=1936) removes **leading and trailing** whitespace and never touches the inside: `"  Aditya  Tandon  "` becomes `"Aditya  Tandon"`.
+- `strip()` [▶ ~33:15](https://youtu.be/JcAD9a22Rks?t=1995) (**Java 11**) does the same but is **Unicode-aware**. It also removes Unicode whitespace such as the em space (`\u2003`), which `trim()` (only chars ≤ `' '`) leaves alone. `stripLeading()` and `stripTrailing()` also exist.
+- `repeat(3)` [▶ ~33:38](https://youtu.be/JcAD9a22Rks?t=2018) (**Java 11**) gives `"AdityaAdityaAditya"`.
 - `replace('i', 'o')` gives `"Adotya"`. `replace("it", "ABC")` gives `"AdABCya"`. Both overloads replace **every** occurrence.
-- `replaceAll("Ad", "Ab")` [35:13].
-- `split(",")` [35:51] turns `"Aditya,Rohit,Rohan"` into `["Aditya", "Rohit", "Rohan"]`, which you then loop over with for-each. It's useful for parsing comma- or hyphen-separated data from the web.
-- `String.join("-", "a", "b", "c")` [38:00] gives `"a-b-c"`. It's **static**. A typical use is building composite keys.
+- `replaceAll("Ad", "Ab")` [▶ ~35:13](https://youtu.be/JcAD9a22Rks?t=2113).
+- `split(",")` [▶ ~35:51](https://youtu.be/JcAD9a22Rks?t=2151) turns `"Aditya,Rohit,Rohan"` into `["Aditya", "Rohit", "Rohan"]`, which you then loop over with for-each. It's useful for parsing comma- or hyphen-separated data from the web.
+- `String.join("-", "a", "b", "c")` [▶ ~38:00](https://youtu.be/JcAD9a22Rks?t=2280) gives `"a-b-c"`. It's **static**. A typical use is building composite keys.
 
 > **Correction:** the video presents `replaceAll` as "like `replace`, but it replaces all occurrences". **`replace` already replaces all occurrences.** The real difference is that **`replaceAll` (and `replaceFirst`) treat the first argument as a regular expression**. `"a.b.c".replace(".", "-")` gives `"a-b-c"`, but `"a.b.c".replaceAll(".", "-")` gives `"-----"`, because `.` means "any character". Likewise, **`split` takes a regex**, so splitting on a dot needs `split("\\.")`.
 
-### Conversion [39:07]
+### Conversion [▶ ~39:07](https://youtu.be/JcAD9a22Rks?t=2347)
 - There's no `new String(int)` constructor. Use the static **`String.valueOf(10)`**, which gives `"10"`. It's overloaded for every primitive, `char[]` and `Object`. Compare `Integer.valueOf`, which boxes an `int`.
-- `s.getBytes()` [40:06] returns a `byte[]` of the string's encoded bytes.
+- `s.getBytes()` [▶ ~40:06](https://youtu.be/JcAD9a22Rks?t=2406) returns a `byte[]` of the string's encoded bytes.
 
 > **Correction:** the on-screen output for `"Aditya".getBytes()` is transcribed as "65, 105, 116, 127". The actual bytes are **`65, 100, 105, 116, 121, 97`**. Also, `getBytes()` encodes with a charset (the platform default, which is **UTF-8 since Java 18**), so it doesn't expose String's internal storage. For non-ASCII text, call `getBytes(StandardCharsets.UTF_8)` explicitly.
 
-### Advanced: `intern()` [41:04]
+### Advanced: `intern()` [▶ ~41:04](https://youtu.be/JcAD9a22Rks?t=2464)
 - `String s5 = new String("Hello");` puts an object in the regular heap. (`"Hello"` is also in the pool, but unreferenced.)
 - `String s6 = s5;` gives `s5 == s6` → **true** (same heap object).
 - `s5.intern()` looks for `"Hello"` in the pool, adding it if it's missing, and **returns the pooled reference**. After `s6 = s5.intern();`, `s5 == s6` is **false** (heap vs pool).
@@ -101,54 +101,54 @@
 
 > **Correction:** the video phrases it as "`s5.intern()` and then s6 moves to the pool". `intern()` **doesn't change any variable**. It returns a reference, and you must assign it (`s6 = s5.intern();`). Calling `s5.intern();` on its own line leaves both `s5` and `s6` where they were.
 
-### Advanced: `String.format` [44:45]
+### Advanced: `String.format` [▶ ~44:45](https://youtu.be/JcAD9a22Rks?t=2685)
 - The `+` version, `"Hello " + name + ", your age is " + age`, works but is hard to read.
 - `String.format("Hello %s, your age is %s", name, age)` (static) fills the placeholders **in order**. `%s` works for anything. Specific ones are `%d` (integer), `%.2f` (2-decimal float), `%n` (newline). Java 15+ also has `"...".formatted(args)`.
 
-### The immutability problem, again [47:53]
+### The immutability problem, again [▶ ~47:53](https://youtu.be/JcAD9a22Rks?t=2873)
 - Each String operation (e.g. `toUpperCase`) produces a new object while the old one waits for the GC. Many operations mean many objects.
 - The fix is two **mutable** classes that modify the same object: **`StringBuilder`** and **`StringBuffer`**.
   - StringBuilder: **not thread-safe**. StringBuffer: **thread-safe**. Otherwise the methods and constructors are the same.
-  - Both extend **`AbstractStringBuilder`** [49:43] and live in `java.lang`.
+  - Both extend **`AbstractStringBuilder`** [▶ ~49:43](https://youtu.be/JcAD9a22Rks?t=2983) and live in `java.lang`.
 
-### StringBuilder internals [50:52]
+### StringBuilder internals [▶ ~50:52](https://youtu.be/JcAD9a22Rks?t=3052)
 - Fields (conceptually): a `byte[] value` (like String's, plus an internal, non-exposed coder) and an **`int count`**.
 - `new StringBuilder("Java")` allocates a buffer **bigger than needed**, so that `sb.append(" is cool")` can write into the free space without creating a new object.
 - **count** is the number of positions used (4 for "Java"). **capacity** is the total size of the internal array, empty slots included.
-- **Initial capacity is 16** [53:42].
-- Growth [55:05]: when the buffer is full, new capacity = **old × 2 + 2**. 16 → 34 → 70 → …. The old contents are copied into the new array. It's a **dynamic array** handled for you.
+- **Initial capacity is 16** [▶ ~53:42](https://youtu.be/JcAD9a22Rks?t=3222).
+- Growth [▶ ~55:05](https://youtu.be/JcAD9a22Rks?t=3305): when the buffer is full, new capacity = **old × 2 + 2**. 16 → 34 → 70 → …. The old contents are copied into the new array. It's a **dynamic array** handled for you.
 
-### StringBuilder constructors [56:47]
+### StringBuilder constructors [▶ ~56:47](https://youtu.be/JcAD9a22Rks?t=3407)
 - `new StringBuilder()` has capacity **16**.
 - `new StringBuilder(50)` has capacity **50**, an explicit initial size.
-- `new StringBuilder("Java")` has capacity **16 + length = 20** [58:11], and the first 4 slots hold "Java".
+- `new StringBuilder("Java")` has capacity **16 + length = 20** [▶ ~58:11](https://youtu.be/JcAD9a22Rks?t=3491), and the first 4 slots hold "Java".
 - (The video doesn't show it, but there's also `new StringBuilder(CharSequence)`.)
 
-### StringBuilder methods [59:18]
+### StringBuilder methods [▶ ~59:18](https://youtu.be/JcAD9a22Rks?t=3558)
 - `append("Aditya")`, then `append(" Tandon")`, gives `"Aditya Tandon"`. `append` is overloaded for every type and returns `this`, so calls can be **chained**.
-- `insert(2, "O")` [60:05] on `"Aditya"` gives `"AdOitya"`. It shifts the rest right and doesn't overwrite.
+- `insert(2, "O")` [▶ ~60:05](https://youtu.be/JcAD9a22Rks?t=3605) on `"Aditya"` gives `"AdOitya"`. It shifts the rest right and doesn't overwrite.
 - `delete(0, 2)` removes the range [0, 2), so `"AdOitya Tandon"` becomes `"Oitya Tandon"`. It modifies the **same object**.
-- `deleteCharAt(i)` [62:02] removes a single character.
-- `replace(1, 3, "xy")` [62:17] replaces the range [1, 3). On `"Aditya Tandon"` that gives **`"Axytya Tandon"`** ("di" replaced).
-- `reverse()` [63:31] reverses in place.
-- `charAt(i)` reads a character. `setCharAt(i, 'R')` [63:59] overwrites one.
-- `length()` vs `capacity()` [64:25]: for `"Aditya"` in a default builder, length is **6** and capacity is **16**. Appending "Tandon" (12 chars) keeps it at 16. Five more chars make 17, which exceeds 16, so the capacity becomes **34**.
-- `ensureCapacity(100)` [66:13] guarantees *at least* 100. If the builder is at 34, it becomes **100** (the larger of 100 and 34×2+2 = 70). The alternative is to presize with `new StringBuilder(100)`.
-- `trimToSize()` [67:22] shrinks the capacity down to the current length (34 → **17**) when you're done appending.
+- `deleteCharAt(i)` [▶ ~62:02](https://youtu.be/JcAD9a22Rks?t=3722) removes a single character.
+- `replace(1, 3, "xy")` [▶ ~62:17](https://youtu.be/JcAD9a22Rks?t=3737) replaces the range [1, 3). On `"Aditya Tandon"` that gives **`"Axytya Tandon"`** ("di" replaced).
+- `reverse()` [▶ ~63:31](https://youtu.be/JcAD9a22Rks?t=3811) reverses in place.
+- `charAt(i)` reads a character. `setCharAt(i, 'R')` [▶ ~63:59](https://youtu.be/JcAD9a22Rks?t=3839) overwrites one.
+- `length()` vs `capacity()` [▶ ~64:25](https://youtu.be/JcAD9a22Rks?t=3865): for `"Aditya"` in a default builder, length is **6** and capacity is **16**. Appending "Tandon" (12 chars) keeps it at 16. Five more chars make 17, which exceeds 16, so the capacity becomes **34**.
+- `ensureCapacity(100)` [▶ ~66:13](https://youtu.be/JcAD9a22Rks?t=3973) guarantees *at least* 100. If the builder is at 34, it becomes **100** (the larger of 100 and 34×2+2 = 70). The alternative is to presize with `new StringBuilder(100)`.
+- `trimToSize()` [▶ ~67:22](https://youtu.be/JcAD9a22Rks?t=4042) shrinks the capacity down to the current length (34 → **17**) when you're done appending.
 
-### What StringBuilder doesn't have [69:08]
+### What StringBuilder doesn't have [▶ ~69:08](https://youtu.be/JcAD9a22Rks?t=4148)
 - StringBuilder is **not a superset of String**. Comparison and transformation helpers such as `equalsIgnoreCase`, `toUpperCase`, `split` and `trim` are missing. Build first, then convert to a String.
-- Converting back [69:51]: `String s = sb.toString();`. `println(sb)` works because println calls `toString()` for you.
+- Converting back [▶ ~69:51](https://youtu.be/JcAD9a22Rks?t=4191): `String s = sb.toString();`. `println(sb)` works because println calls `toString()` for you.
 
-### Interview trap: `equals` [70:51]
+### Interview trap: `equals` [▶ ~70:51](https://youtu.be/JcAD9a22Rks?t=4251)
 - `new StringBuilder("Aditya").equals(new StringBuilder("Aditya"))` is **false**. StringBuilder/StringBuffer **don't override `equals`**, so `Object.equals` (reference comparison) is used.
 - To compare contents: `sb1.toString().equals(sb2.toString())`, `sb1.compareTo(sb2) == 0` (Java 11+), or `"Aditya".contentEquals(sb1)`.
 
-### StringBuffer and thread safety [71:45]
+### StringBuffer and thread safety [▶ ~71:45](https://youtu.be/JcAD9a22Rks?t=4305)
 - Use StringBuffer when you need **mutability plus thread safety**. It has the same methods and constructors as StringBuilder, but all of them are **`synchronized`**.
-- Race condition [73:24]: two threads appending to one shared builder at the same time can interfere, because they both enter the "critical section" together. Synchronization lets one thread in at a time.
+- Race condition [▶ ~73:24](https://youtu.be/JcAD9a22Rks?t=4404): two threads appending to one shared builder at the same time can interfere, because they both enter the "critical section" together. Synchronization lets one thread in at a time.
 - The cost is locking overhead, so **StringBuilder is faster**.
-- In practice [74:29] StringBuilder is used about 90% of the time. Real code usually keeps builders local to one thread, or protects shared state with its own locks around the critical section. And for values that don't change, a plain immutable `String` is already thread-safe.
+- In practice [▶ ~74:29](https://youtu.be/JcAD9a22Rks?t=4469) StringBuilder is used about 90% of the time. Real code usually keeps builders local to one thread, or protects shared state with its own locks around the critical section. And for values that don't change, a plain immutable `String` is already thread-safe.
 
 > **Correction:** the video illustrates the race with thread 2 appending "B" before thread 1 appends "A" ("HelloBA" instead of "HelloAB"). **Synchronization doesn't fix ordering.** StringBuffer can still produce either order. What it prevents is **corruption**: lost characters, wrong length, or `ArrayIndexOutOfBoundsException` when two unsynchronized appends resize the buffer at the same moment. If order matters, you need extra coordination, such as joining threads or holding one lock around the whole sequence.
 

@@ -32,76 +32,76 @@
 
 ## Detailed Notes
 
-### Recap: where things live [00:00]
+### Recap: where things live [▶ ~00:00](https://youtu.be/7yd5qO2TPr0?t=0)
 - `Student s1 = new Student(...)`: `new` allocates the object (with fields `name`, `age`, `rollNumber`, `college`) on the **heap**, and the reference `s1` is on the **stack**.
 - We know `int` is 4 bytes and `double` is 8. What do a reference and an object cost?
 
-### Size of a reference [00:50]
+### Size of a reference [▶ ~00:50](https://youtu.be/7yd5qO2TPr0?t=50)
 - 4 bytes on a 64-bit JVM using compression (the default), and 8 bytes on some JVM configurations. It varies between JVMs, but think **4 bytes** by default.
 
-### Naive object size, and why it's wrong [02:30]
+### Naive object size, and why it's wrong [▶ ~02:30](https://youtu.be/7yd5qO2TPr0?t=150)
 - Fields: `String name` (reference, 4) + `int age` (4) + `int rollNumber` (4) + `String college` (reference, 4) = **16 bytes**. The real size is larger.
 - Three contributors: **header**, **exact field data**, **padding**.
 
-### Object header [04:10]
+### Object header [▶ ~04:10](https://youtu.be/7yd5qO2TPr0?t=250)
 - Also called the object header. It stores the object's **metadata** (data about data).
 - **Mark word: 8 bytes.** Locking information, synchronization state and GC information (covered later, with multithreading and garbage collection).
 - **Class pointer: 4 bytes** (or 8). The video loosely compares it to a reference. More precisely, it points to the object's *class metadata*, which is how the JVM knows the object is a `Student`.
 - Header total: **12 bytes** (with compressed class pointers).
 
-### Field data and padding [08:20]
+### Field data and padding [▶ ~08:20](https://youtu.be/7yd5qO2TPr0?t=500)
 - Field data for `Student` is 16 bytes. Header + data = 28 bytes.
 - CPUs move data in 8-byte chunks, so the JVM keeps every object a **multiple of 8 bytes**. The next multiple after 28 is 32, so there are **4 bytes of padding**.
 - **`Student` object = 12 + 16 + 4 = 32 bytes.**
 
-### Practice: a `Person` with a `byte age` [11:00]
+### Practice: a `Person` with a `byte age` [▶ ~11:00](https://youtu.be/7yd5qO2TPr0?t=660)
 - A `byte` is enough for an age (range −128..127. The video says "−18", a slip).
 - Header 12 + field 1 = 13. The next multiple of 8 is 16, so 3 bytes of padding.
 - *Correction:* the video adds 12 + 1 + 3 and says **18 bytes**. The correct total is **16 bytes** (12 + 1 + 3 = 16).
 - *Note:* these figures are the object's own ("shallow") size. The `String` objects that `name` and `college` point to are separate heap objects with their own headers and character arrays. To measure real sizes, use the OpenJDK **JOL** (Java Object Layout) tool.
 
-### Call by value: the surprising primitive example [13:20]
+### Call by value: the surprising primitive example [▶ ~13:20](https://youtu.be/7yd5qO2TPr0?t=800)
 - `int x = 4, y = 5;` and `static void add10(int x, int y) { x = x + 10; y = y + 10; }`.
 - It prints `4 5`, calls `add10(x, y)`, and prints again: still **`4 5`**.
 
-### Same idea with an object [15:00]
+### Same idea with an object [▶ ~15:00](https://youtu.be/7yd5qO2TPr0?t=900)
 - `class Random { int x, y; Random(int x, int y) {...} }`, `Random r1 = new Random(4, 5)`, and `add10(Random r) { r.x += 10; r.y += 10; }`.
 - Print, call `add10(r1)`, print again: **`4 5` → `14 15`**. This time the change stuck. Why?
 
-### Walking through the primitive case [16:40]
+### Walking through the primitive case [▶ ~16:40](https://youtu.be/7yd5qO2TPr0?t=1000)
 - `main`'s frame has `x = 4`, `y = 5`. Calling `add10(x, y)` creates **new** parameter variables `x`, `y` in `add10`'s frame and **copies** 4 and 5 into them.
 - `add10` changes its own copies to 14 and 15. When it returns, its frame (and those copies) disappears.
 - Back in `main`, the original `x`, `y` are untouched, so it prints `4 5`. This is **call by value**.
 
-### What call by reference would be (C++ only) [20:30]
+### What call by reference would be (C++ only) [▶ ~20:30](https://youtu.be/7yd5qO2TPr0?t=1230)
 - If the parameters were aliases of `main`'s `x` and `y`, then `x = x + 10` would change `main`'s variables. That's **call by reference**, and C/C++ support it (C++ through `int&`).
 - **Java has no call by reference.** Everything is call by value.
 
-### Walking through the object case [23:00]
+### Walking through the object case [▶ ~23:00](https://youtu.be/7yd5qO2TPr0?t=1380)
 - Heap: one `Random` object `{x=4, y=5}`. Stack: `r1` holds its address (say 1001).
 - Calling `add10(r1)` creates a **new** parameter variable `r` and copies `r1`'s *value* into it. That value is the address 1001, so `r` points at **the same object**.
 - `r.x = r.x + 10` follows the address and changes the shared object to `{14, 15}`.
 - When the method returns, `r` disappears (it was a local). The object's fields have already changed, so `r1.x`, `r1.y` print `14 15`.
 
-### "Java is call by value for primitives and call by reference for objects": wrong [29:30]
+### "Java is call by value for primitives and call by reference for objects": wrong [▶ ~29:30](https://youtu.be/7yd5qO2TPr0?t=1770)
 - A common fresher mistake in interviews. Java is **only** call by value. For objects, the value being copied is a reference, so you get a *call-by-reference-like effect* (shared mutations), but the reference itself is a copy.
 - A quick test that proves it: reassigning the parameter (`r = new Random(0, 0)`) inside the method does **not** change what `r1` points to. True call by reference would.
 
-### Non-primitives as parameters, return types and constructor arguments [31:30]
+### Non-primitives as parameters, return types and constructor arguments [▶ ~31:30](https://youtu.be/7yd5qO2TPr0?t=1890)
 - A method can take an object (`add10(Random r)`) and also **return** one (`Random add10(Random r) { …; return r; }`).
 - A constructor can take an object of its own class, which is a **copy constructor**:
   `Random(Random r) { this.x = r.x; this.y = r.y; }`, used as `Random r2 = new Random(r1);`.
 
-### Copy constructor in memory [33:30]
+### Copy constructor in memory [▶ ~33:30](https://youtu.be/7yd5qO2TPr0?t=2010)
 - `new` allocates a **second** object. The constructor's parameter `r` is a copy of `r1`'s reference, and it's used to read 4 and 5 into the new object.
 - `r1` and `r2` now point to **different** objects with equal values. Changing `r2.x` to 14 doesn't affect `r1`.
 
-### `r3 = r1`: just another reference [37:30]
+### `r3 = r1`: just another reference [▶ ~37:30](https://youtu.be/7yd5qO2TPr0?t=2250)
 - `Random r3 = r1;` has no `new`, so no object is created. `r3` gets the same address as `r1`.
 - `r3.x = 14` is visible as `r1.x == 14`, and vice versa.
 - Rule of thumb: **every `new` creates an independent object**, and plain assignment only shares one.
 
-### Deep copy vs shallow copy [40:30]
+### Deep copy vs shallow copy [▶ ~40:30](https://youtu.be/7yd5qO2TPr0?t=2430)
 - The video's naming: `r2 = new Random(r1)` (new object, values copied) is a **deep copy**. `r3 = r1` (same object) is a **shallow copy**.
 - Sometimes you want two names for one object (shared state). Sometimes you want independent copies.
 - *Terminology note:* in standard usage, `r3 = r1` is **reference assignment (aliasing)**, not a copy at all. A **shallow copy** is a *new* object whose fields are copied as-is, so any **reference fields** still point to the same nested objects. A **deep copy** also copies those nested objects recursively. For a class with only primitive fields, like `Random`, shallow and deep copies behave the same. The difference shows up when a field is itself an object or an array (see the last code example).

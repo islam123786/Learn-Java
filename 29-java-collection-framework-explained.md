@@ -36,19 +36,19 @@
 
 ## Detailed Notes
 
-### Why data structures exist [00:00]
+### Why data structures exist [▶ ~00:00](https://youtu.be/mW2OO6d6_BE?t=0)
 - Code is about **data**. We store it so that we can **query** it efficiently.
 - Example: an unsorted array `3, 7, 10, 1, 4, 12`.
   - Appending is **O(1)**: just put the new element at the end.
   - "Find the largest" is **O(n)**: you have to scan every element.
 
-### Sorted array: the first trade-off [03:18]
+### Sorted array: the first trade-off [▶ ~03:18](https://youtu.be/mW2OO6d6_BE?t=198)
 - Keep the array sorted (ascending). Then the largest element is always `arr[arr.length - 1]`, which is **O(1)**.
 - Inserting (e.g. `6`) now costs **O(n)**: find the position, then shift every larger element one step to the right.
 - Lesson: **every data structure is a trade-off.** Optimize for your most frequent query.
 - Java gives you classes for nearly every data structure. You could also build them yourself from user-defined types (classes and objects).
 
-### Dynamic array → `ArrayList` [07:24]
+### Dynamic array → `ArrayList` [▶ ~07:24](https://youtu.be/mW2OO6d6_BE?t=444)
 - Limits of a plain array: the size is fixed (`new int[10]` holds indexes 0–9). Writing `arr[10]` throws `ArrayIndexOutOfBoundsException`. Over-allocating (`new int[1000]`) wastes memory.
 - The idea: keep a private internal array with an initial capacity and expose methods:
   - `add(el)`: put the element in the next free slot. If the array is full, create an array **twice the size**, copy the old values, then add.
@@ -56,9 +56,9 @@
   - `insert(index, el)`: shift the elements from `index` onward one step right, then place the element (grow first if full). This is different from *replace*.
   - `delete`, `replace`, … in the same way.
 - The class can be made generic (`T`) instead of `int`.
-- Java's version is **`ArrayList`** [16:40].
+- Java's version is **`ArrayList`** [▶ ~16:40](https://youtu.be/mW2OO6d6_BE?t=1000).
 
-### Linked list → `LinkedList` [17:00]
+### Linked list → `LinkedList` [▶ ~17:00](https://youtu.be/mW2OO6d6_BE?t=1020)
 - Problem: you insert a lot, and every array insert shifts O(n) elements.
 - Arrays use **contiguous memory** (for `int`s at addresses 1000, 1004, 1008, …). A linked list drops that requirement.
 - A **node** holds `data` plus a reference to another `Node`. A class can hold a reference to its own type.
@@ -75,7 +75,7 @@
   - Expose `add`, `insert`, `remove`, and so on. That's abstraction.
 - Java's version is **`LinkedList`**. You use it without knowing how it works inside, but you should understand that from DSA.
 
-### Set → `HashSet` / `LinkedHashSet` [32:15]
+### Set → `HashSet` / `LinkedHashSet` [▶ ~32:15](https://youtu.be/mW2OO6d6_BE?t=1935)
 - Requirements: (1) no duplicates, (2) `contains(x)` in **O(1)**.
 - With a plain array, both are O(n). You'd have to scan for duplicates and scan for membership.
 - **Version 1: direct indexing** (values in a known range, e.g. 0–100):
@@ -83,24 +83,24 @@
   - `add(el)`: `arr[el] = el`. Duplicates just overwrite themselves, so there's never more than one copy.
   - `contains(el)`: `arr[el] == el`. Both operations are O(1).
   - This breaks down when the range is huge (up to a crore, i.e. 10⁷, or more). The array would be enormous and mostly empty.
-- **Version 2: modulo** [39:26]:
+- **Version 2: modulo** [▶ ~39:26](https://youtu.be/mW2OO6d6_BE?t=2366):
   - Use a fixed-size array (e.g. 10) and store each element at `el % arr.length`. For example, 1 → 1, 10 → 0, 6 → 6, 12 → 2.
   - `contains(el)` checks `arr[el % arr.length] == el`. Still O(1).
-- **Chaining** [42:35]: `100 % 10 == 0` collides with `10`. That isn't a duplicate, so you can't overwrite it. Each slot becomes a linked list instead (10 → 100 → 1000). If the chains get long, **double the array** and re-distribute every element through the modulo again (rehashing).
-- **Non-numbers** [44:29], e.g. unique email IDs (strings): call `Object.hashCode()` to get an `int`, then take it modulo the capacity.
+- **Chaining** [▶ ~42:35](https://youtu.be/mW2OO6d6_BE?t=2555): `100 % 10 == 0` collides with `10`. That isn't a duplicate, so you can't overwrite it. Each slot becomes a linked list instead (10 → 100 → 1000). If the chains get long, **double the array** and re-distribute every element through the modulo again (rehashing).
+- **Non-numbers** [▶ ~44:29](https://youtu.be/mW2OO6d6_BE?t=2669), e.g. unique email IDs (strings): call `Object.hashCode()` to get an `int`, then take it modulo the capacity.
 - Java's versions are **`HashSet`** and **`LinkedHashSet`**. The difference between them is covered in a later video.
 
-### Stack and Queue → `Stack`, `Queue`, `ArrayDeque` [45:40]
+### Stack and Queue → `Stack`, `Queue`, `ArrayDeque` [▶ ~45:40](https://youtu.be/mW2OO6d6_BE?t=2740)
 - **Stack (LIFO)**: push 2, 3, 4, 5 and you pop 5, 4, 3, 2. Entry and exit happen on the same side, and nothing is removed from the middle. Think of a stack of plates.
 - Building one on an array: expose **only** `add` (push) and `remove()` (pop, which takes no argument). Leave out insert and replace.
   - The naive version keeps the top at index 0 and shifts everything on each push and pop. That's O(n).
   - The better version keeps a **top counter**, so push and pop work at the end of the used part. That's O(1).
   - A linked list works as well.
-- **Queue (FIFO)** [51:52]: add 2, 3, 4 and you get back 2, 3, 4. You add at the rear and remove from the front, like a line of people.
+- **Queue (FIFO)** [▶ ~51:52](https://youtu.be/mW2OO6d6_BE?t=3112): add 2, 3, 4 and you get back 2, 3, 4. You add at the rear and remove from the front, like a line of people.
   - Array version: elements enter at one end and leave from the other. With further optimization this becomes a **circular queue** (beyond the scope of the video).
 - Java's versions: the `Queue` interface, `ArrayDeque`, and the `Stack` class (details in later videos).
 
-### Map → `HashMap` / `LinkedHashMap` [55:42]
+### Map → `HashMap` / `LinkedHashMap` [▶ ~55:42](https://youtu.be/mW2OO6d6_BE?t=3342)
 - A key-value store, e.g. name → roll number (`Aditya → 1001`, `Rohit → 102`, `Rohan → 103`).
 - Requirements: O(1) `get(key)`, and **no duplicate keys**. Adding `Aditya → 105` again must not create a second Aditya.
 - Building one:
@@ -110,14 +110,14 @@
 - It's the same mechanism as the set, except that a set stores single values and a map stores key-value nodes hashed **by key**.
 - Java's versions are **`HashMap`** and **`LinkedHashMap`**.
 
-### Trees / BST → `TreeSet` / `TreeMap` [62:53]
+### Trees / BST → `TreeSet` / `TreeMap` [▶ ~62:53](https://youtu.be/mW2OO6d6_BE?t=3773)
 - Trees hold **hierarchical** data. Example: a folder contains files and sub-folders, which contain more files.
 - **BST rule**: values smaller than the node go in its left subtree and larger values go in the right subtree, at every level. Root 10, left 5, right 16. Anything placed left of 16 must still be greater than 10.
 - Binary means at most 2 children per node (a ternary tree allows 3).
 - `TreeNode` holds `data`, `left` and `right`. You link nodes with `n1.left = n3; n1.right = n2;`. Operations would be `add`, `remove` and `contains`.
 - Java's versions are **`TreeSet`** and **`TreeMap`**, backed by a **self-balancing** BST (a red-black tree, covered in a later video).
 
-### Why a hierarchy? The Collection Framework [68:57]
+### Why a hierarchy? The Collection Framework [▶ ~68:57](https://youtu.be/mW2OO6d6_BE?t=4137)
 - If every class were independent, each would have its own method names and there would be far more to memorize.
 - They're all **containers**. Only the internal storage strategy differs. So Java builds an **inheritance/interface hierarchy** and relies on **polymorphism**:
   - `ArrayList` and `LinkedList` both implement the **`List`** interface, which declares `add`, `remove`, `set`, and so on.
@@ -125,7 +125,7 @@
   - Your code says `List<Integer> l = new ArrayList<>();` (or `new LinkedList<>()`) and calls `l.add(4)` without caring which one it is.
 - `List`, `Set` and `Queue` all extend the **`Collection`** interface. Methods every container supports, like `add`, are declared there once.
 
-### The complete hierarchy [73:39]
+### The complete hierarchy [▶ ~73:39](https://youtu.be/mW2OO6d6_BE?t=4419)
 ```
 Object
 └── Iterable
@@ -137,7 +137,7 @@ Object
 Map (separate hierarchy!) → HashMap → LinkedHashMap, TreeMap
 ```
 *(Simplified, but it matches the JDK. The video only shows the top levels, and the in-between interfaces such as `Deque` and `NavigableSet` are filled in here.)*
-- **`Map` is outside `Collection`** [75:05] because it deals with key-value pairs, while `Collection` deals with single values. People still study the two together.
+- **`Map` is outside `Collection`** [▶ ~75:05](https://youtu.be/mW2OO6d6_BE?t=4505) because it deals with key-value pairs, while `Collection` deals with single values. People still study the two together.
 - Coming up in the series: `Iterable`, the `Collection` methods, and each of `List`, `Queue`, `Set` and `Map` in depth.
 
 ## Code Examples

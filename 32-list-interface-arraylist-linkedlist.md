@@ -30,90 +30,90 @@
 
 ## Detailed Notes
 
-### The `List` hierarchy [01:36]
+### The `List` hierarchy [▶ ~01:36](https://youtu.be/OfNtIOGDqzY?t=96)
 - `Object`, `Iterable`, `Collection`, then three branches: `Set`, `Queue`, `List`. This video covers **`List`**.
 - The interfaces need concrete classes that implement their methods:
   - `ArrayList` and `LinkedList` (both familiar),
   - `Vector`,
   - `Stack`, which doesn't implement `List` directly but **extends `Vector`**.
 
-### What makes something a list [01:55]
-- It **preserves insertion order** [02:12] and you can **access elements by position/index**: in `[2, 3, 4, 5]`, `get(2)` is 4.
+### What makes something a list [▶ ~01:55](https://youtu.be/OfNtIOGDqzY?t=115)
+- It **preserves insertion order** [▶ ~02:12](https://youtu.be/OfNtIOGDqzY?t=132) and you can **access elements by position/index**: in `[2, 3, 4, 5]`, `get(2)` is 4.
 - `ArrayList`: random access, so it jumps straight to the index.
-- `LinkedList` [03:05]: nodes have no indices, but it's still a list. Positions are *simulated* by walking from the head (position 0, 1, 2, …).
+- `LinkedList` [▶ ~03:05](https://youtu.be/OfNtIOGDqzY?t=185): nodes have no indices, but it's still a list. Positions are *simulated* by walking from the head (position 0, 1, 2, …).
   - *(Correction: the video calls a single `get` on a linked list O(n²). One `get(i)` is O(n). Calling `get(i)` for every i in a loop is what makes it O(n²).)*
 - Program to the interface: `List<Integer> l = new ArrayList<>();` (or `LinkedList`). The same methods work through `l`.
 
-### Java 21: `SequencedCollection` [05:14]
+### Java 21: `SequencedCollection` [▶ ~05:14](https://youtu.be/OfNtIOGDqzY?t=314)
 - Before Java 21: `Iterable`, `Collection`, `List` (plus some intermediate abstract classes).
-- Java 21 inserted **`SequencedCollection`** [05:41] between `Collection` and `List`. It extends `Collection`, and `List` now extends it.
-- Its methods [06:37] are `getFirst()`, `getLast()`, `addFirst(e)`, `addLast(e)`, `removeFirst()`, `removeLast()`. *(Also `reversed()`, which returns a reverse-ordered view.)* `ArrayList`, `LinkedList` and the other concrete classes implement them.
+- Java 21 inserted **`SequencedCollection`** [▶ ~05:41](https://youtu.be/OfNtIOGDqzY?t=341) between `Collection` and `List`. It extends `Collection`, and `List` now extends it.
+- Its methods [▶ ~06:37](https://youtu.be/OfNtIOGDqzY?t=397) are `getFirst()`, `getLast()`, `addFirst(e)`, `addLast(e)`, `removeFirst()`, `removeLast()`. *(Also `reversed()`, which returns a reverse-ordered view.)* `ArrayList`, `LinkedList` and the other concrete classes implement them.
 
-### `List`-specific methods [07:26]
+### `List`-specific methods [▶ ~07:26](https://youtu.be/OfNtIOGDqzY?t=446)
 - `E get(int index)` returns the element at that position. It's the most-used list method.
-- `E set(int index, E element)` [08:33] **replaces** the element. On `[2, 3, 4, 5]`, `set(1, 6)` gives `[2, 6, 4, 5]`. `ArrayList` jumps there directly, while `LinkedList` walks from the head and then overwrites.
-- `void add(int index, E element)` [10:00] **inserts**. On `[2, 3, 4, 5]`, `add(1, 6)` gives `[2, 6, 3, 4, 5]`, and the size goes from 4 to 5.
+- `E set(int index, E element)` [▶ ~08:33](https://youtu.be/OfNtIOGDqzY?t=513) **replaces** the element. On `[2, 3, 4, 5]`, `set(1, 6)` gives `[2, 6, 4, 5]`. `ArrayList` jumps there directly, while `LinkedList` walks from the head and then overwrites.
+- `void add(int index, E element)` [▶ ~10:00](https://youtu.be/OfNtIOGDqzY?t=600) **inserts**. On `[2, 3, 4, 5]`, `add(1, 6)` gives `[2, 6, 3, 4, 5]`, and the size goes from 4 to 5.
   - `ArrayList` shifts 3, 4, 5 one place to the right and writes 6 into the gap.
   - `LinkedList` walks to position 1, creates a node, and re-links `2 → 6 → 3` with no shifting.
   - It's different from `Collection.add(e)`, which appends at the end. The two are overloads.
-- `boolean addAll(int index, Collection<? extends E> c)` [12:34] inserts a whole collection at a position. It returns `true` if the list changed.
-- `E remove(int index)` [13:55] removes by **position**, while `Collection.remove(Object)` removes by **value** (using `equals`).
+- `boolean addAll(int index, Collection<? extends E> c)` [▶ ~12:34](https://youtu.be/OfNtIOGDqzY?t=754) inserts a whole collection at a position. It returns `true` if the list changed.
+- `E remove(int index)` [▶ ~13:55](https://youtu.be/OfNtIOGDqzY?t=835) removes by **position**, while `Collection.remove(Object)` removes by **value** (using `equals`).
   - *(Correction: the video says `remove(index)` is O(1) for `ArrayList`. It's O(1) only for the **last** index. Elsewhere it shifts everything after it to the left, which is O(n), as the video itself says later. Removing by value is O(n) for both kinds of list, since you have to find the element first.)*
-- `int indexOf(Object o)` and `int lastIndexOf(Object o)` [14:53] return the first and last positions of a value, or -1. They take `Object` because they compare with `equals`.
-- `ListIterator<E> listIterator()` [16:08] is a list-only iterator. It can move forward **and backward** and can **insert, replace and remove** while iterating without a `ConcurrentModificationException` (unlike a plain `Iterator`, which only has `remove`).
+- `int indexOf(Object o)` and `int lastIndexOf(Object o)` [▶ ~14:53](https://youtu.be/OfNtIOGDqzY?t=893) return the first and last positions of a value, or -1. They take `Object` because they compare with `equals`.
+- `ListIterator<E> listIterator()` [▶ ~16:08](https://youtu.be/OfNtIOGDqzY?t=968) is a list-only iterator. It can move forward **and backward** and can **insert, replace and remove** while iterating without a `ConcurrentModificationException` (unlike a plain `Iterator`, which only has `remove`).
   - `listIterator(int index)` starts the cursor at that index.
-- `static List.of(...)` [17:32] creates an **immutable** list. `List<Integer> l = List.of(1, 2, 3); l.add(4);` throws.
-- `static List.copyOf(Collection)` [18:22] makes an unmodifiable copy of any collection.
+- `static List.of(...)` [▶ ~17:32](https://youtu.be/OfNtIOGDqzY?t=1052) creates an **immutable** list. `List<Integer> l = List.of(1, 2, 3); l.add(4);` throws.
+- `static List.copyOf(Collection)` [▶ ~18:22](https://youtu.be/OfNtIOGDqzY?t=1102) makes an unmodifiable copy of any collection.
   - *(Precision: `List.of` takes individual elements, with overloads for 0 to 10 arguments plus varargs, not a collection. Use `List.copyOf` for a collection.)*
 
-### Demo [18:42]
+### Demo [▶ ~18:42](https://youtu.be/OfNtIOGDqzY?t=1122)
 - Start with `import java.util.*; List<Integer> list = new ArrayList<>(); list.add(1); list.add(2); list.add(3);`
-- `list.get(1)` [19:39] gives `2`. `list.set(1, 5)` makes `println(list)` show `[1, 5, 3]`, because `toString` is overridden.
-- `list.addAll(0, List.of(9, 8, 7))` [20:41] gives `[9, 8, 7, 1, 5, 3]`. Then `list.remove(0)` gives `[8, 7, 1, 5, 3]`.
+- `list.get(1)` [▶ ~19:39](https://youtu.be/OfNtIOGDqzY?t=1179) gives `2`. `list.set(1, 5)` makes `println(list)` show `[1, 5, 3]`, because `toString` is overridden.
+- `list.addAll(0, List.of(9, 8, 7))` [▶ ~20:41](https://youtu.be/OfNtIOGDqzY?t=1241) gives `[9, 8, 7, 1, 5, 3]`. Then `list.remove(0)` gives `[8, 7, 1, 5, 3]`.
 - `indexOf(2)` and `lastIndexOf(5)` work as described above.
-- `ListIterator<Integer> it = list.listIterator();` [22:02] with `while (it.hasNext()) println(it.next())` walks the whole list.
-- **Backward** [23:28] on `[1, 2, 3]`:
+- `ListIterator<Integer> it = list.listIterator();` [▶ ~22:02](https://youtu.be/OfNtIOGDqzY?t=1322) with `while (it.hasNext()) println(it.next())` walks the whole list.
+- **Backward** [▶ ~23:28](https://youtu.be/OfNtIOGDqzY?t=1408) on `[1, 2, 3]`:
   - `listIterator(2)` with `hasPrevious()`/`previous()` gives `2, 1`. The cursor sits *before* index 2, so the previous element is 2.
   - `listIterator(3)`, i.e. `size()`, gives `3, 2, 1`.
-  - `previousIndex()` [24:33] instead gives `2, 1, 0` (you still have to call `previous()` to move).
-- **Unmodifiable** [24:51]: `List<Integer> list = List.of(1, 2, 3, 4, 5, 6, 7, 8);` prints fine. `list.add(9)` throws **`UnsupportedOperationException`** [26:01]. A `List.copyOf(list)` copy behaves the same way.
+  - `previousIndex()` [▶ ~24:33](https://youtu.be/OfNtIOGDqzY?t=1473) instead gives `2, 1, 0` (you still have to call `previous()` to move).
+- **Unmodifiable** [▶ ~24:51](https://youtu.be/OfNtIOGDqzY?t=1491): `List<Integer> list = List.of(1, 2, 3, 4, 5, 6, 7, 8);` prints fine. `list.add(9)` throws **`UnsupportedOperationException`** [▶ ~26:01](https://youtu.be/OfNtIOGDqzY?t=1561). A `List.copyOf(list)` copy behaves the same way.
 
-### `ArrayList` [26:29]
+### `ArrayList` [▶ ~26:29](https://youtu.be/OfNtIOGDqzY?t=1589)
 - It's a class backed by a normal array that it resizes: a **dynamic array**. When the array is full, `add` allocates a bigger one and copies.
-- The from-scratch version (video #29) doubled the size. **Java grows by 1.5×** [27:32]: `newCapacity = oldCapacity + (oldCapacity >> 1)`. So 4 becomes 6, then 9, then 13, and so on.
+- The from-scratch version (video #29) doubled the size. **Java grows by 1.5×** [▶ ~27:32](https://youtu.be/OfNtIOGDqzY?t=1652): `newCapacity = oldCapacity + (oldCapacity >> 1)`. So 4 becomes 6, then 9, then 13, and so on.
   - *(The transcript garbles the formula as "multiplied by two". It's the old capacity plus **half** of it.)*
-- Performance [28:12]:
+- Performance [▶ ~28:12](https://youtu.be/OfNtIOGDqzY?t=1692):
   - `get(i)` and `set(i, e)` are **O(1)** thanks to random access.
   - `add(i, e)` and `remove(i)` in the middle are **O(n)**, because elements shift right or left.
   - `add(e)` at the end is amortized O(1).
-- Why it's the most popular list (the video estimates about 90% of usage) [29:18]: random access, a **cache-friendly** contiguous layout, and a simple structure.
-- Constructors [29:47]:
+- Why it's the most popular list (the video estimates about 90% of usage) [▶ ~29:18](https://youtu.be/OfNtIOGDqzY?t=1758): random access, a **cache-friendly** contiguous layout, and a simple structure.
+- Constructors [▶ ~29:47](https://youtu.be/OfNtIOGDqzY?t=1787):
   - `new ArrayList<>()` creates an empty list.
   - `new ArrayList<>(10)` sets the initial **capacity**. After that it grows by 1.5×.
   - `new ArrayList<>(collection)` copies another collection, e.g. `new ArrayList<>(List.of(...))`.
   - *(Detail: the no-arg constructor starts with an empty shared array and allocates capacity 10 on the first `add`.)*
 - `ArrayList` implements the methods of `Iterable`, `Collection`, `SequencedCollection` and `List`. Its only notable extras are:
-  - `ensureCapacity(int min)` [31:10]. If you know about 100 elements are coming, call `l.ensureCapacity(100)` once to avoid repeated grow-and-copy steps (4, 6, 9, 13, …). *(The video says "the compiler" does this. It's the `ArrayList` itself, at runtime.)*
-  - `trimToSize()` [32:17] shrinks the backing array to exactly `size`, freeing unused slots once the list won't grow any more.
-- **Capacity vs size** [32:48]. Capacity is how many elements fit before a resize. Size is how many are stored now. With capacity 4, adding 1, 2, 4, 7 takes the size from 1 to 4. The next add grows the capacity to 6 while the size becomes 5.
+  - `ensureCapacity(int min)` [▶ ~31:10](https://youtu.be/OfNtIOGDqzY?t=1870). If you know about 100 elements are coming, call `l.ensureCapacity(100)` once to avoid repeated grow-and-copy steps (4, 6, 9, 13, …). *(The video says "the compiler" does this. It's the `ArrayList` itself, at runtime.)*
+  - `trimToSize()` [▶ ~32:17](https://youtu.be/OfNtIOGDqzY?t=1937) shrinks the backing array to exactly `size`, freeing unused slots once the list won't grow any more.
+- **Capacity vs size** [▶ ~32:48](https://youtu.be/OfNtIOGDqzY?t=1968). Capacity is how many elements fit before a resize. Size is how many are stored now. With capacity 4, adding 1, 2, 4, 7 takes the size from 1 to 4. The next add grows the capacity to 6 while the size becomes 5.
 
-### `LinkedList` [33:50]
+### `LinkedList` [▶ ~33:50](https://youtu.be/OfNtIOGDqzY?t=2030)
 - It's built from a `Node` class, a **static nested class** inside `LinkedList`. The objects live on the heap.
-- A singly linked list has only `next`. Java's `LinkedList` is a **doubly linked list** [35:12]: each node has `prev` and `next` (left and right), so you can traverse in both directions. That makes reverse traversal with `ListIterator.previous()` easy.
-- It keeps **two pointers**, `first` and `last` [36:50]. It never moves them while traversing. It copies them into a temporary reference (`Node temp = first;`) and moves that instead.
-- **Nearest-end optimization** [38:45]: `get(index)` checks whether `index < size / 2`. If so it walks from `first`, otherwise from `last`. In a 100-element list, `get(75)` takes 25 steps from the end instead of 75 from the start.
+- A singly linked list has only `next`. Java's `LinkedList` is a **doubly linked list** [▶ ~35:12](https://youtu.be/OfNtIOGDqzY?t=2112): each node has `prev` and `next` (left and right), so you can traverse in both directions. That makes reverse traversal with `ListIterator.previous()` easy.
+- It keeps **two pointers**, `first` and `last` [▶ ~36:50](https://youtu.be/OfNtIOGDqzY?t=2210). It never moves them while traversing. It copies them into a temporary reference (`Node temp = first;`) and moves that instead.
+- **Nearest-end optimization** [▶ ~38:45](https://youtu.be/OfNtIOGDqzY?t=2325): `get(index)` checks whether `index < size / 2`. If so it walks from `first`, otherwise from `last`. In a 100-element list, `get(75)` takes 25 steps from the end instead of 75 from the start.
 - Cost: `get`, `set`, `add(i)` and `remove(i)` are all **O(n)**, because you have to reach the position. Once there, inserting or removing only re-links pointers, with no shifting.
-- `LinkedList` is also used to implement **queues and stacks** [40:32]. It implements `Deque`, so it has front/back methods (`offer`, `poll`, `peek`, `push`, `pop`, …), covered in the Queue video.
-- In production it's rarely needed (the video estimates under 10% of usage) [41:08]. Reads usually outnumber writes, `get` is slow on a linked list, and an `ArrayList` can do everything a `LinkedList` can.
+- `LinkedList` is also used to implement **queues and stacks** [▶ ~40:32](https://youtu.be/OfNtIOGDqzY?t=2432). It implements `Deque`, so it has front/back methods (`offer`, `poll`, `peek`, `push`, `pop`, …), covered in the Queue video.
+- In production it's rarely needed (the video estimates under 10% of usage) [▶ ~41:08](https://youtu.be/OfNtIOGDqzY?t=2468). Reads usually outnumber writes, `get` is slow on a linked list, and an `ArrayList` can do everything a `LinkedList` can.
 
-### `Vector` and `Stack`: legacy [42:02]
-- **Legacy classes** [42:12] from before the Collection Framework existed. Back then Java had `Vector` (a dynamic array, now replaced by `ArrayList`) and `Hashtable` (now replaced by `HashMap`). `Stack` extends `Vector` and is an array-based stack.
+### `Vector` and `Stack`: legacy [▶ ~42:02](https://youtu.be/OfNtIOGDqzY?t=2522)
+- **Legacy classes** [▶ ~42:12](https://youtu.be/OfNtIOGDqzY?t=2532) from before the Collection Framework existed. Back then Java had `Vector` (a dynamic array, now replaced by `ArrayList`) and `Hashtable` (now replaced by `HashMap`). `Stack` extends `Vector` and is an array-based stack.
 - Why they're avoided:
   - The API is old and outdated.
-  - They're **thread-safe** [43:00] (every method is synchronized), which adds overhead even in single-threaded code.
+  - They're **thread-safe** [▶ ~43:00](https://youtu.be/OfNtIOGDqzY?t=2580) (every method is synchronized), which adds overhead even in single-threaded code.
   - Modern thread-safe alternatives exist (covered in the concurrency videos). *(For example `Collections.synchronizedList`, `CopyOnWriteArrayList`, and `ConcurrentLinkedDeque`/`LinkedBlockingDeque`.)*
 - To fit them into the framework, `Vector` was made to implement `List`, and `Stack` simply extends `Vector`.
-- **Stacks in modern Java** [44:13]: there's no `Stack` interface among `List`/`Queue`/`Set`. Use **`ArrayDeque`**, which works as both a queue and a stack and is faster than `Stack`. *(The transcript says "non-array deque" and "set implementation". It means `ArrayDeque` and stack implementation.)*
+- **Stacks in modern Java** [▶ ~44:13](https://youtu.be/OfNtIOGDqzY?t=2653): there's no `Stack` interface among `List`/`Queue`/`Set`. Use **`ArrayDeque`**, which works as both a queue and a stack and is faster than `Stack`. *(The transcript says "non-array deque" and "set implementation". It means `ArrayDeque` and stack implementation.)*
 
 ## Code Examples
 

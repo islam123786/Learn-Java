@@ -29,15 +29,15 @@
 
 ## Detailed Notes
 
-### Why only one public class per file, named like the file [00:41]
+### Why only one public class per file, named like the file [▶ ~00:41](https://youtu.be/crVwHNW-fX8?t=41)
 - Putting `public class Sample` inside `Demo.java` fails with "The public type Sample must be defined in its own file". Removing `public` makes the error go away, so many non-public classes are fine. Renaming the class to `Sample` makes the IDE rename the file to match.
-- The video's reasoning [02:44]:
+- The video's reasoning [▶ ~02:44](https://youtu.be/crVwHNW-fX8?t=164):
   - The JVM starts the program at `main`. `main` is **`static`** so the JVM can call `Demo.main(...)` without creating an object, and **`public`** so code outside the package (the JVM) can reach it.
   - If several classes in one file could be public, the JVM wouldn't know which class's `main` to call. If the public class is named after the file, the JVM can load `Demo` straight from `Demo.java`.
-  - For an application with many files [06:51]: only the file you actually run (`javac Demo.java`, then `java Demo`) has to contain `main`. Everything else is imported from there.
+  - For an application with many files [▶ ~06:51](https://youtu.be/crVwHNW-fX8?t=411): only the file you actually run (`javac Demo.java`, then `java Demo`) has to contain `main`. Everything else is imported from there.
 - *Correction:* the JVM doesn't decide this by looking at public classes. You always tell it which class to run (`java Demo`), and that class doesn't even have to be public. Only `main` must be `public static`. The rule really exists for the **compiler and build tools**: when other code refers to the public class `com.x.Demo`, `javac` can find its source at `com/x/Demo.java` without scanning every file. The JLS lets compilers enforce it, and `javac` does. *(Since Java 11, `java Demo.java` runs a single source file directly, using the first class declared in it.)*
 
-### Primitives vs wrapper classes [08:55]
+### Primitives vs wrapper classes [▶ ~08:55](https://youtu.be/crVwHNW-fX8?t=535)
 - Data types are either primitives (`int`, `long`, `short`, `byte`, `float`, `double`, `char`, `boolean`) or non-primitives (objects and user-defined types).
 - Java gives every primitive a **wrapper class**. Most have the same name capitalized; the exceptions are `int → Integer` and `char → Character`.
 - Memory picture:
@@ -45,75 +45,75 @@
   - `Integer x = new Integer(10);` is a reference on the stack pointing to a heap object that holds the value 10.
 - Conceptually, `Integer` is a class with a private `int value` field, constructors, and methods.
 
-### Why wrappers exist, and why primitives still exist [13:43]
+### Why wrappers exist, and why primitives still exist [▶ ~13:43](https://youtu.be/crVwHNW-fX8?t=823)
 - **Wrappers:** much of Java (the Collection Framework's `ArrayList`, `LinkedList`, …) works only with objects. As an OO language, Java also wants an object form of every primitive, with useful methods.
-- **Primitives** remain for two reasons [14:24]:
+- **Primitives** remain for two reasons [▶ ~14:24](https://youtu.be/crVwHNW-fX8?t=864):
   1. **Legacy.** They kept the language familiar to C/C++ programmers.
   2. **Speed.** A primitive is just a value. An object needs a heap allocation, a header and padding, plus a reference. Use primitives unless you need objects.
 
-### Autoboxing [16:28]
+### Autoboxing [▶ ~16:28](https://youtu.be/crVwHNW-fX8?t=988)
 - `int x = 10; Integer y = x;` works without any cast. That conversion is **autoboxing**.
 - What the compiler actually emits:
   - In old Java this was conceptually `new Integer(x)`.
-  - In modern Java it is `Integer.valueOf(x)` [18:31], which is faster because of caching.
+  - In modern Java it is `Integer.valueOf(x)` [▶ ~18:31](https://youtu.be/crVwHNW-fX8?t=1111), which is faster because of caching.
 - Because it's called as `Integer.valueOf`, it must be a **`static`** method: `public static Integer valueOf(int x)`.
 
-### Unboxing [21:16]
+### Unboxing [▶ ~21:16](https://youtu.be/crVwHNW-fX8?t=1276)
 - `Integer x = 10; int y = x;` is compiled to `int y = x.intValue();`.
 - `intValue()` is an **instance** method because it's called on the object, and it acts as a getter for the private `value` field.
 
-### Demo, and where boxing/unboxing happen [24:01]
+### Demo, and where boxing/unboxing happen [▶ ~24:01](https://youtu.be/crVwHNW-fX8?t=1441)
 - `new Integer(20)` shows the deprecation warning ("The constructor Integer(int) has been deprecated since version 9 and marked for removal"). Prefer `Integer.valueOf(20)`, or simply `Integer a = 20;`.
 - `System.out.println(y)` for an `Integer y` prints the value. *(The video calls this unboxing. Strictly, `println(Object)` calls `toString()`, so no unboxing happens there.)*
-- Contexts where conversions happen automatically [30:11]:
+- Contexts where conversions happen automatically [▶ ~30:11](https://youtu.be/crVwHNW-fX8?t=1811):
   1. **Assignments**: `Integer y = x;` / `int b = a;`
   2. **Method calls**: passing an `Integer` to `printInteger(int x)` unboxes it. Passing an `int` to a parameter of type `Integer` boxes it.
   3. **Arithmetic**: `Integer a = 10, b = 20; int sum = a + b;` unboxes both operands (`a.intValue() + b.intValue()`) and prints 30.
 
-### Unboxing `null` → NullPointerException [33:37]
+### Unboxing `null` → NullPointerException [▶ ~33:37](https://youtu.be/crVwHNW-fX8?t=2017)
 - `Integer x = null;` is legal because objects can be null. Primitives can't hold null.
 - `int y = x;` compiles, but at run time it becomes `x.intValue()` on `null`, which throws a **`NullPointerException`** ("Cannot invoke Integer.intValue() because x is null").
 
-### `==` on wrappers [35:41]
+### `==` on wrappers [▶ ~35:41](https://youtu.be/crVwHNW-fX8?t=2141)
 - `int x = 10000, y = 10000; x == y` is `true`.
-- `Integer a = 200, b = 200; a == b` is **`false`** [37:44].
+- `Integer a = 200, b = 200; a == b` is **`false`** [▶ ~37:44](https://youtu.be/crVwHNW-fX8?t=2264).
   - Each line becomes `Integer.valueOf(200)`, which creates two separate heap objects at different addresses (say 1001 and 2001).
   - `==` compares what's stored in the variables. For references that's the addresses, which differ.
 - `==` doesn't "change behavior" between primitives and objects. It always compares the variables' contents. A primitive variable contains the value. A reference variable contains an address.
 - To compare values:
   - `a.intValue() == b.intValue()` → `true`
-  - `a.equals(b)` → `true` [43:14]. `equals` is actually declared in `Object` (the parent of every class), and `Integer` overrides it.
+  - `a.equals(b)` → `true` [▶ ~43:14](https://youtu.be/crVwHNW-fX8?t=2594). `equals` is actually declared in `Object` (the parent of every class), and `Integer` overrides it.
 
-### A conceptual `Integer` class [45:17]
+### A conceptual `Integer` class [▶ ~45:17](https://youtu.be/crVwHNW-fX8?t=2717)
 - `public final class Integer`. It's `final` so nobody can subclass it, and `public` so it's usable everywhere.
 - It has a `private final int value`, a (deprecated) constructor, `public int intValue()`, `public static Integer valueOf(int)` (with caching), and `equals` (inherited from `Object` and overridden).
 - The real class also extends `Number`, implements `Comparable<Integer>`, and holds an internal cache array. You'll be able to read JDK sources like this by the end of the series.
 
-### The Integer cache [48:43]
+### The Integer cache [▶ ~48:43](https://youtu.be/crVwHNW-fX8?t=2923)
 - `Integer x = 100, y = 100; x == y` is **`true`**.
 - `valueOf` keeps pre-built `Integer` objects for **-128 to 127** (the `byte` range, where the most commonly used numbers fall). For a value in that range it returns the cached reference instead of creating a new object, so both variables point to the same object.
 - That's why you use `valueOf` (or autoboxing) and avoid the deprecated constructor.
 - *Correction:* the video says the result "depends on the compiler". In fact, the Java Language Specification **guarantees** caching for -128 to 127 when autoboxing. Larger values *may* also be cached (`-XX:AutoBoxCacheMax`), so never rely on `==` either way.
 
-### Abstract classes, interview Q&A [53:32]
+### Abstract classes, interview Q&A [▶ ~53:32](https://youtu.be/crVwHNW-fX8?t=3212)
 Recap: an abstract class can't be instantiated directly, can contain abstract and normal methods, and is meant to be extended. With `abstract class Animal { abstract void makeSound(); void sleep() {...} }` and `class Dog extends Animal`:
 
 | Question | Answer | Reason |
 |---|---|---|
-| Constructors? [56:58] | **Yes** | They run when a *subclass* object is created (`Dog(String name) { super(name); }`). |
-| Can it be `final`? [59:01] | **No** | `final` means it can't be inherited, but abstract means it must be. The compiler says "The class Animal can be either abstract or final, not both". |
-| Static methods/fields/blocks? [60:23] | **Yes** | They belong to the class, not to objects. A `static abstract` method is illegal, though. |
-| Private methods? [61:05] | **Yes, if non-abstract** | `private abstract` is illegal because the subclass couldn't see the method to implement it. |
-| Final methods? [62:27] | **Yes, if non-abstract** | `final` forbids overriding and `abstract` requires it, so the two contradict each other. |
-| Zero abstract methods? [63:49] | **Yes** | Useful when you want to stop direct instantiation but give every method a default implementation. |
+| Constructors? [▶ ~56:58](https://youtu.be/crVwHNW-fX8?t=3418) | **Yes** | They run when a *subclass* object is created (`Dog(String name) { super(name); }`). |
+| Can it be `final`? [▶ ~59:01](https://youtu.be/crVwHNW-fX8?t=3541) | **No** | `final` means it can't be inherited, but abstract means it must be. The compiler says "The class Animal can be either abstract or final, not both". |
+| Static methods/fields/blocks? [▶ ~60:23](https://youtu.be/crVwHNW-fX8?t=3623) | **Yes** | They belong to the class, not to objects. A `static abstract` method is illegal, though. |
+| Private methods? [▶ ~61:05](https://youtu.be/crVwHNW-fX8?t=3665) | **Yes, if non-abstract** | `private abstract` is illegal because the subclass couldn't see the method to implement it. |
+| Final methods? [▶ ~62:27](https://youtu.be/crVwHNW-fX8?t=3747) | **Yes, if non-abstract** | `final` forbids overriding and `abstract` requires it, so the two contradict each other. |
+| Zero abstract methods? [▶ ~63:49](https://youtu.be/crVwHNW-fX8?t=3829) | **Yes** | Useful when you want to stop direct instantiation but give every method a default implementation. |
 
 - *Note:* abstract methods may also be package-private (no modifier). Only `private` is forbidden.
 
-### POJO classes [65:12]
+### POJO classes [▶ ~65:12](https://youtu.be/crVwHNW-fX8?t=3912)
 - **POJO** stands for **Plain Old Java Object**. It's a simple class that doesn't depend on any external framework (such as Spring). It has fields, constructors and getters/setters.
 - Purpose: to **model** a real-world entity (a `Student` with name, age, roll number, college). They're also called **model classes**. In Spring, such a class often maps to a SQL table, with one field per column.
 - The definition is loose. Some people add a Builder (from the Builder design pattern) or a little business logic.
-- **Anemic model vs rich domain model** [70:00]. This is only an architectural distinction; both are POJOs.
+- **Anemic model vs rich domain model** [▶ ~70:00](https://youtu.be/crVwHNW-fX8?t=4200). This is only an architectural distinction; both are POJOs.
   - **Anemic**: only fields, constructors, getters and setters.
   - **Rich domain**: also has business logic, such as `markAttendance()`.
 - *Note:* in Domain-Driven Design (Martin Fowler), the anemic domain model is often called an anti-pattern, because the logic ends up in separate "service" classes. Which to use is a design choice.

@@ -31,7 +31,7 @@
 
 ## Detailed Notes
 
-### Recap: why `count++` races [00:00]
+### Recap: why `count++` races [▶ ~00:00](https://youtu.be/ujF2gNsCfBE?t=0)
 - Continuing the multithreading series. The previous lecture covered locks; this one is about concurrency *without* locks.
 - Example: `class Counter { int count = 0; void increment() { count++; } }`. Two threads each call `increment()` many times. The final count should be the sum, but it usually comes out lower.
 - `count++` is really three steps:
@@ -40,32 +40,32 @@
   3. store the temporary back.
 - A thread can be switched out between any of these steps. If T1 and T2 both read `0`, both compute `1` and both store `1`, then two increments produced a count of 1. This is the **race condition**, and its root cause is that the operation is **non-atomic**.
 
-### Locking vs lock-free [03:00]
+### Locking vs lock-free [▶ ~03:00](https://youtu.be/ujF2gNsCfBE?t=180)
 - One fix: treat `increment()` as a critical section and lock it, with `synchronized` (the monitor lock) or one of the explicit locks from the last video (`ReentrantLock`, `StampedLock`, …).
 - Locking always works, but it has overhead and makes the code slower.
 - Java also offers **lock-free concurrency**: you get the correct result without locking. It only works for specific use cases, and the first tool for it is **atomic variables**.
 
-### What "atomic" means [04:12]
+### What "atomic" means [▶ ~04:12](https://youtu.be/ujF2gNsCfBE?t=252)
 - An atomic operation finishes as one unit: either the thread performs all of it or none of it. You can't observe it half done.
 - Example from the video: `int x = 4;` is a single step. A thread can't be switched out after creating `x` but before storing 4. *(Precisely: in Java, reads and writes of `int`, references and other primitives except non-volatile `long`/`double` are atomic. Compound actions like `x++` or `x += 4` are not.)*
 - Java's atomic classes: `AtomicInteger` (most common), `AtomicLong`, `AtomicBoolean`, `AtomicReference`.
 
-### Demo: the racy counter [05:56]
+### Demo: the racy counter [▶ ~05:56](https://youtu.be/ujF2gNsCfBE?t=356)
 - `Demo.java`: a `Counter` with `int count`, two threads each calling `increment()` 10,000 times. The main thread sleeps 2 seconds, then prints `count`.
 - Expected 20,000. Actual runs gave about 13,24x and about 6,800 less than expected. It changes every run, because the number of lost updates is random.
 - *(Tip: use `t1.join(); t2.join();` instead of `Thread.sleep(2000)`. Join waits exactly as long as needed and also guarantees the main thread sees the threads' writes.)*
 
-### Fix with `AtomicInteger` [09:19]
+### Fix with `AtomicInteger` [▶ ~09:19](https://youtu.be/ujF2gNsCfBE?t=559)
 - Replace the field with `AtomicInteger count = new AtomicInteger(0);` (package `java.util.concurrent.atomic`).
 - Replace `count++` with `count.incrementAndGet()`. That is one atomic operation: increment, then return the new value (like `++count`). `getAndIncrement()` is the `count++` version, returning the old value.
-- The result is **exactly 20,000 on every run** [10:39], with no lock on the method.
+- The result is **exactly 20,000 on every run** [▶ ~10:39](https://youtu.be/ujF2gNsCfBE?t=639), with no lock on the method.
 
-### Concurrent vs parallel: how can it be safe on multiple cores? [12:00]
+### Concurrent vs parallel: how can it be safe on multiple cores? [▶ ~12:00](https://youtu.be/ujF2gNsCfBE?t=720)
 - **Concurrent** (one core, threads take turns): it's easy to see why it works. The thread finishes `incrementAndGet` before being switched out.
 - **Parallel** (T1 and T2 on different cores at the same instant): both could, in theory, read `0` at the same moment. Yet the answer is still 20,000 on a multi-core machine.
-- The reason is that atomic classes are built on **CAS (Compare-And-Set / Compare-And-Swap)** [13:30]. The transcript renders it as "cache"; it means CAS. The deep dive comes at the end of the video.
+- The reason is that atomic classes are built on **CAS (Compare-And-Set / Compare-And-Swap)** [▶ ~13:30](https://youtu.be/ujF2gNsCfBE?t=810). The transcript renders it as "cache"; it means CAS. The deep dive comes at the end of the video.
 
-### `AtomicInteger` methods [14:14]
+### `AtomicInteger` methods [▶ ~14:14](https://youtu.be/ujF2gNsCfBE?t=854)
 | Method | Meaning | Like |
 |---|---|---|
 | `get()` | read the current value | `x` |
@@ -80,23 +80,23 @@
 
 These cover most real usage, and `AtomicLong` / `AtomicBoolean` have the matching ones.
 
-### `AtomicLong` and `AtomicBoolean` [16:22]
+### `AtomicLong` and `AtomicBoolean` [▶ ~16:22](https://youtu.be/ujF2gNsCfBE?t=982)
 - **`AtomicLong`**: same API as `AtomicInteger` with the `long` range. Good for **unique ID generation**: IDs can be large, and many threads can call `incrementAndGet()` without ever getting the same ID.
-- **`AtomicBoolean`** [17:00]: for a boolean shared between threads. Example: the `flag` from the producer-consumer lecture ("is the shared slot full or empty?") could be an `AtomicBoolean`.
+- **`AtomicBoolean`** [▶ ~17:00](https://youtu.be/ujF2gNsCfBE?t=1020): for a boolean shared between threads. Example: the `flag` from the producer-consumer lecture ("is the shared slot full or empty?") could be an `AtomicBoolean`.
 - With atomic classes you **don't need `volatile`**. They already guarantee visibility (every thread sees the latest value) as well as atomicity. *(You still want the field holding the atomic object to be `final`, so the reference itself never changes.)*
 
-### Why not `synchronized` everywhere? [18:38]
+### Why not `synchronized` everywhere? [▶ ~18:38](https://youtu.be/ujF2gNsCfBE?t=1118)
 - `synchronized` uses locking, which has a big overhead and slows everything down.
 - In specialized cases where you don't actually need a lock, use the non-locking mechanism instead.
 
-### Atomicity doesn't compose [19:04]
+### Atomicity doesn't compose [▶ ~19:04](https://youtu.be/ujF2gNsCfBE?t=1144)
 - Each atomic method is atomic by itself. **Two atomic calls in a row are not atomic together.**
 - `if (count.get() > 4) count.incrementAndGet();` is **not** thread-safe. Two threads can both pass the `get()` check before either increments.
 - Atomicity makes one statement indivisible. It doesn't remove races *between* statements. *(The fix is a CAS retry loop or `updateAndGet` / `accumulateAndGet`, which run your whole update function atomically. See Code Examples. The next video covers CAS retry loops.)*
 
-### `AtomicReference` and the seat-booking problem [20:19]
+### `AtomicReference` and the seat-booking problem [▶ ~20:19](https://youtu.be/ujF2gNsCfBE?t=1219)
 - References can be atomic too. Normally `Student s1 = new Student();` puts the object on the heap and the reference `s1` on the stack. `AtomicReference<Student>` makes *changing which object the reference points to* atomic.
-- **Example: booking a seat** [21:09] (like BookMyShow or District), simplified to a single seat:
+- **Example: booking a seat** [▶ ~21:09](https://youtu.be/ujF2gNsCfBE?t=1269) (like BookMyShow or District), simplified to a single seat:
   ```
   String seat = "EMPTY";
   boolean bookSeat(String person) {
@@ -104,13 +104,13 @@ These cover most real usage, and `AtomicLong` / `AtomicBoolean` have the matchin
       return false;
   }
   ```
-- The bug: T1 ("Rahul") and T2 ("Rohan") both check `seat.equals("EMPTY")` at the same time, both see `true`, and both enter the `if`. One write overwrites the other, so the seat ends up with only one person, but **both get `true`**. Both think they've booked. This is the **multiple / double seat booking problem** [26:15].
+- The bug: T1 ("Rahul") and T2 ("Rohan") both check `seat.equals("EMPTY")` at the same time, both see `true`, and both enter the `if`. One write overwrites the other, so the seat ends up with only one person, but **both get `true`**. Both think they've booked. This is the **multiple / double seat booking problem** [▶ ~26:15](https://youtu.be/ujF2gNsCfBE?t=1575).
 - The root cause is **check-then-act**: compare first, act afterwards, with a gap in between.
 - A lock would fix it, but a lock-free fix exists, so use that.
 
-### Fixing it with `compareAndSet` [27:40]
+### Fixing it with `compareAndSet` [▶ ~27:40](https://youtu.be/ujF2gNsCfBE?t=1660)
 - Demo: `SeatBooking` with threads booking for "Aditya" and "Rohit". With the plain-`String` version, the final seat is either name, and the race is still there.
-- The lock-free version [31:00]:
+- The lock-free version [▶ ~31:00](https://youtu.be/ujF2gNsCfBE?t=1860):
   ```
   AtomicReference<String> seat = new AtomicReference<>("EMPTY");
   boolean bookSeat(String name) {
@@ -121,15 +121,15 @@ These cover most real usage, and `AtomicLong` / `AtomicBoolean` have the matchin
   ```
 - `compareAndSet(expectedValue, newValue)`: if the seat currently holds `expectedValue`, put `newValue` in it and return `true`. Otherwise do nothing and return `false`. The old `if` plus assignment is now **one atomic line**.
 
-### Dry run [35:29]
+### Dry run [▶ ~35:29](https://youtu.be/ujF2gNsCfBE?t=2129)
 - **Concurrent case:** both threads read `current = "EMPTY"` (each into its own stack variable) and both pass the early check. T1 reaches CAS first: the seat is `"EMPTY"`, so it becomes `"Aditya"` and T1 gets `true`. T2's CAS then sees `"Aditya"`, which isn't `"EMPTY"`, so nothing changes and T2 gets `false`. There's no visibility problem, because atomic references always show the latest value.
-- **Parallel case** [39:07]: even if both threads issue CAS at the same instant on different cores, one of them executes first and the other sees the updated value. Both can never succeed.
-- Running it [40:30]: printing each thread's return value gives `T1 says false, T2 says true` on one run and the reverse on another. **There is always exactly one `true`.** A later caller fails at the early `equals("EMPTY")` check.
+- **Parallel case** [▶ ~39:07](https://youtu.be/ujF2gNsCfBE?t=2347): even if both threads issue CAS at the same instant on different cores, one of them executes first and the other sees the updated value. Both can never succeed.
+- Running it [▶ ~40:30](https://youtu.be/ujF2gNsCfBE?t=2430): printing each thread's return value gives `T1 says false, T2 says true` on one run and the reverse on another. **There is always exactly one `true`.** A later caller fails at the early `equals("EMPTY")` check.
 
-### Why CAS can't run "simultaneously": the hardware view [41:56]
-- **Lock signal** [42:42]: when the CPU runs CAS, it uses a special processor instruction. On x86 that's `CMPXCHG` with a **`LOCK` prefix**. That isn't a thread-level lock. It tells the system bus and memory controller "I'm doing an atomic operation, everyone else wait", and the other processors are held off for that tiny moment.
-- **Memory controller** [45:21]: even if two requests arrive at the "same" time, the memory controller is a physical device built from flip-flops and logic gates. It can only let one signal through at a time, and a gate is either open or closed, never half open for each request. One request always wins, even by picoseconds.
-- **Buzzer analogy** [46:47]: two kids hit a quiz buzzer at "the same time", but one signal reaches the board first. Wire lengths differ by tiny amounts, and at nearly light speed that's enough to break the tie.
+### Why CAS can't run "simultaneously": the hardware view [▶ ~41:56](https://youtu.be/ujF2gNsCfBE?t=2516)
+- **Lock signal** [▶ ~42:42](https://youtu.be/ujF2gNsCfBE?t=2562): when the CPU runs CAS, it uses a special processor instruction. On x86 that's `CMPXCHG` with a **`LOCK` prefix**. That isn't a thread-level lock. It tells the system bus and memory controller "I'm doing an atomic operation, everyone else wait", and the other processors are held off for that tiny moment.
+- **Memory controller** [▶ ~45:21](https://youtu.be/ujF2gNsCfBE?t=2721): even if two requests arrive at the "same" time, the memory controller is a physical device built from flip-flops and logic gates. It can only let one signal through at a time, and a gate is either open or closed, never half open for each request. One request always wins, even by picoseconds.
+- **Buzzer analogy** [▶ ~46:47](https://youtu.be/ujF2gNsCfBE?t=2807): two kids hit a quiz buzzer at "the same time", but one signal reaches the board first. Wire lengths differ by tiny amounts, and at nearly light speed that's enough to break the tie.
 - Conclusion: Java doesn't handle parallel execution here itself. The **CPU guarantees** that atomic instructions are serialized, which is why we can trust `compareAndSet` and the classes built on it.
 - *(Correction/precision: on modern multi-core x86 CPUs, `LOCK CMPXCHG` usually doesn't lock the whole bus. The core takes **exclusive ownership of the cache line** through the cache-coherence protocol (MESI), so other cores can't read or write that line until the instruction completes. Full bus locking is a legacy fallback for unusual cases, such as data spanning two cache lines. The idea is the same: the hardware serializes the atomic operation. Also, `AtomicInteger.incrementAndGet()` on x86 compiles to `LOCK XADD`, a hardware fetch-and-add, rather than a CAS loop. ARM uses load-linked/store-conditional or LSE atomics instead.)*
 
