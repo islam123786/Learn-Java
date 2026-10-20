@@ -539,8 +539,4 @@ public class ExShutdownNowDemo {
 
 ---
 
-[← #55](55-cas-retry-loop-aba-problem.md) · [Index](README.md) · [#57 →](57-completablefuture-forkjoin-threadlocal-virtual-threads.md)
-
----
-
-[← #55](55-cas-retry-loop-aba-problem.md) · [Index](README.md) · [#57 →](57-completablefuture-forkjoin-threadlocal-virtual-threads.md)
+[← #55](55-cas-retry-loop-aba-problem.md) · [Index](../../ReadMe.md) · [#57 →](57-completablefuture-forkjoin-threadlocal-virtual-threads.md)

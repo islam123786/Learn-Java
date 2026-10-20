@@ -307,8 +307,4 @@ class Marksheet {
 
 ---
 
-[← #13](13-constructors-chaining-overloading-this.md) · [Index](README.md) · [#15 →](15-static-final-blocks-string-args.md)
-
----
-
-[← #13](13-constructors-chaining-overloading-this.md) · [Index](README.md) · [#15 →](15-static-final-blocks-string-args.md)
+[← #13](13-constructors-chaining-overloading-this.md) · [Index](../../ReadMe.md) · [#15 →](15-static-final-blocks-string-args.md)

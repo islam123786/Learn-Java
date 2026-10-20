@@ -412,8 +412,4 @@ public class ArraysAreObjectsDemo {
 
 ---
 
-[← #21](21-immutable-classes-in-java.md) · [Index](README.md) · [#23 →](23-java-enums-why-not-constants.md)
-
----
-
-[← #21](21-immutable-classes-in-java.md) · [Index](README.md) · [#23 →](23-java-enums-why-not-constants.md)
+[← #21](21-immutable-classes-in-java.md) · [Index](../../ReadMe.md) · [#23 →](23-java-enums-why-not-constants.md)

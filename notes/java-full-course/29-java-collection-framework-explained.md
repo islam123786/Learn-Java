@@ -508,8 +508,4 @@ public class CollectionsTour {
 
 ---
 
-[← #28](28-generics-wildcards.md) · [Index](README.md) · [#30 →](30-iterable-iterator-for-each.md)
-
----
-
-[← #28](28-generics-wildcards.md) · [Index](README.md) · [#30 →](30-iterable-iterator-for-each.md)
+[← #28](28-generics-wildcards.md) · [Index](../../ReadMe.md) · [#30 →](30-iterable-iterator-for-each.md)

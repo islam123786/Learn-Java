@@ -280,8 +280,4 @@ public class DaemonDemo {
 
 ---
 
-[← #48](48-thread-creation-lifecycle.md) · [Index](README.md) · [#50 →](50-race-condition-visibility-ordering.md)
-
----
-
-[← #48](48-thread-creation-lifecycle.md) · [Index](README.md) · [#50 →](50-race-condition-visibility-ordering.md)
+[← #48](48-thread-creation-lifecycle.md) · [Index](../../ReadMe.md) · [#50 →](50-race-condition-visibility-ordering.md)

@@ -299,8 +299,4 @@ class CSStudent extends Student {      // error: cannot inherit from final Stude
 
 ---
 
-[← #20](20-java-io-deep-dive.md) · [Index](README.md) · [#22 →](22-java-object-class-equals-hashcode.md)
-
----
-
-[← #20](20-java-io-deep-dive.md) · [Index](README.md) · [#22 →](22-java-object-class-equals-hashcode.md)
+[← #20](20-java-io-deep-dive.md) · [Index](../../ReadMe.md) · [#22 →](22-java-object-class-equals-hashcode.md)

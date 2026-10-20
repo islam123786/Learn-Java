@@ -331,8 +331,4 @@ public class MultipleBoundsDemo {
 
 ---
 
-[← #26](26-java-string-methods-stringbuilder-buffer.md) · [Index](README.md) · [#28 →](28-generics-wildcards.md)
-
----
-
-[← #26](26-java-string-methods-stringbuilder-buffer.md) · [Index](README.md) · [#28 →](28-generics-wildcards.md)
+[← #26](26-java-string-methods-stringbuilder-buffer.md) · [Index](../../ReadMe.md) · [#28 →](28-generics-wildcards.md)

@@ -285,8 +285,4 @@ public class ConversionErrors {
 
 ---
 
-[← #04](04-negative-floating-point-storage.md) · [Index](README.md) · [#06 →](06-java-operators.md)
-
----
-
-[← #04](04-negative-floating-point-storage.md) · [Index](README.md) · [#06 →](06-java-operators.md)
+[← #04](04-negative-floating-point-storage.md) · [Index](../../ReadMe.md) · [#06 →](06-java-operators.md)

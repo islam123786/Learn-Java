@@ -335,8 +335,4 @@ public class PrimitiveStreamConvertDemo {
 
 ---
 
-[← #38](38-lambdas-functional-interfaces-method-references.md) · [Index](README.md) · [#40 →](40-stream-intermediate-terminal-operations.md)
-
----
-
-[← #38](38-lambdas-functional-interfaces-method-references.md) · [Index](README.md) · [#40 →](40-stream-intermediate-terminal-operations.md)
+[← #38](38-lambdas-functional-interfaces-method-references.md) · [Index](../../ReadMe.md) · [#40 →](40-stream-intermediate-terminal-operations.md)

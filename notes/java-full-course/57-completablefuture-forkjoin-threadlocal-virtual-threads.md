@@ -496,8 +496,4 @@ public class CfVirtualThreadDemo {
 
 ---
 
-[← #56](56-executor-framework-future-callable.md) · [Index](README.md) · (end) →
-
----
-
-[← #56](56-executor-framework-future-callable.md) · [Index](README.md) · (end) →
+[← #56](56-executor-framework-future-callable.md) · [Index](../../ReadMe.md) · (end) →

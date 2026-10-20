@@ -337,8 +337,4 @@ public class ArgsDemo {
 
 ---
 
-[← #14](14-objects-size-call-by-value-copy.md) · [Index](README.md) · [#16 →](16-encapsulation-inheritance-packages-super.md)
-
----
-
-[← #14](14-objects-size-call-by-value-copy.md) · [Index](README.md) · [#16 →](16-encapsulation-inheritance-packages-super.md)
+[← #14](14-objects-size-call-by-value-copy.md) · [Index](../../ReadMe.md) · [#16 →](16-encapsulation-inheritance-packages-super.md)

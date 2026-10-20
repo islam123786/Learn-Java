@@ -495,8 +495,4 @@ public class ItcSleepVsWait {
 
 ---
 
-[← #51](51-monitor-locks-synchronized.md) · [Index](README.md) · [#53 →](53-java-locks-reentrant-readwrite-stamped-semaphore.md)
-
----
-
-[← #51](51-monitor-locks-synchronized.md) · [Index](README.md) · [#53 →](53-java-locks-reentrant-readwrite-stamped-semaphore.md)
+[← #51](51-monitor-locks-synchronized.md) · [Index](../../ReadMe.md) · [#53 →](53-java-locks-reentrant-readwrite-stamped-semaphore.md)

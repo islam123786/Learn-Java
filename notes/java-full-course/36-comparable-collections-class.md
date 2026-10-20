@@ -322,8 +322,4 @@ public class CollectionsUtilityTour {
 
 ---
 
-[← #35](35-queue-priorityqueue-heap.md) · [Index](README.md) · [#37 →](37-lambdas-functional-interfaces-comparator.md)
-
----
-
-[← #35](35-queue-priorityqueue-heap.md) · [Index](README.md) · [#37 →](37-lambdas-functional-interfaces-comparator.md)
+[← #35](35-queue-priorityqueue-heap.md) · [Index](../../ReadMe.md) · [#37 →](37-lambdas-functional-interfaces-comparator.md)

@@ -195,8 +195,4 @@ public class LibraryDemo {
 
 ---
 
-[← #01](01-introduction-to-java.md) · [Index](README.md) · [#03 →](03-variables-data-types-literals-keywords.md)
-
----
-
-[← #01](01-introduction-to-java.md) · [Index](README.md) · [#03 →](03-variables-data-types-literals-keywords.md)
+[← #01](01-introduction-to-java.md) · [Index](../../ReadMe.md) · [#03 →](03-variables-data-types-literals-keywords.md)

@@ -374,8 +374,4 @@ public class TryFinallyOnly {
 
 ---
 
-[← #42](42-parallel-streams-primitive-optionals.md) · [Index](README.md) · [#44 →](44-exception-hierarchy-throw-throws-custom.md)
-
----
-
-[← #42](42-parallel-streams-primitive-optionals.md) · [Index](README.md) · [#44 →](44-exception-hierarchy-throw-throws-custom.md)
+[← #42](42-parallel-streams-primitive-optionals.md) · [Index](../../ReadMe.md) · [#44 →](44-exception-hierarchy-throw-throws-custom.md)

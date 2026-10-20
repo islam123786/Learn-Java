@@ -318,8 +318,4 @@ public class ThreadNameId {
 
 ---
 
-[← #47](47-multithreading-process-vs-thread.md) · [Index](README.md) · [#49 →](49-thread-methods-sleep-join-interrupt.md)
-
----
-
-[← #47](47-multithreading-process-vs-thread.md) · [Index](README.md) · [#49 →](49-thread-methods-sleep-join-interrupt.md)
+[← #47](47-multithreading-process-vs-thread.md) · [Index](../../ReadMe.md) · [#49 →](49-thread-methods-sleep-join-interrupt.md)

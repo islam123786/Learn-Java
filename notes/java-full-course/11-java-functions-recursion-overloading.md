@@ -374,8 +374,4 @@ public class NoBaseCase {
 
 ---
 
-[← #10](10-how-arrays-work-in-java.md) · [Index](README.md) · [#12 →](12-oop-classes-objects-new-keyword.md)
-
----
-
-[← #10](10-how-arrays-work-in-java.md) · [Index](README.md) · [#12 →](12-oop-classes-objects-new-keyword.md)
+[← #10](10-how-arrays-work-in-java.md) · [Index](../../ReadMe.md) · [#12 →](12-oop-classes-objects-new-keyword.md)

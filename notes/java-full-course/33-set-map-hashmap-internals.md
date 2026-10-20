@@ -502,8 +502,4 @@ public class NullKeyDemo {
 
 ---
 
-[← #32](32-list-interface-arraylist-linkedlist.md) · [Index](README.md) · [#34 →](34-set-map-methods-special-maps.md)
-
----
-
-[← #32](32-list-interface-arraylist-linkedlist.md) · [Index](README.md) · [#34 →](34-set-map-methods-special-maps.md)
+[← #32](32-list-interface-arraylist-linkedlist.md) · [Index](../../ReadMe.md) · [#34 →](34-set-map-methods-special-maps.md)

@@ -337,8 +337,4 @@ public class CmeDemo {
 
 ---
 
-[← #29](29-java-collection-framework-explained.md) · [Index](README.md) · [#31 →](31-collection-interface-methods.md)
-
----
-
-[← #29](29-java-collection-framework-explained.md) · [Index](README.md) · [#31 →](31-collection-interface-methods.md)
+[← #29](29-java-collection-framework-explained.md) · [Index](../../ReadMe.md) · [#31 →](31-collection-interface-methods.md)

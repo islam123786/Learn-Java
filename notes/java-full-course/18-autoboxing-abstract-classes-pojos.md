@@ -334,8 +334,4 @@ class StudentRich {                            // rich: data + business logic
 
 ---
 
-[← #17](17-abstraction-and-polymorphism.md) · [Index](README.md) · [#19 →](19-java-nested-classes.md)
-
----
-
-[← #17](17-abstraction-and-polymorphism.md) · [Index](README.md) · [#19 →](19-java-nested-classes.md)
+[← #17](17-abstraction-and-polymorphism.md) · [Index](../../ReadMe.md) · [#19 →](19-java-nested-classes.md)

@@ -345,8 +345,4 @@ public class ConcatInLoopDemo {
 
 ---
 
-[← #24](24-java-interfaces-default-functional-marker.md) · [Index](README.md) · [#26 →](26-java-string-methods-stringbuilder-buffer.md)
-
----
-
-[← #24](24-java-interfaces-default-functional-marker.md) · [Index](README.md) · [#26 →](26-java-string-methods-stringbuilder-buffer.md)
+[← #24](24-java-interfaces-default-functional-marker.md) · [Index](../../ReadMe.md) · [#26 →](26-java-string-methods-stringbuilder-buffer.md)

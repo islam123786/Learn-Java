@@ -331,8 +331,4 @@ public class FastInput {
 
 ---
 
-[← #19](19-java-nested-classes.md) · [Index](README.md) · [#21 →](21-immutable-classes-in-java.md)
-
----
-
-[← #19](19-java-nested-classes.md) · [Index](README.md) · [#21 →](21-immutable-classes-in-java.md)
+[← #19](19-java-nested-classes.md) · [Index](../../ReadMe.md) · [#21 →](21-immutable-classes-in-java.md)

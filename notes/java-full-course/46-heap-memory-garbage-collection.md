@@ -367,8 +367,4 @@ public class WeakHashMapDemo {
 
 ---
 
-[← #45](45-java-memory-stack-heap-method-area.md) · [Index](README.md) · [#47 →](47-multithreading-process-vs-thread.md)
-
----
-
-[← #45](45-java-memory-stack-heap-method-area.md) · [Index](README.md) · [#47 →](47-multithreading-process-vs-thread.md)
+[← #45](45-java-memory-stack-heap-method-area.md) · [Index](../../ReadMe.md) · [#47 →](47-multithreading-process-vs-thread.md)

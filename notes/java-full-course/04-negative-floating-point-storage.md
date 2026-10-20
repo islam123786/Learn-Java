@@ -264,8 +264,4 @@ public class BigDecimalPreview {
 
 ---
 
-[← #03](03-variables-data-types-literals-keywords.md) · [Index](README.md) · [#05 →](05-type-conversion-promotion-casting.md)
-
----
-
-[← #03](03-variables-data-types-literals-keywords.md) · [Index](README.md) · [#05 →](05-type-conversion-promotion-casting.md)
+[← #03](03-variables-data-types-literals-keywords.md) · [Index](../../ReadMe.md) · [#05 →](05-type-conversion-promotion-casting.md)

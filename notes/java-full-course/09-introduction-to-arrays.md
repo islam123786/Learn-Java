@@ -305,8 +305,4 @@ public class StringIntro {
 
 ---
 
-[← #08](08-java-loops-and-jump-statements.md) · [Index](README.md) · [#10 →](10-how-arrays-work-in-java.md)
-
----
-
-[← #08](08-java-loops-and-jump-statements.md) · [Index](README.md) · [#10 →](10-how-arrays-work-in-java.md)
+[← #08](08-java-loops-and-jump-statements.md) · [Index](../../ReadMe.md) · [#10 →](10-how-arrays-work-in-java.md)

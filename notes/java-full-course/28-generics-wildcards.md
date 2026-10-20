@@ -381,8 +381,4 @@ public class BridgeMethodDemo {
 
 ---
 
-[← #27](27-generics-bounded-types.md) · [Index](README.md) · [#29 →](29-java-collection-framework-explained.md)
-
----
-
-[← #27](27-generics-bounded-types.md) · [Index](README.md) · [#29 →](29-java-collection-framework-explained.md)
+[← #27](27-generics-bounded-types.md) · [Index](../../ReadMe.md) · [#29 →](29-java-collection-framework-explained.md)

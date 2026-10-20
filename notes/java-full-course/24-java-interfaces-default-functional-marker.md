@@ -435,8 +435,4 @@ public class FunctionalMarkerDemo {
 
 ---
 
-[← #23](23-java-enums-why-not-constants.md) · [Index](README.md) · [#25 →](25-java-strings-pool-immutability.md)
-
----
-
-[← #23](23-java-enums-why-not-constants.md) · [Index](README.md) · [#25 →](25-java-strings-pool-immutability.md)
+[← #23](23-java-enums-why-not-constants.md) · [Index](../../ReadMe.md) · [#25 →](25-java-strings-pool-immutability.md)

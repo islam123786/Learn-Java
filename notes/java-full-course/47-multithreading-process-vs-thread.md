@@ -210,8 +210,4 @@ public class InterleavingDemo {
 
 ---
 
-[← #46](46-heap-memory-garbage-collection.md) · [Index](README.md) · [#48 →](48-thread-creation-lifecycle.md)
-
----
-
-[← #46](46-heap-memory-garbage-collection.md) · [Index](README.md) · [#48 →](48-thread-creation-lifecycle.md)
+[← #46](46-heap-memory-garbage-collection.md) · [Index](../../ReadMe.md) · [#48 →](48-thread-creation-lifecycle.md)

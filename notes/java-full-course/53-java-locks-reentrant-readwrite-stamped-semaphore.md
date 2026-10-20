@@ -655,8 +655,4 @@ class LkBoundedBuffer {
 
 ---
 
-[← #52](52-inter-thread-communication-wait-notify.md) · [Index](README.md) · [#54 →](54-lock-free-concurrency-atomic-cas.md)
-
----
-
-[← #52](52-inter-thread-communication-wait-notify.md) · [Index](README.md) · [#54 →](54-lock-free-concurrency-atomic-cas.md)
+[← #52](52-inter-thread-communication-wait-notify.md) · [Index](../../ReadMe.md) · [#54 →](54-lock-free-concurrency-atomic-cas.md)

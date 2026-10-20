@@ -362,8 +362,4 @@ public class AssignPrecedence {
 
 ---
 
-[← #05](05-type-conversion-promotion-casting.md) · [Index](README.md) · [#07 →](07-java-conditional-statements.md)
-
----
-
-[← #05](05-type-conversion-promotion-casting.md) · [Index](README.md) · [#07 →](07-java-conditional-statements.md)
+[← #05](05-type-conversion-promotion-casting.md) · [Index](../../ReadMe.md) · [#07 →](07-java-conditional-statements.md)

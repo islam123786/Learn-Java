@@ -291,8 +291,4 @@ public class PrimitiveOptionalsDemo {
 
 ---
 
-[← #41](41-java-optional-explained.md) · [Index](README.md) · [#43 →](43-exception-handling-exceptions-vs-errors.md)
-
----
-
-[← #41](41-java-optional-explained.md) · [Index](README.md) · [#43 →](43-exception-handling-exceptions-vs-errors.md)
+[← #41](41-java-optional-explained.md) · [Index](../../ReadMe.md) · [#43 →](43-exception-handling-exceptions-vs-errors.md)

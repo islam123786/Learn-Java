@@ -362,8 +362,4 @@ public class ReentrancyDemo {
 
 ---
 
-[← #50](50-race-condition-visibility-ordering.md) · [Index](README.md) · [#52 →](52-inter-thread-communication-wait-notify.md)
-
----
-
-[← #50](50-race-condition-visibility-ordering.md) · [Index](README.md) · [#52 →](52-inter-thread-communication-wait-notify.md)
+[← #50](50-race-condition-visibility-ordering.md) · [Index](../../ReadMe.md) · [#52 →](52-inter-thread-communication-wait-notify.md)

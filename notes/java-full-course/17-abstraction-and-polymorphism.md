@@ -326,8 +326,4 @@ class LoudGreeter implements Greeter {
 
 ---
 
-[← #16](16-encapsulation-inheritance-packages-super.md) · [Index](README.md) · [#18 →](18-autoboxing-abstract-classes-pojos.md)
-
----
-
-[← #16](16-encapsulation-inheritance-packages-super.md) · [Index](README.md) · [#18 →](18-autoboxing-abstract-classes-pojos.md)
+[← #16](16-encapsulation-inheritance-packages-super.md) · [Index](../../ReadMe.md) · [#18 →](18-autoboxing-abstract-classes-pojos.md)

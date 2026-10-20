@@ -317,8 +317,4 @@ public class LinkedListDequeDemo {
 
 ---
 
-[← #31](31-collection-interface-methods.md) · [Index](README.md) · [#33 →](33-set-map-hashmap-internals.md)
-
----
-
-[← #31](31-collection-interface-methods.md) · [Index](README.md) · [#33 →](33-set-map-hashmap-internals.md)
+[← #31](31-collection-interface-methods.md) · [Index](../../ReadMe.md) · [#33 →](33-set-map-hashmap-internals.md)

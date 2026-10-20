@@ -355,8 +355,4 @@ public class ModernSwitch {
 
 ---
 
-[← #06](06-java-operators.md) · [Index](README.md) · [#08 →](08-java-loops-and-jump-statements.md)
-
----
-
-[← #06](06-java-operators.md) · [Index](README.md) · [#08 →](08-java-loops-and-jump-statements.md)
+[← #06](06-java-operators.md) · [Index](../../ReadMe.md) · [#08 →](08-java-loops-and-jump-statements.md)

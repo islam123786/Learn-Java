@@ -494,8 +494,4 @@ public class MinHeapFromScratch {
 
 ---
 
-[← #34](34-set-map-methods-special-maps.md) · [Index](README.md) · [#36 →](36-comparable-collections-class.md)
-
----
-
-[← #34](34-set-map-methods-special-maps.md) · [Index](README.md) · [#36 →](36-comparable-collections-class.md)
+[← #34](34-set-map-methods-special-maps.md) · [Index](../../ReadMe.md) · [#36 →](36-comparable-collections-class.md)

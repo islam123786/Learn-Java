@@ -383,8 +383,4 @@ public class StringBufferThreadsDemo {
 
 ---
 
-[← #25](25-java-strings-pool-immutability.md) · [Index](README.md) · [#27 →](27-generics-bounded-types.md)
-
----
-
-[← #25](25-java-strings-pool-immutability.md) · [Index](README.md) · [#27 →](27-generics-bounded-types.md)
+[← #25](25-java-strings-pool-immutability.md) · [Index](../../ReadMe.md) · [#27 →](27-generics-bounded-types.md)

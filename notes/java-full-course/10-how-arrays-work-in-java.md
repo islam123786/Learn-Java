@@ -273,8 +273,4 @@ public class StringArrayRefs {
 
 ---
 
-[← #09](09-introduction-to-arrays.md) · [Index](README.md) · [#11 →](11-java-functions-recursion-overloading.md)
-
----
-
-[← #09](09-introduction-to-arrays.md) · [Index](README.md) · [#11 →](11-java-functions-recursion-overloading.md)
+[← #09](09-introduction-to-arrays.md) · [Index](../../ReadMe.md) · [#11 →](11-java-functions-recursion-overloading.md)

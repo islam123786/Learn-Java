@@ -500,8 +500,4 @@ class Child16 extends Parent16 {
 
 ---
 
-[← #15](15-static-final-blocks-string-args.md) · [Index](README.md) · [#17 →](17-abstraction-and-polymorphism.md)
-
----
-
-[← #15](15-static-final-blocks-string-args.md) · [Index](README.md) · [#17 →](17-abstraction-and-polymorphism.md)
+[← #15](15-static-final-blocks-string-args.md) · [Index](../../ReadMe.md) · [#17 →](17-abstraction-and-polymorphism.md)

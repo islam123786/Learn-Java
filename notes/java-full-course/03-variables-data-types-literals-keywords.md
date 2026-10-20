@@ -327,8 +327,4 @@ public class CompileErrors {
 
 ---
 
-[← #02](02-first-java-program-jvm-jdk-jre.md) · [Index](README.md) · [#04 →](04-negative-floating-point-storage.md)
-
----
-
-[← #02](02-first-java-program-jvm-jdk-jre.md) · [Index](README.md) · [#04 →](04-negative-floating-point-storage.md)
+[← #02](02-first-java-program-jvm-jdk-jre.md) · [Index](../../ReadMe.md) · [#04 →](04-negative-floating-point-storage.md)

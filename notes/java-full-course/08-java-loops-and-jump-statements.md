@@ -377,8 +377,4 @@ public class LabeledJumps {
 
 ---
 
-[← #07](07-java-conditional-statements.md) · [Index](README.md) · [#09 →](09-introduction-to-arrays.md)
-
----
-
-[← #07](07-java-conditional-statements.md) · [Index](README.md) · [#09 →](09-introduction-to-arrays.md)
+[← #07](07-java-conditional-statements.md) · [Index](../../ReadMe.md) · [#09 →](09-introduction-to-arrays.md)

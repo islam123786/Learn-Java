@@ -315,8 +315,4 @@ public class NotFunctional {
 
 ---
 
-[← #36](36-comparable-collections-class.md) · [Index](README.md) · [#38 →](38-lambdas-functional-interfaces-method-references.md)
-
----
-
-[← #36](36-comparable-collections-class.md) · [Index](README.md) · [#38 →](38-lambdas-functional-interfaces-method-references.md)
+[← #36](36-comparable-collections-class.md) · [Index](../../ReadMe.md) · [#38 →](38-lambdas-functional-interfaces-method-references.md)

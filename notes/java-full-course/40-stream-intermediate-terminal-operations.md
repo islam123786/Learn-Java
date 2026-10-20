@@ -337,8 +337,4 @@ public class CollectorsTourDemo {
 
 ---
 
-[← #39](39-intro-java-streams-creation-architecture.md) · [Index](README.md) · [#41 →](41-java-optional-explained.md)
-
----
-
-[← #39](39-intro-java-streams-creation-architecture.md) · [Index](README.md) · [#41 →](41-java-optional-explained.md)
+[← #39](39-intro-java-streams-creation-architecture.md) · [Index](../../ReadMe.md) · [#41 →](41-java-optional-explained.md)

@@ -357,8 +357,4 @@ public class SpecialMapsDemo {
 
 ---
 
-[← #33](33-set-map-hashmap-internals.md) · [Index](README.md) · [#35 →](35-queue-priorityqueue-heap.md)
-
----
-
-[← #33](33-set-map-hashmap-internals.md) · [Index](README.md) · [#35 →](35-queue-priorityqueue-heap.md)
+[← #33](33-set-map-hashmap-internals.md) · [Index](../../ReadMe.md) · [#35 →](35-queue-priorityqueue-heap.md)

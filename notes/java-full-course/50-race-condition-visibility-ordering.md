@@ -314,8 +314,4 @@ public class OrderingDemo {
 
 ---
 
-[← #49](49-thread-methods-sleep-join-interrupt.md) · [Index](README.md) · [#51 →](51-monitor-locks-synchronized.md)
-
----
-
-[← #49](49-thread-methods-sleep-join-interrupt.md) · [Index](README.md) · [#51 →](51-monitor-locks-synchronized.md)
+[← #49](49-thread-methods-sleep-join-interrupt.md) · [Index](../../ReadMe.md) · [#51 →](51-monitor-locks-synchronized.md)

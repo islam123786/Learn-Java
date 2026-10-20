@@ -382,8 +382,4 @@ public class HeapFillDemo {
 
 ---
 
-[← #44](44-exception-hierarchy-throw-throws-custom.md) · [Index](README.md) · [#46 →](46-heap-memory-garbage-collection.md)
-
----
-
-[← #44](44-exception-hierarchy-throw-throws-custom.md) · [Index](README.md) · [#46 →](46-heap-memory-garbage-collection.md)
+[← #44](44-exception-hierarchy-throw-throws-custom.md) · [Index](../../ReadMe.md) · [#46 →](46-heap-memory-garbage-collection.md)

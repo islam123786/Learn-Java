@@ -331,8 +331,4 @@ class Box {
 
 ---
 
-[← #12](12-oop-classes-objects-new-keyword.md) · [Index](README.md) · [#14 →](14-objects-size-call-by-value-copy.md)
-
----
-
-[← #12](12-oop-classes-objects-new-keyword.md) · [Index](README.md) · [#14 →](14-objects-size-call-by-value-copy.md)
+[← #12](12-oop-classes-objects-new-keyword.md) · [Index](../../ReadMe.md) · [#14 →](14-objects-size-call-by-value-copy.md)

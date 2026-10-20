@@ -351,8 +351,4 @@ public class CasIdentityPitfall {
 
 ---
 
-[← #54](54-lock-free-concurrency-atomic-cas.md) · [Index](README.md) · [#56 →](56-executor-framework-future-callable.md)
-
----
-
-[← #54](54-lock-free-concurrency-atomic-cas.md) · [Index](README.md) · [#56 →](56-executor-framework-future-callable.md)
+[← #54](54-lock-free-concurrency-atomic-cas.md) · [Index](../../ReadMe.md) · [#56 →](56-executor-framework-future-callable.md)

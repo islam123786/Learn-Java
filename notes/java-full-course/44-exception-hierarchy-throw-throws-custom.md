@@ -496,8 +496,4 @@ class DemoResource implements AutoCloseable {
 
 ---
 
-[← #43](43-exception-handling-exceptions-vs-errors.md) · [Index](README.md) · [#45 →](45-java-memory-stack-heap-method-area.md)
-
----
-
-[← #43](43-exception-handling-exceptions-vs-errors.md) · [Index](README.md) · [#45 →](45-java-memory-stack-heap-method-area.md)
+[← #43](43-exception-handling-exceptions-vs-errors.md) · [Index](../../ReadMe.md) · [#45 →](45-java-memory-stack-heap-method-area.md)

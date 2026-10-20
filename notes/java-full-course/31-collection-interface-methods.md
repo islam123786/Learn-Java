@@ -252,8 +252,4 @@ public class CollectionEqualityDemo {
 
 ---
 
-[← #30](30-iterable-iterator-for-each.md) · [Index](README.md) · [#32 →](32-list-interface-arraylist-linkedlist.md)
-
----
-
-[← #30](30-iterable-iterator-for-each.md) · [Index](README.md) · [#32 →](32-list-interface-arraylist-linkedlist.md)
+[← #30](30-iterable-iterator-for-each.md) · [Index](../../ReadMe.md) · [#32 →](32-list-interface-arraylist-linkedlist.md)

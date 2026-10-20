@@ -371,8 +371,4 @@ public class EnumInternalsDemo {
 
 ---
 
-[← #22](22-java-object-class-equals-hashcode.md) · [Index](README.md) · [#24 →](24-java-interfaces-default-functional-marker.md)
-
----
-
-[← #22](22-java-object-class-equals-hashcode.md) · [Index](README.md) · [#24 →](24-java-interfaces-default-functional-marker.md)
+[← #22](22-java-object-class-equals-hashcode.md) · [Index](../../ReadMe.md) · [#24 →](24-java-interfaces-default-functional-marker.md)

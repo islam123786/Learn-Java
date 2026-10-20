@@ -455,8 +455,4 @@ public class AfReferenceIdentity {
 
 ---
 
-[← #53](53-java-locks-reentrant-readwrite-stamped-semaphore.md) · [Index](README.md) · [#55 →](55-cas-retry-loop-aba-problem.md)
-
----
-
-[← #53](53-java-locks-reentrant-readwrite-stamped-semaphore.md) · [Index](README.md) · [#55 →](55-cas-retry-loop-aba-problem.md)
+[← #53](53-java-locks-reentrant-readwrite-stamped-semaphore.md) · [Index](../../ReadMe.md) · [#55 →](55-cas-retry-loop-aba-problem.md)

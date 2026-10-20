@@ -178,4 +178,4 @@ java WhereAmI         # the local JVM runs the bytecode on this platform
 
 ---
 
-← (start) · [Index](README.md) · [#02 →](02-first-java-program-jvm-jdk-jre.md)
+← (start) · [Index](../../ReadMe.md) · [#02 →](02-first-java-program-jvm-jdk-jre.md)

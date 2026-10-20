@@ -343,8 +343,4 @@ class Box {
 
 ---
 
-[← #18](18-autoboxing-abstract-classes-pojos.md) · [Index](README.md) · [#20 →](20-java-io-deep-dive.md)
-
----
-
-[← #18](18-autoboxing-abstract-classes-pojos.md) · [Index](README.md) · [#20 →](20-java-io-deep-dive.md)
+[← #18](18-autoboxing-abstract-classes-pojos.md) · [Index](../../ReadMe.md) · [#20 →](20-java-io-deep-dive.md)

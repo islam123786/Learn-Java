@@ -391,8 +391,4 @@ public class ConsumerAndBiDemo {
 
 ---
 
-[← #37](37-lambdas-functional-interfaces-comparator.md) · [Index](README.md) · [#39 →](39-intro-java-streams-creation-architecture.md)
-
----
-
-[← #37](37-lambdas-functional-interfaces-comparator.md) · [Index](README.md) · [#39 →](39-intro-java-streams-creation-architecture.md)
+[← #37](37-lambdas-functional-interfaces-comparator.md) · [Index](../../ReadMe.md) · [#39 →](39-intro-java-streams-creation-architecture.md)

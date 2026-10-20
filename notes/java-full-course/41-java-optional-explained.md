@@ -350,8 +350,4 @@ public class StreamOptionalEmailsDemo {
 
 ---
 
-[← #40](40-stream-intermediate-terminal-operations.md) · [Index](README.md) · [#42 →](42-parallel-streams-primitive-optionals.md)
-
----
-
-[← #40](40-stream-intermediate-terminal-operations.md) · [Index](README.md) · [#42 →](42-parallel-streams-primitive-optionals.md)
+[← #40](40-stream-intermediate-terminal-operations.md) · [Index](../../ReadMe.md) · [#42 →](42-parallel-streams-primitive-optionals.md)

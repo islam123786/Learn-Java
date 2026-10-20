@@ -290,8 +290,4 @@ class BankAccount {
 
 ---
 
-[← #11](11-java-functions-recursion-overloading.md) · [Index](README.md) · [#13 →](13-constructors-chaining-overloading-this.md)
-
----
-
-[← #11](11-java-functions-recursion-overloading.md) · [Index](README.md) · [#13 →](13-constructors-chaining-overloading-this.md)
+[← #11](11-java-functions-recursion-overloading.md) · [Index](../../ReadMe.md) · [#13 →](13-constructors-chaining-overloading-this.md)
